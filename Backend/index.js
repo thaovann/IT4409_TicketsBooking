@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const userRoutes = require('./routes/userRoutes.js');
-// const eventRoutes = require('./routes/eventRoutes');
+const eventRoutes = require('./routes/eventRoutes');
 // const ticketRoutes = require('./routes/ticketRoutes');
 
 const app = express();
