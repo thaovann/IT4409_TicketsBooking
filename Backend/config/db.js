@@ -1,19 +1,21 @@
-const mysql = require('mysql2');
-require('dotenv').config();
+const express = require("express");
+const mongoose = require("mongoose");
+const eventController = require("../controllers/eventController");
+const router = express.Router();
 
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME
-});
+const query =
+  "mongodb+srv://lethithaovan2711:pusrmHtnJpkmMNAB@cluster0.uhim5.mongodb.net/TicketBookingService";
 
-connection.connect(err => {
-    if (err) {
-        console.error('Error connecting to the database:', err);
-        return;
-    }
-    console.log('Connected to MySQL database');
-});
+async function connectDB() {
+  try {
+    await mongoose.connect(query, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Database connected successfully!");
+  } catch (error) {
+    console.error("Error connecting to the database: " + error);
+  }
+}
 
-module.exports = connection;
+connectDB();

@@ -1,34 +1,25 @@
-const db = require('../config/db');
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-// Tạo bảng nếu chưa tồn tại
-const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS events (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        description TEXT,
-        location VARCHAR(255),
-        date DATE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-`;
 
-db.query(createTableQuery, (err, result) => {
-    if (err) {
-        console.error('Error creating events table:', err);
-    } else {
-        console.log('Events table created or already exists');
-    }
+const EventSchema = new Schema({
+  eventId: {
+    type: String,
+    required: true,
+    default: () => new mongoose.Types.ObjectId().toString(),
+    unique: true, 
+  },
+  customerId: { type: String, ref: "customers" , required: true},
+  typeId: { type: String, ref: "eventTypes" },
+  name: { type: String, required: true },
+  startTime: { type: Date, required: true },
+  endTime: { type: Date, required: true },
+  location: { type: String, required: true },
+  description: String,
+  image: String,
+  numberOfTickets: Number,
+  video: String,
+  state: { type: String, default: "under review" }, 
 });
 
-const Event = {
-    create: (eventData, callback) => {
-        const query = 'INSERT INTO events (name, description, location, date) VALUES (?, ?, ?, ?)';
-        db.query(query, [eventData.name, eventData.description, eventData.location, eventData.date], callback);
-    },
-    findById: (eventId, callback) => {
-        const query = 'SELECT * FROM events WHERE id = ?';
-        db.query(query, [eventId], callback);
-    }
-};
-
-module.exports = Event;
+module.exports = mongoose.model("Event", EventSchema, "events");
