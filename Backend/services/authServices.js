@@ -1,7 +1,7 @@
 const { structureResponse, hashPassword } = require('../utils/common.utils');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-// const { sendOTPEmail } = require('../utils/sendgrid.utils');
+const { sendOTPEmail } = require('../utils/sendgrid');
 const otpGenerator = require('otp-generator');
 const { Config } = require('../configs/config');
 
@@ -9,10 +9,10 @@ const UserModel = require('../models/User');
 const OTPModel = require('../models/OTP');
 const {
     RegistrationFailedException,
-    InvalidCredentialsException
-    // TokenVerificationException,
+    InvalidCredentialsException,
+    TokenVerificationException,
     // OTPExpiredException,
-    // OTPGenerationException,
+    OTPGenerationException,
     // OTPVerificationException
 } = require('../utils/exceptions/auth');
 
@@ -36,14 +36,14 @@ exports.registerUser = async (body) => {
     return this.userLogin(body.Email, pass, true);
 };
 
-exports.userLogin = async (Email, pass, is_register = false) => {
+exports.userLogin = async (Email, Password, is_register = false) => {
     const user = await UserModel.findOne({ Email });
 
     if (!user) {
         throw new InvalidCredentialsException('Email not registered');
     }
 
-    const isMatch = await bcrypt.compare(pass, user.Password);
+    const isMatch = await bcrypt.compare(Password, user.Password);
 
     if (!isMatch) {
         throw new InvalidCredentialsException('Incorrect Password');
@@ -69,77 +69,77 @@ exports.userLogin = async (Email, pass, is_register = false) => {
     return structureResponse(responseBody, 1, message);
 };
 
-// refreshToken = async (body) => {
-//     const { Email, Password: pass, oldToken } = body;
-//     const user = await UserModel.findOne({ Email });
-//     if (!user) {
-//         throw new InvalidCredentialsException('Email not registered');
-//     }
+exports.refreshToken = async (body) => {
+    const { Email, Password, oldToken } = body;
+    const user = await UserModel.findOne({ Email });
+    if (!user) {
+        throw new InvalidCredentialsException('Email not registered');
+    }
 
-//     const isMatch = await bcrypt.compare(pass, user.Password);
+    const isMatch = await bcrypt.compare(Password, user.Password);
 
-//     if (!isMatch) {
-//         throw new InvalidCredentialsException('Incorrect Password');
-//     }
-
-//     // user matched!
-//     const secretKey = Config.SECRET_JWT;
-//     const { UserId } = jwt.decode(oldToken);
+    if (!isMatch) {
+        throw new InvalidCredentialsException('Incorrect Password');
+    }
     
-//     if (user.UserId.toString() !== UserId){
-//         throw new TokenVerificationException();
-//     }
+    // user matched!
+    const secretKey = Config.JWT_SECRET;
+    const { UserId } = jwt.decode(oldToken);
     
-//     const token = jwt.sign({ UserId: user.UserId.toString() }, secretKey, {
-//         expiresIn: '24h'
-//     });
-
-//     return structureResponse({ token }, 1, "Refreshed");
-// };
-
-// forgotPassword = async (body) => {
-//     let user = await UserModel.findOne(body); // body contains "Email" : ...
+    if (user.UserId.toString() !== UserId){
+        throw new TokenVerificationException();
+    }
     
-//     if (!user) {
-//         throw new InvalidCredentialsException('Email not registered');
-//     }
+    const token = jwt.sign({ UserId: user.UserId.toString() }, secretKey, {
+        expiresIn: '24h'
+    });
+
+    return structureResponse({ token }, 1, "Refreshed");
+};
+
+exports.forgotPassword = async (body) => {
+    let user = await UserModel.findOne(body); // body contains "Email" : ...
     
-//     await this.#removeExpiredOTP(user.UserId);
+    if (!user) {
+        throw new InvalidCredentialsException('Email not registered');
+    }
+    
+    await removeExpiredOTP(user.UserId);
 
-//     const OTP = await this.#generateOTP(user.UserId, body.Email);
+    const OTP = await generateOTP(user.UserId, body.Email);
 
-//     sendOTPEmail(user, OTP);
+    sendOTPEmail(user, OTP);
 
-//     return structureResponse({}, 1, 'OTP generated and sent via Email');
-// }
+    return structureResponse({}, 1, 'OTP generated and sent via Email');
+}
 
-// #generateOTP = async (UserId, Email) => {
-//     const OTP = `${otpGenerator.generate(4, { alphabets: false, upperCase: false, specialChars: false })}`;
+generateOTP = async (UserId, Email) => {
+    const OTP = `${otpGenerator.generate(4, { alphabets: false, upperCase: false, specialChars: false })}`;
 
-//     const OTPHash = await bcrypt.hash(OTP, 8);
+    const OTPHash = await bcrypt.hash(OTP, 8);
 
-//     let expiration_datetime = new Date();
-//     expiration_datetime.setHours(expiration_datetime.getHours() + 1);
+    let ExpirationDatetime = new Date();
+    ExpirationDatetime.setHours(ExpirationDatetime.getHours() + 1);
 
-//     const body = {UserId, Email, OTP: OTPHash, expiration_datetime};
-//     const result = await OTPModel.create(body);
+    const body = {UserId, Email, OTP: OTPHash, ExpirationDatetime};
+    const result = await OTPModel.create(body);
 
-//     if (!result) throw new OTPGenerationException();
+    if (!result) throw new OTPGenerationException();
 
-//     return OTP;
-// }
+    return OTP;
+}
 
-// #removeExpiredOTP = async (UserId) => {
-//     const result = await OTPModel.findOne({UserId});
+removeExpiredOTP = async (UserId) => {
+    const result = await OTPModel.findOne({UserId});
 
-//     if (result) { // if found, delete
-//         const affectedRows = await OTPModel.delete({UserId});
+    if (result) { // if found, delete
+        const affectedRows = await OTPModel.deleteOne({UserId});
 
-//         if (!affectedRows) {
-//             throw new OTPGenerationException('Expired OTP could not be deleted');
-//         }
-//     }
-// }
+        if (!affectedRows) {
+            throw new OTPGenerationException('Expired OTP could not be deleted');
+        }
+    }
+}
 
 // verifyOTP = async (body) => {
 //     const {OTP, Email} = body;
@@ -149,9 +149,9 @@ exports.userLogin = async (Email, pass, is_register = false) => {
 //         throw new OTPVerificationException();
 //     }
 
-//     const {expiration_datetime, OTP: OTPHash} = result;
+//     const {ExpirationDatetime, OTP: OTPHash} = result;
 
-//     if (expiration_datetime < new Date()) {
+//     if (ExpirationDatetime < new Date()) {
 //         throw new OTPExpiredException();
 //     }
 

@@ -4,8 +4,8 @@ const router = express.Router();
 const {
     registerUser,
     userLogin,
-    // refreshToken,
-    // forgotPassword,
+    refreshToken,
+    forgotPassword,
     // verifyOTP,
     // resetPassword,
     // changePassword
@@ -14,22 +14,22 @@ const {
 const { createUserSchema } = require("../middleware/validators/userValidator");
 const {
     validateLogin,
-//     forgotPWScheme,
+    forgotPWSchema,
 //     resetPWSchema,
 //     changePWSchema,
 //     verifyOTPSchema,
-//     validateRefresh
+    validateRefresh
 } = require("../middleware/validators/authValidator");
 
 const awaitHandlerFactory = require("../middleware/awaitHandlerFactory");
 
 router.post("/register", createUserSchema, awaitHandlerFactory(registerUser));
 router.post("/login", validateLogin, awaitHandlerFactory(userLogin));
-// router.post("/token", validateRefresh, awaitHandlerFactory(refreshToken));
+router.post("/token", validateRefresh, awaitHandlerFactory(refreshToken));
 
-// router.post("/Password/forgot", forgotPWScheme, awaitHandlerFactory(forgotPassword));
-// router.post("/Password/otp", verifyOTPSchema, awaitHandlerFactory(verifyOTP));
-// router.post("/Password/reset", resetPWSchema, awaitHandlerFactory(resetPassword));
-// router.post("/Password/change", changePWSchema, awaitHandlerFactory(changePassword));
+router.post("/password/forgot", forgotPWSchema, awaitHandlerFactory(forgotPassword));
+// router.post("/password/otp", verifyOTPSchema, awaitHandlerFactory(verifyOTP));
+// router.post("/password/reset", resetPWSchema, awaitHandlerFactory(resetPassword));
+// router.post("/password/change", changePWSchema, awaitHandlerFactory(changePassword));
 
 module.exports = router;

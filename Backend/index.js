@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 const authRoutes = require("./routes/authRoutes");
-app.use("/", authRoutes);
+app.use("/auth", authRoutes);
 
 const eventRoutes = require("./routes/eventRoutes"); 
 app.use("/api/events", eventRoutes);
