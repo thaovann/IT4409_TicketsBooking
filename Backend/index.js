@@ -1,6 +1,9 @@
 const express = require("express");
-const dotenv = require('dotenv');
+const bodyParser = require("body-parser");
+require("dotenv").config(); 
+
 const app = express();
+app.use(bodyParser.json());
 
 //middleware
 app.use(express.json());
@@ -8,21 +11,24 @@ app.use(express.json());
 const authRoutes = require("./routes/authRoutes");
 app.use("/", authRoutes);
 
-app.listen(3001, ()=>{
-    console.log("Server is running on port 3001");
+const eventRoutes = require("./routes/eventRoutes"); 
+app.use("/api/events", eventRoutes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, ()=>{
+    console.log(`Server is running on port ${PORT}`);
 });
 
 module.exports = app;
 
 const mongoose = require("mongoose");
-dotenv.config();
 const queryString = process.env.MONGODB_URI;
 
 //configure mongoose
 mongoose.connect( queryString, { 
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(() => console.log('MongoDB connected!'));
+}).then(() => console.log("Database connected successfully!"));
 mongoose.connection.on('error', (err) => {
     console.log('MongoDB connection error:', err.message);
 })
