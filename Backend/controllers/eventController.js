@@ -98,10 +98,9 @@ exports.getEventsByTypeId = async (req, res) => {
 
 exports.getEventsByCustomerId = async (req, res) => {
   try {
-    const { customerId } = req.params; // Get the customerId from the URL parameters
+    const { customerId } = req.params; 
 
-    const events = await Event.find({ customerId: customerId }); // Adjust this based on your Event schema
-
+    const events = await Event.find({ customerId: customerId }); 
     if (events.length === 0) {
       return res.status(404).send("No events found for the given customer ID");
     }
@@ -156,7 +155,7 @@ exports.updateEvent = async (req, res) => {
     const { eventId } = req.params; 
     const updatedData = req.body; 
     const eventObjectId = new mongoose.Types.ObjectId(eventId);
-    // Update the event based on eventId
+  
     const updatedEvent = await Event.findOneAndUpdate(
       { eventId: eventObjectId }, 
       updatedData,
@@ -180,12 +179,11 @@ exports.createEventType = async (req, res) => {
   try {
     const { name } = req.body;
 
-    // Validation to ensure required fields are present
+   
     if (!name) {
       return res.status(400).send("Event Type name is required");
     }
 
-    // Create a new event type
     const newEventType = new EventType({ name });
 
     await newEventType.save();
@@ -196,7 +194,6 @@ exports.createEventType = async (req, res) => {
   }
 };
 
-// Get all EventTypes
 exports.getAllEventTypes = async (req, res) => {
   try {
     const eventTypes = await EventType.find();
@@ -209,8 +206,8 @@ exports.getAllEventTypes = async (req, res) => {
 
 exports.getEventTypeById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const eventType = await EventType.findOne({ eventTypeId: id });
+    const { eventTypeId } = req.params;
+    const eventType = await EventType.findOne({ eventTypeId: eventTypeId });
 
     if (!eventType) {
       return res.status(404).send("Event Type not found");
@@ -223,21 +220,18 @@ exports.getEventTypeById = async (req, res) => {
   }
 };
 
-
-
-// Update an EventType
 exports.updateEventType = async (req, res) => {
   try {
-    const { id } = req.params; // Use 'id' as the route parameter for consistency
+    const { eventTypeId } = req.params; 
     const updatedData = req.body;
 
-    // Check if the updatedData is not empty
+    
     if (!Object.keys(updatedData).length) {
       return res.status(400).send("No data provided for update");
     }
 
-    const updatedEventType = await EventType.findByIdAndUpdate(
-      id,
+    const updatedEventType = await EventType.findOneAndUpdate(
+      { eventTypeId: eventTypeId },
       updatedData,
       { new: true }
     );
@@ -253,12 +247,13 @@ exports.updateEventType = async (req, res) => {
   }
 };
 
-// Delete an EventType
+// Delete an EventType by eventTypeId
 exports.deleteEventType = async (req, res) => {
   try {
-    const { id } = req.params; // Use 'id' as the route parameter for consistency
+    const { eventTypeId } = req.params; // Use 'eventTypeId' as the route parameter
 
-    const deletedEventType = await EventType.findByIdAndDelete(id);
+    // Use findOneAndDelete to delete by a custom field
+    const deletedEventType = await EventType.findOneAndDelete({ eventTypeId: eventTypeId });
 
     if (!deletedEventType) {
       return res.status(404).send("Event Type not found");
@@ -270,3 +265,4 @@ exports.deleteEventType = async (req, res) => {
     res.status(500).send("Error deleting event type");
   }
 };
+

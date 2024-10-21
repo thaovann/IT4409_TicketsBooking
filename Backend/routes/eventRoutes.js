@@ -8,7 +8,7 @@ router.get("/allEvents", eventController.getAllEvents);
 router.get("/getEventByEventId/:eventId", eventController.getEventByEventId);
 router.get("/getEventByTypeId/:typeId", eventController.getEventsByTypeId);
 router.get("/getEventByCustomerId/:customerId", eventController.getEventsByCustomerId);
-router.get("/delete/:eventId", eventController.deleteEvent);
+router.delete("/delete/:eventId", eventController.deleteEvent);
 router.put("/update/:eventId", eventController.updateEvent);
 
 // EventTypes ----------------------------------------------------------------
