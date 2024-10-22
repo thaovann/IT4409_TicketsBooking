@@ -2,7 +2,9 @@ const { checkValidation } = require('../middleware/validation');
 
 const { 
     registerUser,
-    userLogin 
+    userLogin,
+    refreshToken,
+    forgotPassword
 } = require('../services/authServices');
 
 exports.registerUser = async (req, res, next) => {
@@ -17,32 +19,32 @@ exports.userLogin = async (req, res, next) => {
     res.send(response);
 };
 
-// refreshToken = async (req, res, next) => {
-//     checkValidation(req);
-//     const response = await AuthRepository.refreshToken(req.body);
-//     res.send(response);
-// };
+exports.refreshToken = async (req, res, next) => {
+    checkValidation(req);
+    const response = await refreshToken(req.body);
+    res.send(response);
+};
 
-// forgotPassword = async (req, res, next) => {
-//     checkValidation(req);
-//     const response = await AuthRepository.forgotPassword(req.body);
-//     res.send(response);
-// }
+exports.forgotPassword = async (req, res, next) => {
+    checkValidation(req);
+    const response = await forgotPassword(req.body);
+    res.send(response);
+}
 
 // verifyOTP = async (req, res, next) => {
 //     checkValidation(req);
-//     const response = await AuthRepository.verifyOTP(req.body);
+//     const response = await verifyOTP(req.body);
 //     res.send(response);
 // }
 
 // changePassword = async (req, res, next) => {
 //     checkValidation(req);
-//     const response = await AuthRepository.changePassword(req.body);
+//     const response = await changePassword(req.body);
 //     res.send(response);
 // };
 
 // resetPassword = async (req, res, next) => {
 //     checkValidation(req);
-//     const response = await AuthRepository.resetPassword(req.body);
+//     const response = await resetPassword(req.body);
 //     res.send(response);
 // }
