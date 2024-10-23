@@ -1,30 +1,36 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 require("dotenv").config(); 
 const eventRoutes = require("./routes/eventRoutes"); 
 const ticketRouter = require("./routes/ticketRouter");
+
 const app = express();
-
-
 app.use(bodyParser.json());
+
+//middleware
+app.use(express.json());
+
+const authRoutes = require("./routes/authRoutes");
+app.use("/auth", authRoutes);
+
+const eventRoutes = require("./routes/eventRoutes"); 
 app.use("/api/events", eventRoutes);
 
-async function connectDB() {
-  const uri = process.env.MONGODB_URI; 
-  try {
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("Database connected successfully!");
-  } catch (error) {
-    console.error("Error connecting to the database: " + error);
-  }
-}
-
 const PORT = process.env.PORT || 3000;
-connectDB();
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(PORT, ()=>{
+    console.log(`Server is running on port ${PORT}`);
 });
+
+module.exports = app;
+
+const mongoose = require("mongoose");
+const queryString = process.env.MONGODB_URI;
+
+//configure mongoose
+mongoose.connect( queryString, { 
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => console.log("Database connected successfully!"));
+mongoose.connection.on('error', (err) => {
+    console.log('MongoDB connection error:', err.message);
+})
