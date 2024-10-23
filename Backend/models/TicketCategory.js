@@ -1,14 +1,71 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-
 const TicketCategorySchema = new Schema(
   {
-    name: { type: String, trim: true }, 
-    expirationDate: { type: Date },
-    description: { type: String, trim: true },
-    effectiveDate: { type: Date },
-    price: { type: Number, required: true, min: 0 },
+    eventId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Event",
+      required: true,
+      index: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      maxLength: 50,
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    free: {
+      type: Boolean,
+      default: false,
+    },
+    totalQuantity: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+    minPerOrder: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+    maxPerOrder: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+    saleStartTime: {
+      type: Date,
+      required: true,
+    },
+    saleEndTime: {
+      type: Date,
+      required: true,
+      validate: {
+        validator: async function (v) {
+          // Fetch the event to get its start time
+          const event = await mongoose.model("Event").findById(this.eventId);
+          if (!event) return false; 
+          return v > this.saleStartTime && v < event.startTime;
+        },
+        message:
+          "Sale end time must be after sale start time and before event start time!",
+      },
+    },
+
+    description: {
+      type: String,
+      trim: true,
+      maxLength: 1000,
+    },
+    image: {
+      type: String, // Path of the uploaded image
+    },
   },
   { timestamps: true }
 );

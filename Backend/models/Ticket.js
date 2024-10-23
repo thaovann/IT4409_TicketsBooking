@@ -3,12 +3,6 @@ const Schema = mongoose.Schema;
 
 const TicketSchema = new Schema(
   {
-    eventId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Event",
-      required: true,
-      index: true,
-    },
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "TicketCategory",
@@ -16,7 +10,16 @@ const TicketSchema = new Schema(
     },
     seat: { type: String, trim: true },
     serialNumber: { type: String, unique: true, required: true, trim: true },
-    purchaseDate: { type: Date },
+    purchaseDate: {
+      type: Date,
+      validate: {
+        validator: function (v) {
+          return v <= new Date();
+        },
+        message: "Purchase date cannot be in the future!",
+      },
+    },
+
     state: {
       type: String,
       enum: ["available", "sold", "reserved"],

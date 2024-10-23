@@ -1,56 +1,98 @@
+const express = require("express");
+const path = require("path");
+const multer = require("multer");
 const Event = require("../models/Event");
-const EventType = require("../models/eventType");
-const mongoose = require("mongoose"); 
+const mongoose = require("mongoose");
 
-// Event ----------------------------------------------------------------
-exports.createEvent = async (req, res) => {
-  try {
-    const {
-      customerId,
-      typeId,
-      name,
-      description,
-      location,
-      startTime,
-      endTime,
-      image,
-      numberOfTickets,
-      video,
-    } = req.body;
-    if (
-      !customerId ||
-      !typeId ||
-      !name ||
-      !location ||
-      !startTime ||
-      !endTime ||
-      !image ||
-      numberOfTickets === undefined 
-    ) {
-      return res.status(400).send("Missing required fields");
+const app = express();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); 
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); 
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+  fileFilter: (req, file, cb) => {
+    const fileTypes = /jpeg|jpg|png/;
+    const extName = fileTypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
+    const mimeType = fileTypes.test(file.mimetype);
+
+    if (extName && mimeType) {
+      return cb(null, true);
+    } else {
+      cb(new Error("Only images are allowed"));
     }
+  },
+});
 
-    const newEvent = new Event({
-      customerId,
-      typeId,
-      name,
-      description,
-      location,
-      startTime: new Date(startTime),
-      endTime: new Date(endTime),
-      image,
-      numberOfTickets,
-      video,
-      state: "under review",
-      averageRating: 0
-    });
-    await newEvent.save();
-    res.status(201).send("Event created successfully");
-  } catch (error) {
-    console.error("Error creating event:", error);
-    res.status(500).send("Error creating event");
-  }
-};
+exports.createEvent = [
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      const {
+        customerId,
+        typeId,
+        name,
+        description,
+        location,
+        startTime,
+        endTime,
+        numberOfTickets,
+        video,
+      } = req.body;
+
+    
+      if (
+        !customerId ||
+        !typeId ||
+        !name ||
+        !location ||
+        !startTime ||
+        !endTime ||
+        numberOfTickets === undefined
+      ) {
+        return res.status(400).send("Missing required fields");
+      }
+
+      const image = req.file ? req.file.path : null;
+
+      const newEvent = new Event({
+        customerId,
+        typeId,
+        name,
+        description,
+        location,
+        startTime: new Date(startTime),
+        endTime: new Date(endTime),
+        image, 
+        numberOfTickets,
+        video,
+        state: "under review",
+        averageRating: 0,
+      });
+
+    
+      await newEvent.save();
+      res.status(201).json({
+        message: "Event created successfully",
+        event: newEvent,
+      });
+    } catch (error) {
+      console.error("Error creating event:", error);
+      res.status(500).send("Error creating event");
+    }
+  },
+];
 
 
 exports.getAllEvents = async (req, res) => {
@@ -63,10 +105,9 @@ exports.getAllEvents = async (req, res) => {
   }
 };
 
-
 exports.getEventByEventId = async (req, res) => {
   try {
-    const { eventId } = req.params; 
+    const { eventId } = req.params;
     const event = await Event.findOne({ eventId: eventId });
 
     if (!event) {
@@ -82,8 +123,8 @@ exports.getEventByEventId = async (req, res) => {
 
 exports.getEventsByTypeId = async (req, res) => {
   try {
-    const { typeId } = req.params; 
-    const events = await Event.find({ typeId: typeId }); 
+    const { typeId } = req.params;
+    const events = await Event.find({ typeId: typeId });
 
     if (events.length === 0) {
       return res.status(404).send("No events found for the given type ID");
@@ -98,9 +139,9 @@ exports.getEventsByTypeId = async (req, res) => {
 
 exports.getEventsByCustomerId = async (req, res) => {
   try {
-    const { customerId } = req.params; 
+    const { customerId } = req.params;
 
-    const events = await Event.find({ customerId: customerId }); 
+    const events = await Event.find({ customerId: customerId });
     if (events.length === 0) {
       return res.status(404).send("No events found for the given customer ID");
     }
@@ -111,8 +152,6 @@ exports.getEventsByCustomerId = async (req, res) => {
     res.status(500).send("Error retrieving events");
   }
 };
-
-
 
 exports.deleteEvent = async (req, res) => {
   try {
@@ -149,24 +188,23 @@ exports.getEventsByType = async (req, res) => {
   }
 };
 
-
 exports.updateEvent = async (req, res) => {
   try {
-    const { eventId } = req.params; 
-    const updatedData = req.body; 
+    const { eventId } = req.params;
+    const updatedData = req.body;
     const eventObjectId = new mongoose.Types.ObjectId(eventId);
-  
+
     const updatedEvent = await Event.findOneAndUpdate(
-      { eventId: eventObjectId }, 
+      { eventId: eventObjectId },
       updatedData,
-      { new: true } 
+      { new: true }
     );
 
     if (!updatedEvent) {
       return res.status(404).send("Event not found");
     }
 
-    res.status(200).json(updatedEvent); 
+    res.status(200).json(updatedEvent);
   } catch (error) {
     console.error("Error updating event:", error);
     res.status(500).send("Error updating event");
@@ -179,7 +217,6 @@ exports.createEventType = async (req, res) => {
   try {
     const { name } = req.body;
 
-   
     if (!name) {
       return res.status(400).send("Event Type name is required");
     }
@@ -222,10 +259,9 @@ exports.getEventTypeById = async (req, res) => {
 
 exports.updateEventType = async (req, res) => {
   try {
-    const { eventTypeId } = req.params; 
+    const { eventTypeId } = req.params;
     const updatedData = req.body;
 
-    
     if (!Object.keys(updatedData).length) {
       return res.status(400).send("No data provided for update");
     }
@@ -253,7 +289,9 @@ exports.deleteEventType = async (req, res) => {
     const { eventTypeId } = req.params; // Use 'eventTypeId' as the route parameter
 
     // Use findOneAndDelete to delete by a custom field
-    const deletedEventType = await EventType.findOneAndDelete({ eventTypeId: eventTypeId });
+    const deletedEventType = await EventType.findOneAndDelete({
+      eventTypeId: eventTypeId,
+    });
 
     if (!deletedEventType) {
       return res.status(404).send("Event Type not found");
@@ -265,4 +303,3 @@ exports.deleteEventType = async (req, res) => {
     res.status(500).send("Error deleting event type");
   }
 };
-

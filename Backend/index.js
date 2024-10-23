@@ -3,12 +3,11 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 require("dotenv").config(); 
 const eventRoutes = require("./routes/eventRoutes"); 
-
+const ticketRouter = require("./routes/ticketRouter");
 const app = express();
 
 
 app.use(bodyParser.json());
-
 app.use("/api/events", eventRoutes);
 
 async function connectDB() {
