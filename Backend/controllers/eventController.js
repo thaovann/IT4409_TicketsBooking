@@ -21,7 +21,7 @@ conn.once("open", () => {
   gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
     bucketName: "uploads",
   });
-  gfs = gridfsBucket; // Reference for backward compatibility
+  gfs = gridfsBucket; 
 });
 
 const storage = new GridFsStorage({
@@ -139,6 +139,15 @@ exports.createEvent = async (req, res) => {
       return res.status(400).json({ message: "Video size must be under 50MB" });
     }
 
+
+    
+    if (endTime <= startTime) {
+      console.log("Validation Error: End time must be after start time");
+      return res
+        .status(400)
+        .json({ message: "End time must be after the start time." });
+    }
+    
     const newEvent = new Event({
       customerId,
       eventTypeId,
@@ -264,13 +273,30 @@ exports.getEventsByType = async (req, res) => {
 exports.updateEvent = async (req, res) => {
   try {
     const { eventId } = req.params;
-    const updatedData = req.body;
-    const eventObjectId = new mongoose.Types.ObjectId(eventId);
+    const updatedData = { ...req.body };
 
+    // Convert incoming string dates to Date objects
+    if (updatedData.startTime) {
+      updatedData.startTime = new Date(updatedData.startTime);
+    }
+    if (updatedData.endTime) {
+      updatedData.endTime = new Date(updatedData.endTime);
+    }
+
+    if (updatedData.startTime && updatedData.endTime) {
+      if (updatedData.endTime <= updatedData.startTime) {
+        console.log("Validation Error: End time must be after start time");
+        return res
+          .status(400)
+          .json({ message: "End time must be after the start time." });
+      }
+    }
+
+    // Update the event in the database
     const updatedEvent = await Event.findOneAndUpdate(
-      { eventId: eventObjectId },
+      { eventId: eventId },
       updatedData,
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     if (!updatedEvent) {
@@ -283,6 +309,8 @@ exports.updateEvent = async (req, res) => {
     res.status(500).send("Error updating event");
   }
 };
+
+
 
 // EventType ----------------------------------------------------------------
 

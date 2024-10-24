@@ -25,12 +25,12 @@ const EventSchema = new Schema(
     endTime: {
       type: Date,
       required: true,
-      validate: {
-        validator: function (value) {
-          return value > this.startTime;
-        },
-        message: "End time must be after the start time.",
-      },
+      // validate: {
+      //   validator: function (value) {
+      //     return value > this.startTime;
+      //   },
+      //   message: "End time must be after the start time in model.",
+      // },
     },
     location: {
       type: String,

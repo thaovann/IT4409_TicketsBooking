@@ -15,7 +15,11 @@ router.get("/getEventByEventId/:eventId", eventController.getEventByEventId);
 router.get("/getEventByTypeId/:typeId", eventController.getEventsByTypeId);
 router.get("/getEventByCustomerId/:customerId", eventController.getEventsByCustomerId);
 router.delete("/delete/:eventId", eventController.deleteEvent);
-router.put("/update/:eventId", eventController.updateEvent);
+router.put(
+  "/update/:eventId",
+  eventController.uploadImagesAndVideo, 
+  eventController.updateEvent 
+);
 
 // EventTypes ----------------------------------------------------------------
 router.post("/createEventType", eventController.createEventType);
