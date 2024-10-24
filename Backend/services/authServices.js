@@ -16,11 +16,11 @@ const {
     OTPVerificationException
 } = require('../utils/exceptions/auth');
 
-// const {
-//     NotFoundException,
-//     UpdateFailedException,
-//     UnexpectedException
-// } = require('../utils/exceptions/database.exception');
+const {
+    NotFoundException,
+    UpdateFailedException,
+    UnexpectedException
+} = require('../utils/exceptions/database');
 
 exports.registerUser = async (body) => {
     const pass = body.Password;
@@ -57,7 +57,7 @@ exports.userLogin = async (Email, Password, is_register = false) => {
 
     let message = "";
     let responseBody = "";
-    if (is_register){ // if registered first
+    if (is_register) { // if registered first
         const { UserId } = user;
         message = "Registered"; // set msg to registered
         responseBody = { UserId, token };
@@ -81,15 +81,15 @@ exports.refreshToken = async (body) => {
     if (!isMatch) {
         throw new InvalidCredentialsException('Incorrect Password');
     }
-    
+
     // user matched!
     const secretKey = Config.JWT_SECRET;
     const { UserId } = jwt.decode(oldToken);
-    
-    if (user.UserId.toString() !== UserId){
+
+    if (user.UserId.toString() !== UserId) {
         throw new TokenVerificationException();
     }
-    
+
     const token = jwt.sign({ UserId: user.UserId.toString() }, secretKey, {
         expiresIn: '24h'
     });
@@ -99,11 +99,11 @@ exports.refreshToken = async (body) => {
 
 exports.forgotPassword = async (body) => {
     let user = await UserModel.findOne(body); // body contains "Email" : ...
-    
+
     if (!user) {
         throw new InvalidCredentialsException('Email not registered');
     }
-    
+
     await removeExpiredOTP(user.UserId);
 
     const OTP = await generateOTP(user.UserId, body.Email);
@@ -114,19 +114,14 @@ exports.forgotPassword = async (body) => {
 }
 
 generateOTP = async (UserId, Email) => {
-    const OTP = `${otpGenerator.generate(4, { 
-        digits: true, 
-        alphabets: false, 
-        upperCase: false, 
-        specialChars: false 
-    })}`;
+    const OTP = `${Math.floor(1000 + Math.random() * 9000)}`;
 
     const OTPHash = await bcrypt.hash(OTP, 8);
 
     let ExpirationDatetime = new Date();
     ExpirationDatetime.setHours(ExpirationDatetime.getHours() + 1);
 
-    const body = {UserId, Email, OTP: OTPHash, ExpirationDatetime};
+    const body = { UserId, Email, OTP: OTPHash, ExpirationDatetime };
 
     const result = await OTPModel.create(body);
 
@@ -136,10 +131,10 @@ generateOTP = async (UserId, Email) => {
 }
 
 removeExpiredOTP = async (UserId) => {
-    const result = await OTPModel.findOne({UserId});
+    const result = await OTPModel.findOne({ UserId });
 
     if (result) { // if found, delete
-        const affectedRows = await OTPModel.deleteOne({UserId});
+        const affectedRows = await OTPModel.deleteOne({ UserId });
 
         if (!affectedRows) {
             throw new OTPGenerationException('Expired OTP could not be deleted');
@@ -148,14 +143,14 @@ removeExpiredOTP = async (UserId) => {
 }
 
 exports.verifyOTP = async (body) => {
-    const {OTP, Email} = body;
-    let result = await OTPModel.findOne({Email});
+    const { OTP, Email } = body;
+    let result = await OTPModel.findOne({ Email });
 
     if (!result) {
         throw new OTPVerificationException();
     }
 
-    const {ExpirationDatetime, OTP: OTPHash} = result;
+    const { ExpirationDatetime, OTP: OTPHash } = result;
 
     if (ExpirationDatetime < new Date()) {
         throw new OTPExpiredException();
@@ -167,7 +162,7 @@ exports.verifyOTP = async (body) => {
         throw new OTPVerificationException();
     }
 
-    result = await OTPModel.delete({Email});
+    result = await OTPModel.deleteOne({ Email });
 
     if (!result) {
         throw new OTPVerificationException('Old OTP failed to be deleted');
@@ -176,40 +171,40 @@ exports.verifyOTP = async (body) => {
     return structureResponse({}, 1, 'OTP verified succesfully');
 }
 
-// changePassword = async (body) => {
-//     const { Email, Password, new_Password } = body;
-//     const user = await UserModel.findOne({ Email: Email });
+exports.changePassword = async (body) => {
+    const { Email, Password, NewPassword } = body;
+    const user = await UserModel.findOne({ Email: Email });
 
-//     if (!user) {
-//         throw new NotFoundException('User not found');
-//     }
+    if (!user) {
+        throw new NotFoundException('User not found');
+    }
 
-//     const isMatch = await bcrypt.compare(Password, user.Password);
+    const isMatch = await bcrypt.compare(Password, user.Password);
 
-//     if (!isMatch) {
-//         throw new InvalidCredentialsException('Incorrect old Password');
-//     }
+    if (!isMatch) {
+        throw new InvalidCredentialsException('Incorrect old password');
+    }
 
-//     let responseBody = { Email: Email, Password: new_Password };
+    let responseBody = { Email: Email, Password: NewPassword };
 
-//     return this.resetPassword(responseBody);
-// };
+    return this.resetPassword(responseBody);
+};
 
-// resetPassword = async (body) => {
-//     await hashPassword(body);
+exports.resetPassword = async (body) => {
+    await hashPassword(body);
 
-//     const { Password, Email } = body;
+    const { Password, Email } = body;
 
-//     const result = await UserModel.update({Password}, {Email});
+    const result = await UserModel.updateOne({ Email }, { $set: { Password } });
 
-//     if (!result) {
-//         throw new UnexpectedException('Something went wrong');
-//     }
+    if (!result) {
+        throw new UnexpectedException('Something went wrong');
+    }
 
-//     const { affectedRows, changedRows, info } = result;
+    const { matchedCount, modifiedCount } = result;
 
-//     if (!affectedRows) throw new NotFoundException('User not found');
-//     else if (affectedRows && !changedRows) throw new UpdateFailedException('Password change failed');
-    
-//     return structureResponse(info, 1, 'Password changed successfully');
-// }
+    if (!matchedCount) throw new NotFoundException('User not found');
+    else if (matchedCount && !modifiedCount) throw new UpdateFailedException('Password change failed');
+
+    return structureResponse({}, 1, 'Password changed successfully');
+}

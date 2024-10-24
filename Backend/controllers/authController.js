@@ -1,11 +1,14 @@
 const { checkValidation } = require('../middleware/validation');
 
-const { 
+const {
     registerUser,
     userLogin,
     refreshToken,
     forgotPassword,
-    verifyOTP
+    verifyOTP,
+    resetPassword,
+    changePassword
+
 } = require('../services/authServices');
 
 exports.registerUser = async (req, res, next) => {
@@ -38,14 +41,14 @@ exports.verifyOTP = async (req, res, next) => {
     res.send(response);
 }
 
-// changePassword = async (req, res, next) => {
-//     checkValidation(req);
-//     const response = await changePassword(req.body);
-//     res.send(response);
-// };
+exports.changePassword = async (req, res, next) => {
+    checkValidation(req);
+    const response = await changePassword(req.body);
+    res.send(response);
+};
 
-// resetPassword = async (req, res, next) => {
-//     checkValidation(req);
-//     const response = await resetPassword(req.body);
-//     res.send(response);
-// }
+exports.resetPassword = async (req, res, next) => {
+    checkValidation(req);
+    const response = await resetPassword(req.body);
+    res.send(response);
+}

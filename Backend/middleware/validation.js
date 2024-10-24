@@ -5,6 +5,6 @@ exports.checkValidation = (req) => {
     const data = validationResult(req);
     console.log(data);
     if (!data.isEmpty()) {
-        throw new InvalidPropertiesException('Missing or invalid properties', {data: data.errors});
+        throw new InvalidPropertiesException(`Missing or invalid properties:\n${data.errors[0].msg}`, { data: data.errors });
     }
 }

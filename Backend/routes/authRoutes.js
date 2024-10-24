@@ -7,16 +7,16 @@ const {
     refreshToken,
     forgotPassword,
     verifyOTP,
-    // resetPassword,
-    // changePassword
+    resetPassword,
+    changePassword
 } = require("../controllers/authController");
 
 const { createUserSchema } = require("../middleware/validators/userValidator");
 const {
     validateLogin,
     forgotPWSchema,
-//     resetPWSchema,
-//     changePWSchema,
+    resetPWSchema,
+    changePWSchema,
     verifyOTPSchema,
     validateRefresh
 } = require("../middleware/validators/authValidator");
@@ -29,7 +29,7 @@ router.post("/token", validateRefresh, awaitHandlerFactory(refreshToken));
 
 router.post("/password/forgot", forgotPWSchema, awaitHandlerFactory(forgotPassword));
 router.post("/password/otp", verifyOTPSchema, awaitHandlerFactory(verifyOTP));
-// router.post("/password/reset", resetPWSchema, awaitHandlerFactory(resetPassword));
-// router.post("/password/change", changePWSchema, awaitHandlerFactory(changePassword));
+router.post("/password/reset", resetPWSchema, awaitHandlerFactory(resetPassword));
+router.post("/password/change", changePWSchema, awaitHandlerFactory(changePassword));
 
 module.exports = router;

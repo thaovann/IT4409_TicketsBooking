@@ -12,8 +12,7 @@ const UserSchema = new Schema({
     Password: String,
     Role: Number,
     Gender: Number,
-    DoB: Date, 
-    Events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }],
+    DoB: Date,
     Vouchers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Voucher' }]
 });
 

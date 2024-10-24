@@ -11,7 +11,7 @@ exports.forgotPWSchema = [
         .isEmail()
         .withMessage('Must be a valid email')
         .custom(async (Email) => {
-            const {valid} = await EmailValidator.validate(Email);
+            const { valid } = await EmailValidator.validate(Email);
             return valid;
         })
         .withMessage('Email unrecognized')
@@ -26,7 +26,7 @@ exports.changePWSchema = [
         .isEmail()
         .withMessage('Must be a valid email')
         .custom(async (Email) => {
-            const {valid} = await EmailValidator.validate(Email);
+            const { valid } = await EmailValidator.validate(Email);
             return valid;
         })
         .withMessage('Email unrecognized')
@@ -37,14 +37,14 @@ exports.changePWSchema = [
         .withMessage('Password field is required')
         .notEmpty()
         .withMessage('Password must be filled'),
-    body('new_Password')
+    body('NewPassword')
         .trim()
         .exists()
-        .withMessage('New Password field is required')
+        .withMessage('New password field is required')
         .notEmpty()
-        .withMessage('New Password must be filled')
+        .withMessage('New password must be filled')
         .custom((value, { req }) => value !== req.body.Password)
-        .withMessage('New Password can\'t be the same as the old Password')
+        .withMessage(`New password cant be the same as the old password`)
 ];
 
 exports.resetPWSchema = [
@@ -55,7 +55,7 @@ exports.resetPWSchema = [
         .isEmail()
         .withMessage('Must be a valid email')
         .custom(async (Email) => {
-            const {valid} = await EmailValidator.validate(Email);
+            const { valid } = await EmailValidator.validate(Email);
             return valid;
         })
         .withMessage('Email unrecognized')
@@ -76,7 +76,7 @@ exports.verifyOTPSchema = [
         .isEmail()
         .withMessage('Must be a valid email')
         .custom(async (Email) => {
-            const {valid} = await EmailValidator.validate(Email);
+            const { valid } = await EmailValidator.validate(Email);
             return valid;
         })
         .withMessage('Email unrecognized')
@@ -99,7 +99,7 @@ exports.validateLogin = [
         .isEmail()
         .withMessage('Must be a valid email')
         .custom(async (Email) => {
-            const {valid} = await EmailValidator.validate(Email);
+            const { valid } = await EmailValidator.validate(Email);
             return valid;
         })
         .withMessage('Email unrecognized')
@@ -120,7 +120,7 @@ exports.validateRefresh = [
         .isEmail()
         .withMessage('Must be a valid email')
         .custom(async (Email) => {
-            const {valid} = await EmailValidator.validate(Email);
+            const { valid } = await EmailValidator.validate(Email);
             return valid;
         })
         .withMessage('Email unrecognized')
