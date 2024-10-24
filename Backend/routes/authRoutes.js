@@ -6,7 +6,7 @@ const {
     userLogin,
     refreshToken,
     forgotPassword,
-    // verifyOTP,
+    verifyOTP,
     // resetPassword,
     // changePassword
 } = require("../controllers/authController");
@@ -17,7 +17,7 @@ const {
     forgotPWSchema,
 //     resetPWSchema,
 //     changePWSchema,
-//     verifyOTPSchema,
+    verifyOTPSchema,
     validateRefresh
 } = require("../middleware/validators/authValidator");
 
@@ -28,7 +28,7 @@ router.post("/login", validateLogin, awaitHandlerFactory(userLogin));
 router.post("/token", validateRefresh, awaitHandlerFactory(refreshToken));
 
 router.post("/password/forgot", forgotPWSchema, awaitHandlerFactory(forgotPassword));
-// router.post("/password/otp", verifyOTPSchema, awaitHandlerFactory(verifyOTP));
+router.post("/password/otp", verifyOTPSchema, awaitHandlerFactory(verifyOTP));
 // router.post("/password/reset", resetPWSchema, awaitHandlerFactory(resetPassword));
 // router.post("/password/change", changePWSchema, awaitHandlerFactory(changePassword));
 

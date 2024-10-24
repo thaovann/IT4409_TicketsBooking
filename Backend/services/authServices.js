@@ -11,9 +11,9 @@ const {
     RegistrationFailedException,
     InvalidCredentialsException,
     TokenVerificationException,
-    // OTPExpiredException,
+    OTPExpiredException,
     OTPGenerationException,
-    // OTPVerificationException
+    OTPVerificationException
 } = require('../utils/exceptions/auth');
 
 // const {
@@ -114,7 +114,12 @@ exports.forgotPassword = async (body) => {
 }
 
 generateOTP = async (UserId, Email) => {
-    const OTP = `${otpGenerator.generate(4, { alphabets: false, upperCase: false, specialChars: false })}`;
+    const OTP = `${otpGenerator.generate(4, { 
+        digits: true, 
+        alphabets: false, 
+        upperCase: false, 
+        specialChars: false 
+    })}`;
 
     const OTPHash = await bcrypt.hash(OTP, 8);
 
@@ -122,6 +127,7 @@ generateOTP = async (UserId, Email) => {
     ExpirationDatetime.setHours(ExpirationDatetime.getHours() + 1);
 
     const body = {UserId, Email, OTP: OTPHash, ExpirationDatetime};
+
     const result = await OTPModel.create(body);
 
     if (!result) throw new OTPGenerationException();
@@ -141,34 +147,34 @@ removeExpiredOTP = async (UserId) => {
     }
 }
 
-// verifyOTP = async (body) => {
-//     const {OTP, Email} = body;
-//     let result = await OTPModel.findOne({Email});
+exports.verifyOTP = async (body) => {
+    const {OTP, Email} = body;
+    let result = await OTPModel.findOne({Email});
 
-//     if (!result) {
-//         throw new OTPVerificationException();
-//     }
+    if (!result) {
+        throw new OTPVerificationException();
+    }
 
-//     const {ExpirationDatetime, OTP: OTPHash} = result;
+    const {ExpirationDatetime, OTP: OTPHash} = result;
 
-//     if (ExpirationDatetime < new Date()) {
-//         throw new OTPExpiredException();
-//     }
+    if (ExpirationDatetime < new Date()) {
+        throw new OTPExpiredException();
+    }
 
-//     const isMatch = await bcrypt.compare(OTP, OTPHash);
+    const isMatch = await bcrypt.compare(OTP, OTPHash);
 
-//     if (!isMatch) {
-//         throw new OTPVerificationException();
-//     }
+    if (!isMatch) {
+        throw new OTPVerificationException();
+    }
 
-//     result = await OTPModel.delete({Email});
+    result = await OTPModel.delete({Email});
 
-//     if (!result) {
-//         throw new OTPVerificationException('Old OTP failed to be deleted');
-//     }
+    if (!result) {
+        throw new OTPVerificationException('Old OTP failed to be deleted');
+    }
 
-//     return structureResponse({}, 1, 'OTP verified succesfully');
-// }
+    return structureResponse({}, 1, 'OTP verified succesfully');
+}
 
 // changePassword = async (body) => {
 //     const { Email, Password, new_Password } = body;

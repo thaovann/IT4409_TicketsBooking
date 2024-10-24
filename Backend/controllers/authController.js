@@ -4,7 +4,8 @@ const {
     registerUser,
     userLogin,
     refreshToken,
-    forgotPassword
+    forgotPassword,
+    verifyOTP
 } = require('../services/authServices');
 
 exports.registerUser = async (req, res, next) => {
@@ -31,11 +32,11 @@ exports.forgotPassword = async (req, res, next) => {
     res.send(response);
 }
 
-// verifyOTP = async (req, res, next) => {
-//     checkValidation(req);
-//     const response = await verifyOTP(req.body);
-//     res.send(response);
-// }
+exports.verifyOTP = async (req, res, next) => {
+    checkValidation(req);
+    const response = await verifyOTP(req.body);
+    res.send(response);
+}
 
 // changePassword = async (req, res, next) => {
 //     checkValidation(req);
