@@ -3,7 +3,13 @@ const mongoose = require("mongoose");
 const eventController = require("../controllers/eventController");
 const router = express.Router();
 
-router.post("/create", eventController.createEvent);
+
+router.post(
+  "/create",
+  eventController.uploadImagesAndVideo,
+  eventController.createEvent
+);
+
 router.get("/allEvents", eventController.getAllEvents);
 router.get("/getEventByEventId/:eventId", eventController.getEventByEventId);
 router.get("/getEventByTypeId/:typeId", eventController.getEventsByTypeId);

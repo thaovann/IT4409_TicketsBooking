@@ -15,7 +15,7 @@ const EventSchema = new Schema(
       required: true,
       index: true,
     },
-    typeId: {
+    eventTypeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "EventType",
       required: true,
@@ -30,24 +30,39 @@ const EventSchema = new Schema(
           return value > this.startTime;
         },
         message: "End time must be after the start time.",
-        validator: function (value) {
-          return value > new Date();
-        },
-        message: "End time must be in the future.",
       },
     },
-    location: { type: String, required: true, trim: true },
+    location: {
+      type: String,
+      trim: true,
+      required: function () {
+        // Location is required only if eventType is "offline"
+        return this.eventType === "offline";
+      },
+    },
     description: { type: String, trim: true },
-    image: { type: String, trim: true },
-    numberOfTickets: { type: Number, min: 0, required: true },
+    imageBackground: { type: String, trim: true },
+    imageLogo: { type: String, trim: true },
     video: { type: String, trim: true },
     state: {
       type: String,
-      enum: ["under review", "approved","not approved", "canceled", "held", "postponed"],
+      enum: [
+        "under review",
+        "approved",
+        "not approved",
+        "canceled",
+        "held",
+        "postponed",
+      ],
       default: "under review",
     },
     tags: [{ type: String, trim: true }],
     averageRating: { type: Number, min: 0 },
+    eventTypeLocation: {
+      type: String,
+      enum: ["online", "offline"],
+      required: true,
+    },
   },
   { timestamps: true }
 );

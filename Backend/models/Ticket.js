@@ -9,7 +9,7 @@ const TicketSchema = new Schema(
       required: true,
     },
     seat: { type: String, trim: true },
-    serialNumber: { type: String, unique: true, required: true, trim: true },
+    serialNumber: { type: String, unique: true, trim: true },
     purchaseDate: {
       type: Date,
       validate: {
