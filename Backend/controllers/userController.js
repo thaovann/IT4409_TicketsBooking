@@ -3,7 +3,7 @@ const { checkValidation } = require('../middleware/validation');
 const {
     findAll,
     findOne,
-    // updateOne,
+    updateOne,
     // deleteOne
 } = require('../services/userServices');
 
@@ -17,11 +17,11 @@ exports.getUserById = async (req, res, next) => {
     res.send(response);
 };
 
-// exports.updateUser = async (req, res, next) => {
-//     checkValidation(req);
-//     const response = await updateOne(req.body, { UserId: req.params.id });
-//     res.send(response);
-// };
+exports.updateUser = async (req, res, next) => {
+    checkValidation(req);
+    const response = await updateOne(req.body, { UserId: req.params.id });
+    res.send(response);
+};
 
 // exports.deleteUser = async (req, res, next) => {
 //     const response = await deleteOne(req.params.id);

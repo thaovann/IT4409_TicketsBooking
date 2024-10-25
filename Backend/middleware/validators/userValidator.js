@@ -27,7 +27,7 @@ exports.createUserSchema = [
         .custom(async (Email) => {
             // Use an email validator to check the validity of the email
             const result = await EmailValidator.validate(Email);
-            
+
             const { regex, typo, disposable } = result.validators;
             if (regex.valid && typo.valid && disposable.valid) {
                 return true; // Email is considered valid without SMTP
@@ -84,39 +84,55 @@ exports.createUserSchema = [
         .withMessage('User must be at least 12 years old')
 ];
 
-// exports.updateUserSchema = [
-//     body('FullName')
-//         .optional()
-//         .trim()
-//         .isLength({ min: 1 })
-//         .withMessage('Must be at least 1 char long'),
-//     body('IdCard')
-//         .optional()
-//         .trim(),
-//     body('Email')
-//         .optional()
-//         .trim()
-//         .isEmail()
-//         .withMessage('Must be a valid email')
-//         .custom(async (Email) => {
-//             const { valid } = await EmailValidator.validate(Email);
-//             return valid;
-//         })
-//         .withMessage('Email unrecognized')
-//         .normalizeEmail(),
-//     body('Phone')
-//         .optional()
-//         .trim()
-//         .isMobilePhone('en-PK', { strictMode: true })
-//         .withMessage('Must be a valid Pakistan mobile number along with country code'),
-//     body()
-//         .custom(value => Object.keys(value).length !== 0)
-//         .withMessage('Please provide required field to update')
-//         .custom(value => {
-//             const updates = Object.keys(value);
-//             const allowUpdates = ['FullName', 'Email', 'Phone', 'IdCard', 'Role'];
-//             // ensures that every field in the request body is part of the allowed fields.
-//             return updates.every(update => allowUpdates.includes(update));
-//         })
-//         .withMessage('Invalid updates!')
-// ];
+exports.updateUserSchema = [
+    body('FullName')
+        .optional()
+        .trim()
+        .exists()
+        .withMessage('Your full name is required'),
+    body('IdCard')
+        .optional()
+        .trim()
+        .exists()
+        .withMessage('ID Card is required')
+        .isLength({ min: 12, max: 12 })
+        .withMessage('ID Card must be exactly 12 digits')
+        .matches(/^\d{12}$/)
+        .withMessage('ID Card must contain only digits'),
+    body('Phone')
+        .optional()
+        .trim()
+        .exists()
+        .withMessage('Contact is required')
+        .isMobilePhone()
+        .withMessage('Must be a valid mobile number with country code'),
+    body('Gender')
+        .optional()
+        .trim()
+        .exists()
+        .withMessage('Gender is required')
+        .isIn([...Object.values(UserGender)])
+        .withMessage('Invalid UserGender type'),
+    body('DoB')
+        .optional()
+        .trim()
+        .isDate()
+        .withMessage('Must be a valid date')
+        .custom((DoB) => {
+            const currentDate = moment();
+            const userDoB = moment(DoB, 'YYYY-MM-DD');
+            const age = currentDate.diff(userDoB, 'years');
+            return age >= 12;
+        })
+        .withMessage('User must be at least 12 years old'),
+    body()
+        .custom(value => Object.keys(value).length !== 0)
+        .withMessage('Please provide required field to update')
+        .custom(value => {
+            const updates = Object.keys(value);
+            const allowUpdates = ['FullName', 'Gender', 'Phone', 'IdCard', 'DoB'];
+            // ensures that every field in the request body is part of the allowed fields.
+            return updates.every(update => allowUpdates.includes(update));
+        })
+        .withMessage('Invalid updates!')
+];
