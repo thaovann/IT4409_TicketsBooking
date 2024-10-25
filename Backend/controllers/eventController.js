@@ -43,6 +43,7 @@ const upload = multer({ storage });
 
 exports.uploadImagesAndVideo = upload.fields([
   { name: "logo", maxCount: 1 },
+  { name: "organizerLogo", maxCount: 1 },
   { name: "background", maxCount: 1 },
   { name: "video", maxCount: 1 },
 ]);
@@ -67,7 +68,7 @@ const getFileBuffer = (gridfsBucket, fileId) => {
 exports.createEvent = async (req, res) => {
   try {
     const {
-      customerId,
+      userId,
       eventTypeId,
       name,
       description,
@@ -76,15 +77,20 @@ exports.createEvent = async (req, res) => {
       endTime,
       eventTypeLocation,
       tags,
+      organizerInfor, // Added this
+      organizerName, // Added this
     } = req.body;
 
+    // Validate required fields
     if (
-      !customerId ||
+      !userId ||
       !eventTypeId ||
       !name ||
       !startTime ||
       !endTime ||
       !eventTypeLocation ||
+      !organizerInfor || // Validate this field
+      !organizerName || // Validate this field
       !req.files.logo ||
       !req.files.background
     ) {
@@ -93,39 +99,57 @@ exports.createEvent = async (req, res) => {
         .json({ message: "Missing required fields in event" });
     }
 
-    const eventType = await EventType.findOne({ eventTypeId: eventTypeId });
-
+    // Validate event type
+    const eventType = await EventType.findById(eventTypeId);
     if (!eventType) {
       return res.status(404).send("Event Type not found");
     }
 
+    // Validate location for offline events
     if (eventTypeLocation === "offline" && !location) {
       return res
         .status(400)
         .json({ message: "Location is required for offline events" });
     }
 
-    const logoFile = req.files.logo ? req.files.logo[0] : null;
-    const backgroundFile = req.files.background
-      ? req.files.background[0]
-      : null;
+    // Handle file uploads
+    const logoFile = req.files.logo[0];
+    const organizerLogoFile = req.files.organizerLogo[0]
+    const backgroundFile = req.files.background[0];
     const videoFile = req.files.video ? req.files.video[0] : null;
 
+    // Validate logo dimensions
     const logoBuffer = await getFileBuffer(gridfsBucket, logoFile.id);
     const logoMetadata = await sharp(logoBuffer).metadata();
-
     if (logoMetadata.width !== 720 || logoMetadata.height !== 958) {
       return res.status(400).json({
         message: "Logo image dimensions must be 720x958",
       });
     }
 
+    // Validate organizer logo dimensions
+    if (organizerLogoFile) {
+      const organizerLogoBuffer = await getFileBuffer(
+        gridfsBucket,
+        organizerLogoFile.id
+      );
+      const organizerLogoMetadata = await sharp(organizerLogoBuffer).metadata();
+      if (
+        organizerLogoMetadata.width !== 275 ||
+        organizerLogoMetadata.height !== 275
+      ) {
+        return res.status(400).json({
+          message: "Organizer logo dimensions must be 275x275",
+        });
+      }
+    }
+
+    // Validate background dimensions
     const backgroundBuffer = await getFileBuffer(
       gridfsBucket,
       backgroundFile.id
     );
     const backgroundMetadata = await sharp(backgroundBuffer).metadata();
-
     if (
       backgroundMetadata.width !== 1280 ||
       backgroundMetadata.height !== 720
@@ -135,21 +159,21 @@ exports.createEvent = async (req, res) => {
       });
     }
 
+    // Validate video size
     if (videoFile && videoFile.size > 50 * 1024 * 1024) {
       return res.status(400).json({ message: "Video size must be under 50MB" });
     }
 
-
-    
-    if (endTime <= startTime) {
-      console.log("Validation Error: End time must be after start time");
+    // Validate start and end times
+    if (new Date(endTime) <= new Date(startTime)) {
       return res
         .status(400)
         .json({ message: "End time must be after the start time." });
     }
-    
+
+    // Create a new event
     const newEvent = new Event({
-      customerId,
+      userId,
       eventTypeId,
       name,
       description,
@@ -162,7 +186,9 @@ exports.createEvent = async (req, res) => {
       state: "under review",
       averageRating: 0,
       eventTypeLocation,
-      tags,
+      tags: tags ? tags.split(",").map((tag) => tag.trim()) : [],
+      organizerInfor, // Store the organizer information
+      organizerName, // Store the organizer name
     });
 
     await newEvent.save();
@@ -177,6 +203,7 @@ exports.createEvent = async (req, res) => {
   }
 };
 
+
 exports.getAllEvents = async (req, res) => {
   try {
     const events = await Event.find();
@@ -187,21 +214,24 @@ exports.getAllEvents = async (req, res) => {
   }
 };
 
-exports.getEventByEventId = async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const event = await Event.findOne({ eventId: eventId });
+exports.getEventById = async (req, res) => {
+   try {
+     const {id } = req.params;
+     const events = await Event.findById(id);
 
-    if (!event) {
-      return res.status(404).send("Event not found");
-    }
+     if (events.length === 0) {
+       return res.status(404).send("No events found for the given type ID");
+     }
 
-    res.status(200).json(event);
-  } catch (error) {
-    console.error("Error retrieving event:", error);
-    res.status(500).send("Error retrieving event");
-  }
+     res.status(200).json(events);
+   } catch (error) {
+     console.error("Error retrieving events by type ID:", error);
+     res.status(500).send("Error retrieving events");
+   }
 };
+
+
+
 
 exports.getEventsByTypeId = async (req, res) => {
   try {
@@ -221,9 +251,9 @@ exports.getEventsByTypeId = async (req, res) => {
 
 exports.getEventsByCustomerId = async (req, res) => {
   try {
-    const { customerId } = req.params;
+    const { userId } = req.params;
 
-    const events = await Event.find({ customerId: customerId });
+    const events = await Event.find({ userId: userId });
     if (events.length === 0) {
       return res.status(404).send("No events found for the given customer ID");
     }
@@ -236,46 +266,25 @@ exports.getEventsByCustomerId = async (req, res) => {
 };
 
 exports.deleteEvent = async (req, res) => {
+  const { id } = req.params;
   try {
-    const { eventId } = req.params;
-
-    const deletedEvent = await Event.findOneAndDelete({
-      eventId: eventId,
-    });
-
-    if (!deletedEvent) {
-      return res.status(404).send("Event not found");
+    const result = await Event.findByIdAndDelete(id);
+    if (!result) {
+      return res.status(404).json({ message: "Event not found" });
     }
-
-    res.status(200).send("Event deleted successfully");
+    res.status(200).json({ message: "Event deleted successfully" });
   } catch (error) {
     console.error("Error deleting event:", error);
-    res.status(500).send("Error deleting event");
-  }
-};
-
-exports.getEventsByType = async (req, res) => {
-  try {
-    const eventType = req.query.type;
-    const events = await Event.find({ type: eventType });
-
-    if (!events || events.length === 0) {
-      return res.status(404).send("No events found for this type");
-    }
-
-    res.status(200).json(events);
-  } catch (error) {
-    console.error("Error fetching events by type:", error);
-    res.status(500).send("Error fetching events");
+    res.status(500).json({ message: "Error deleting event" });
   }
 };
 
 exports.updateEvent = async (req, res) => {
   try {
-    const { eventId } = req.params;
+    const { id } = req.params;
     const updatedData = { ...req.body };
 
-    // Convert incoming string dates to Date objects
+    // Convert date strings to Date objects if present
     if (updatedData.startTime) {
       updatedData.startTime = new Date(updatedData.startTime);
     }
@@ -283,6 +292,7 @@ exports.updateEvent = async (req, res) => {
       updatedData.endTime = new Date(updatedData.endTime);
     }
 
+    // Validate start and end times
     if (updatedData.startTime && updatedData.endTime) {
       if (updatedData.endTime <= updatedData.startTime) {
         console.log("Validation Error: End time must be after start time");
@@ -293,20 +303,22 @@ exports.updateEvent = async (req, res) => {
     }
 
     // Update the event in the database
-    const updatedEvent = await Event.findOneAndUpdate(
-      { eventId: eventId },
+    const updatedEvent = await Event.findByIdAndUpdate(
+      id,
       updatedData,
-      { new: true, runValidators: true }
+      { new: true, runValidators: true } // Return the updated document and run validators
     );
 
+    // Check if the event was found and updated
     if (!updatedEvent) {
-      return res.status(404).send("Event not found");
+      return res.status(404).json({ message: "Event not found" });
     }
 
+    // Respond with the updated event
     res.status(200).json(updatedEvent);
   } catch (error) {
     console.error("Error updating event:", error);
-    res.status(500).send("Error updating event");
+    res.status(500).json({ message: "Error updating event" });
   }
 };
 
@@ -352,8 +364,8 @@ exports.getAllEventTypes = async (req, res) => {
 
 exports.getEventTypeById = async (req, res) => {
   try {
-    const { eventTypeId } = req.params;
-    const eventType = await EventType.findOne({ eventTypeId: eventTypeId });
+    const {id } = req.params;
+    const eventType = await EventType.findById(id);
 
     if (!eventType) {
       return res.status(404).send("Event Type not found");
@@ -365,18 +377,24 @@ exports.getEventTypeById = async (req, res) => {
     res.status(500).send("Error retrieving event type");
   }
 };
-
 exports.updateEventType = async (req, res) => {
   try {
-    const { eventTypeId } = req.params;
+    const { id } = req.params;
     const updatedData = req.body;
-
     if (!Object.keys(updatedData).length) {
       return res.status(400).send("No data provided for update");
     }
-
-    const updatedEventType = await EventType.findOneAndUpdate(
-      { eventTypeId: eventTypeId },
+    if (updatedData.name) {
+      const existingEventType = await EventType.findOne({
+        name: updatedData.name,
+        _id: { $ne: id },
+      });
+      if (existingEventType) {
+        return res.status(400).json({ message: "Event type already exists" });
+      }
+    }
+    const updatedEventType = await EventType.findByIdAndUpdate(
+      id,
       updatedData,
       { new: true }
     );
@@ -392,15 +410,11 @@ exports.updateEventType = async (req, res) => {
   }
 };
 
-// Delete an EventType by eventTypeId
+
 exports.deleteEventType = async (req, res) => {
   try {
-    const { eventTypeId } = req.params; // Use 'eventTypeId' as the route parameter
-
-    // Use findOneAndDelete to delete by a custom field
-    const deletedEventType = await EventType.findOneAndDelete({
-      eventTypeId: eventTypeId,
-    });
+    const {id} = req.params; 
+    const deletedEventType = await EventType.findByIdAndDelete(id);
 
     if (!deletedEventType) {
       return res.status(404).send("Event Type not found");

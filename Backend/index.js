@@ -21,8 +21,9 @@ app.use("/auth", authRoutes);
 const eventRoutes = require("./routes/eventRoutes");
 app.use("/api/event", eventRoutes);
 
-const ticketRouter = require("./routes/ticketRoutes");
-app.use("/api/ticket", eventRoutes);
+
+const ticketRoutes = require("./routes/ticketRoutes");
+app.use("/api/ticket", ticketRoutes);
 
 
 
