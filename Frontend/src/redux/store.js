@@ -2,9 +2,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from './authSlice';
 
 // khởi tạo redux store với authReducer
-export const store = configureStore({
+export default configureStore({
     reducer: {
         auth: authReducer,
-    }
+    },
 })
 

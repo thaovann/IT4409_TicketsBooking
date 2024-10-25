@@ -1,49 +1,38 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../../redux/authSlice';
+import { useState } from "react";
+import "./LoginPage.css";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../../redux/apiRequest";
+import { useDispatch } from "react-redux";
 
 const LoginPage = () => {
+    const [Email, setEmail] = useState("");
+    const [Password, setPassword] = useState("");
     const dispatch = useDispatch();
-    const [Email, setEmail] = useState('');
-    const [Password, setPassword] = useState('');
-    const authStatus = useSelector((state) => state.auth.status);
-    const error = useSelector((state) => state.auth.error);
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleLogin = (e) => {
         e.preventDefault();
-
-        // Dispatch action login với email và password
-        dispatch(login({ Email, Password }));
-    };
+        const newUser = {
+            Email: Email,
+            Password: Password,
+        };
+        loginUser(newUser, dispatch, navigate);
+    }
 
     return (
-        <div>
-            <h2>Login</h2>
-            {authStatus === 'loading' && <p>Loading...</p>}
-            {authStatus === 'failed' && <p>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={Email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={Password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Login</button>
+        <section className="login-container">
+            <div className="login-title"> Log in</div>
+            <form onSubmit={handleLogin}>
+                <label>EMAIL</label>
+                <input type="email" placeholder="Enter your email" onChange={(e) => setEmail(e.target.value)} />
+                <label>PASSWORD</label>
+                <input type="password" placeholder="Enter your password" onChange={(e) => setPassword(e.target.value)} />
+                <button type="submit"> Continue </button>
             </form>
-        </div>
+            <div className="login-register"> Don't have an account yet? </div>
+            <Link className="login-register-link" to="/register">Register one for free </Link>
+        </section>
     );
-};
+}
 
 export default LoginPage;
