@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./LoginPage.css";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "../../redux/apiRequest";
+import { loginUser } from "../../../redux/apiRequest";
 import { useDispatch } from "react-redux";
 
 const LoginPage = () => {

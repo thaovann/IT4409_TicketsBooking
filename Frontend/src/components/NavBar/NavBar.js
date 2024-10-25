@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "./NavBar.css";
+
 const NavBar = () => {
-    const [user, setUSer] = useState(null);
+    const user = useSelector((state) => state.auth.login.currentUser);
     return (
         <nav className="navbar-container">
             <Link to="/" className="navbar-home"> Home </Link>
             {user ? (
                 <>
-                    <p className="navbar-user">Hi, <span> {user}  </span> </p>
+                    <p className="navbar-user">Hi, <span> {user.body._doc.FullName}  </span> </p>
                     <Link to="/logout" className="navbar-logout"> Log out</Link>
                 </>
             ) : (
