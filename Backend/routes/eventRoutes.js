@@ -11,12 +11,12 @@ router.post(
 );
 
 router.get("/allEvents", eventController.getAllEvents);
-router.get("/getEventByEventId/:eventId", eventController.getEventByEventId);
-router.get("/getEventByTypeId/:typeId", eventController.getEventsByTypeId);
-router.get("/getEventByCustomerId/:customerId", eventController.getEventsByCustomerId);
-router.delete("/delete/:eventId", eventController.deleteEvent);
+router.get("/getEventById/:id", eventController.getEventById);
+router.get("/getEventByTypeId/:eventTypeId", eventController.getEventsByTypeId);
+router.get("/getEventByUserId/:userId", eventController.getEventsByCustomerId);
+router.delete("/delete/:id", eventController.deleteEvent);
 router.put(
-  "/update/:eventId",
+  "/update/:id",
   eventController.uploadImagesAndVideo, 
   eventController.updateEvent 
 );
@@ -24,7 +24,7 @@ router.put(
 // EventTypes ----------------------------------------------------------------
 router.post("/createEventType", eventController.createEventType);
 router.get("/allEventTypes", eventController.getAllEventTypes);
-router.get("/eventType/:eventTypeId", eventController.getEventTypeById);
-router.put("/eventType/:eventTypeId", eventController.updateEventType);
-router.delete("/eventType/:eventTypeId", eventController.deleteEventType);
+router.get("/eventType/:id", eventController.getEventTypeById);
+router.put("/eventType/:id", eventController.updateEventType);
+router.delete("/eventType/:id", eventController.deleteEventType);
 module.exports = router;

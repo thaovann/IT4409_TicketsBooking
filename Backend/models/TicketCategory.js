@@ -7,7 +7,6 @@ const TicketCategorySchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Event",
       required: true,
-      index: true,
     },
     name: {
       type: String,
@@ -46,25 +45,22 @@ const TicketCategorySchema = new Schema(
     saleEndTime: {
       type: Date,
       required: true,
-      validate: {
-        validator: async function (v) {
-          // Fetch the event to get its start time
-          const event = await mongoose.model("Event").findById(this.eventId);
-          if (!event) return false; 
-          return v > this.saleStartTime && v < event.startTime;
-        },
-        message:
-          "Sale end time must be after sale start time and before event start time!",
-      },
+      // validate: {
+      //   validator: async function (v) {
+      //     // Fetch the event to get its start time
+      //     const event = await mongoose.model("Event").findById(this.eventId);
+      //     if (!event) return false; 
+      //     return v > this.saleStartTime && v < event.startTime;
+      //   },
+      //   message:
+      //     "Sale end time must be after sale start time and before event start time!",
+      // },
     },
 
     description: {
       type: String,
       trim: true,
       maxLength: 1000,
-    },
-    image: {
-      type: String, // Path of the uploaded image
     },
   },
   { timestamps: true }

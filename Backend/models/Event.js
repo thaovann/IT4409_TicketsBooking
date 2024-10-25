@@ -3,21 +3,15 @@ const Schema = mongoose.Schema;
 
 const EventSchema = new Schema(
   {
-    eventId: {
-      type: String,
-      required: true,
-      default: () => new mongoose.Types.ObjectId().toString(),
-      unique: true,
-    },
-    customerId: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Customer",
+      ref: "users",
       required: true,
       index: true,
     },
     eventTypeId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "EventType",
+      ref: "eventTypes",
       required: true,
     },
     name: { type: String, required: true, trim: true },
@@ -25,25 +19,24 @@ const EventSchema = new Schema(
     endTime: {
       type: Date,
       required: true,
-      // validate: {
-      //   validator: function (value) {
-      //     return value > this.startTime;
-      //   },
-      //   message: "End time must be after the start time in model.",
-      // },
     },
     location: {
       type: String,
       trim: true,
       required: function () {
-        // Location is required only if eventType is "offline"
         return this.eventType === "offline";
       },
     },
     description: { type: String, trim: true },
+
     imageBackground: { type: String, trim: true },
     imageLogo: { type: String, trim: true },
     video: { type: String, trim: true },
+
+    organizerLogo: { type: String, require: true, trim: true },
+    organizerName: { type: String, required: true, trim: true },
+    organizerInfor: { type: String, required: true, trim: true },
+
     state: {
       type: String,
       enum: [
