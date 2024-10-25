@@ -4,7 +4,7 @@ const {
     findAll,
     findOne,
     updateOne,
-    // deleteOne
+    deleteOne
 } = require('../services/userServices');
 
 exports.getAllUsers = async (req, res, next) => {
@@ -23,7 +23,7 @@ exports.updateUser = async (req, res, next) => {
     res.send(response);
 };
 
-// exports.deleteUser = async (req, res, next) => {
-//     const response = await deleteOne(req.params.id);
-//     res.send(response);
-// };
+exports.deleteUser = async (req, res, next) => {
+    const response = await deleteOne({ UserId: req.params.id });
+    res.send(response);
+};

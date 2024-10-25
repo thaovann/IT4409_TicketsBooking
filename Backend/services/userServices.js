@@ -45,3 +45,12 @@ exports.updateOne = async (body, filters) => {
 
     return structureResponse({}, 1, 'User updated successfully');
 };
+
+exports.deleteOne = async (params) => {
+    const result = await UserModel.deleteOne(params);
+    if (!result) {
+        throw new NotFoundException('User not found');
+    }
+
+    return structureResponse({}, 1, 'User has been deleted');
+};
