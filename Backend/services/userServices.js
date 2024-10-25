@@ -18,3 +18,14 @@ exports.findAll = async (params = {}) => {
 
     return structureResponse(userList, 1, "Success");
 };
+
+exports.findOne = async (params) => {
+    const user = await UserModel.findOne(params);
+    if (!user) {
+        throw new NotFoundException('User not found');
+    }
+
+    const { password, ...userWithoutPassword } = user;
+
+    return structureResponse(userWithoutPassword, 1, "Success");
+};

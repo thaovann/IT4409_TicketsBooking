@@ -2,7 +2,7 @@ const { checkValidation } = require('../middleware/validation');
 
 const {
     findAll,
-    // findOne,
+    findOne,
     // updateOne,
     // deleteOne
 } = require('../services/userServices');
@@ -12,10 +12,10 @@ exports.getAllUsers = async (req, res, next) => {
     res.send(response);
 };
 
-// exports.getUserById = async (req, res, next) => {
-//     const response = await findOne({ UserId: req.params.id });
-//     res.send(response);
-// };
+exports.getUserById = async (req, res, next) => {
+    const response = await findOne({ UserId: req.params.id });
+    res.send(response);
+};
 
 // exports.updateUser = async (req, res, next) => {
 //     checkValidation(req);
