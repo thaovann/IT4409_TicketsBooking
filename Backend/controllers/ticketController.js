@@ -38,7 +38,7 @@ exports.createTicketCategory = [
       // Fetch the event using the provided eventId
       const event = await mongoose
         .model("Event")
-        .findOne({ eventId: eventId });
+        .findById(eventId);
       if (!event) {
         return res.status(404).json({ message: "Event not found" });
       }
