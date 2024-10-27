@@ -1,0 +1,40 @@
+.home-page {
+  font-family: Arial, sans-serif;
+}
+
+.banner {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.banner img {
+  width: 100%;
+  height: auto;
+}
+
+.banner-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.featured-events,
+.event-categories {
+  padding: 20px;
+  text-align: center;
+}
+
+.event-list,
+.categories-list {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.event-list .event-card,
+.categories-list .category-item {
+  margin: 10px;
+}
+

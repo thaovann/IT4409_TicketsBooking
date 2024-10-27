@@ -1,0 +1,100 @@
+@import url(../common/Header.css);
+
+.search-results-container {
+    background-color: rgb(40, 39, 39);
+    padding: 100px;
+    margin-top: 80px;
+    color: white;
+  }
+  
+  .search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .search-title{
+    color: var(--primary-color);
+  }
+  
+  .filters {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .date-filter-container, .location-filter-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .date-filter-container label,
+  .location-filter-container label {
+    margin-right: 8px;
+  }
+  
+  /* Style for grid display */
+  .event-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .event-list li {
+    background-color: #1e1e1e;
+    padding: 16px;
+    border-radius: 8px;
+    color: #fff;
+    transition: transform 0.2s;
+  }
+  
+  .event-list li:hover {
+    transform: scale(1.05);
+  }
+  
+  .event-thumbnail {
+    width: 100%;
+    height: 140px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .event-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 8px 0;
+  }
+  
+  .event-price {
+    color: #00ff00;
+    font-size: 16px;
+  }
+  
+  .event-date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #bbb;
+  }
+
+/* .event-location {
+    font-size: 14px;
+    color: #bbb;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+  } */
+  
+  /* Style for filters */
+  /* .filters {
+    margin-top: 16px;
+    display: flex;
+    gap: 20px;
+  } */
+  
+  
