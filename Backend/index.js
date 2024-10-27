@@ -1,50 +1,47 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require("cors")
+const cors = require("cors");
 require("dotenv").config();
-
 
 const app = express();
 app.use(bodyParser.json());
-app.use(express.json());
-
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
+// Middleware
+app.use(express.json());
+app.use(cors());
+
+// Route imports
 const authRoutes = require("./routes/authRoutes");
 app.use("/auth", authRoutes);
 
-<<<<<<< HEAD
-const eventRoutes = require("./routes/eventRoutes"); 
-app.use("/api/event", eventRoutes);
+const userRoutes = require("./routes/userRoutes");
+app.use("/user", userRoutes);
 
+const eventRoutes = require("./routes/eventRoutes");
+app.use("/api/event", eventRoutes);
 
 const ticketRoutes = require("./routes/ticketRoutes");
 app.use("/api/ticket", ticketRoutes);
 
-
-
+// Server setup
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, ()=>{
-=======
-const eventRoutes = require("./routes/eventRoutes");
-app.use("/api/events", eventRoutes);
-
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
->>>>>>> origin/fe/auth
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
 
+// Export app for testing or other purposes
 module.exports = app;
 
+// Mongoose setup
 const mongoose = require("mongoose");
 const queryString = process.env.MONGODB_URI;
 
-//configure mongoose
-mongoose.connect(queryString, {
+mongoose
+  .connect(queryString, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => console.log("Database connected successfully!"));
-mongoose.connection.on('error', (err) => {
-    console.log('MongoDB connection error:', err.message);
-})
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Database connected successfully!"))
+  .catch((err) => console.log("MongoDB connection error:", err.message));

@@ -1,17 +1,29 @@
-const User = require('../models/User');
+const { checkValidation } = require('../middleware/validation');
 
-exports.register = (req, res) => {
-    const { name, email, password } = req.body;
-    User.create({ name, email, password }, (err, result) => {
-        if (err) return res.status(500).send('Error creating user');
-        res.status(201).send('User created successfully');
-    });
+const {
+    findAll,
+    findOne,
+    updateOne,
+    deleteOne
+} = require('../services/userServices');
+
+exports.getAllUsers = async (req, res, next) => {
+    const response = await findAll();
+    res.send(response);
 };
 
-exports.getUser = (req, res) => {
-    const userId = req.params.id;
-    User.findById(userId, (err, user) => {
-        if (err) return res.status(500).send('Error fetching user');
-        res.json(user);
-    });
+exports.getUserById = async (req, res, next) => {
+    const response = await findOne({ UserId: req.params.id });
+    res.send(response);
+};
+
+exports.updateUser = async (req, res, next) => {
+    checkValidation(req);
+    const response = await updateOne(req.body, { UserId: req.params.id });
+    res.send(response);
+};
+
+exports.deleteUser = async (req, res, next) => {
+    const response = await deleteOne({ UserId: req.params.id });
+    res.send(response);
 };

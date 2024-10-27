@@ -19,7 +19,6 @@ const TicketSchema = new Schema(
         message: "Purchase date cannot be in the future!",
       },
     },
-
     state: {
       type: String,
       enum: ["available", "sold", "reserved"],

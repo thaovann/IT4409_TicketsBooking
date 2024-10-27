@@ -36,9 +36,7 @@ exports.createTicketCategory = [
       }
 
       // Fetch the event using the provided eventId
-      const event = await mongoose
-        .model("Event")
-        .findOne({ eventId: eventId });
+      const event = await mongoose.model("Event").findById(eventId);
       if (!event) {
         return res.status(404).json({ message: "Event not found" });
       }
@@ -54,13 +52,13 @@ exports.createTicketCategory = [
       }
 
       const existingCategory = await TicketCategory.findOne({ eventId, name });
-       if (existingCategory) {
-         return res
-           .status(400)
-           .json({
-             message: "Ticket category name already exists for this event",
-           });
-       }
+      if (existingCategory) {
+        return res.status(400).json({
+          message: "Ticket category name already exists for this event",
+        });
+      }
+
+      const leftQuantity = totalQuantity;
 
       // Create the new ticket category
       const newTicketCategory = new TicketCategory({
@@ -69,6 +67,7 @@ exports.createTicketCategory = [
         price,
         free: free || false,
         totalQuantity,
+        leftQuantity,
         minPerOrder,
         maxPerOrder,
         saleStartTime: startTime,
@@ -77,8 +76,23 @@ exports.createTicketCategory = [
       });
 
       await newTicketCategory.save();
+
+      // Create tickets based on totalQuantity
+      const tickets = [];
+      for (let i = 1; i <= totalQuantity; i++) {
+        const ticket = {
+          categoryId: newTicketCategory._id,
+          serialNumber: `${newTicketCategory._id}-${i}`, // Create a unique serial number for each ticket
+          state: "available",
+        };
+        tickets.push(ticket);
+      }
+
+      // Save all tickets to the database
+      await Ticket.insertMany(tickets);
+
       res.status(201).json({
-        message: "Ticket category created successfully",
+        message: "Ticket category and tickets created successfully",
         ticketCategory: newTicketCategory,
       });
     } catch (error) {
@@ -90,6 +104,7 @@ exports.createTicketCategory = [
     }
   },
 ];
+
 
 exports.getTicketCategoriesByEvent = async (req, res) => {
   try {

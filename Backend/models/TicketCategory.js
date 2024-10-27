@@ -28,6 +28,11 @@ const TicketCategorySchema = new Schema(
       required: true,
       min: 1,
     },
+    leftQuantity: {
+      type: Number,
+      required: true,
+      min: 0, // Minimum can be 0, as the tickets can be sold out.
+    },
     minPerOrder: {
       type: Number,
       required: true,
@@ -45,18 +50,7 @@ const TicketCategorySchema = new Schema(
     saleEndTime: {
       type: Date,
       required: true,
-      // validate: {
-      //   validator: async function (v) {
-      //     // Fetch the event to get its start time
-      //     const event = await mongoose.model("Event").findById(this.eventId);
-      //     if (!event) return false; 
-      //     return v > this.saleStartTime && v < event.startTime;
-      //   },
-      //   message:
-      //     "Sale end time must be after sale start time and before event start time!",
-      // },
     },
-
     description: {
       type: String,
       trim: true,
@@ -65,6 +59,14 @@ const TicketCategorySchema = new Schema(
   },
   { timestamps: true }
 );
+
+// Pre-save hook to set leftQuantity to totalQuantity if not provided
+TicketCategorySchema.pre("save", function (next) {
+  if (this.isNew && !this.leftQuantity) {
+    this.leftQuantity = this.totalQuantity;
+  }
+  next();
+});
 
 module.exports = mongoose.model(
   "TicketCategory",
