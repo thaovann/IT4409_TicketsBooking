@@ -1,0 +1,71 @@
+/* Style for the overall container */
+.register-container {
+    width: 400px;
+    /* Increased width of the container */
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for the title */
+.register-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Style for the form labels */
+form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+/* Ensure input/select fields fill 100% of container */
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="date"],
+form select {
+    display: block;
+    width: 100%;
+    /* Make input/selects full width, accounting for padding */
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect the width */
+}
+
+/* Style for the submit button */
+form button[type="submit"] {
+    width: 100%;
+    /* Submit button width set to full container width */
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+form button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Add some hover effect to input fields */
+form input[type="text"]:hover,
+form input[type="email"]:hover,
+form input[type="password"]:hover,
+form input[type="date"]:hover,
+form select:hover {
+    border-color: #888;
+}
