@@ -1,13 +1,22 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
-import AdminRoutes from './Admin/Admin';
+import LoginPage from './pages/Auth/Login/LoginPage';
+import RegisterPage from './pages/Auth/Register/RegisterPage';
+import HomePage from './pages/User/HomePage';
+import NavBar from './components/NavBar/NavBar';
+import { useState } from "react";
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path='/admin/*' element={<AdminRoutes />} />
-      </Routes>
+      <NavBar />
+      <div className='App'>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/register' element={<RegisterPage />} />
+        </Routes>
+      </div>
     </Router>
   );
 }

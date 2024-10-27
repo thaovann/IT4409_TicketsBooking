@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const eventController = require("../controllers/eventController");
 const router = express.Router();
 
-const query =
-  "mongodb+srv://lethithaovan2711:pusrmHtnJpkmMNAB@cluster0.uhim5.mongodb.net/TicketBookingService";
+const query = "mongodb+srv://lethithaovan2711:pusrmHtnJpkmMNAB@cluster0.uhim5.mongodb.net/TicketBookingService";
 
 async function connectDB() {
   try {
