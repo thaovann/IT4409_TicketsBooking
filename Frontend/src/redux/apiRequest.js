@@ -57,11 +57,34 @@ import {
     registerFailed
 } from "./authSlice";
 
+const api = axios.create({
+    baseURL: "http://localhost:3001",
+});
+
+// cấu hình axios interceptors để gắn Authorization vào header
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
 
 export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginStart());
     try {
-        const res = await axios.post("http://localhost:3001/auth/login", user);
+        const res = await api.post("/auth/login", user);
+        const token = res.data.body.token;
+        const role = res.data.body._doc.Role;
+        localStorage.setItem("token", token);
+        localStorage.setItem("role", role);
+
         dispatch(loginSuccess(res.data));
         navigate("/");
     } catch (error) {
