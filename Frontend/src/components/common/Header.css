@@ -1,0 +1,150 @@
+:root {
+  --primary-color: #ffea99;
+}
+
+/* ====common===== */
+a {
+  text-decoration: none;
+}
+
+.btn {
+  border: none;
+  color: white;
+}
+
+.header {
+  background-color: var(--primary-color);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo img {
+  height: 40px;
+}
+
+.create-btn {
+  padding: 10px 30px;
+  border-radius: 50px;
+  border: 1px solid white;
+  transition: 0.5s;
+}
+
+.create-btn:hover {
+  background-color: white;
+  color: black;
+}
+
+.login-btn {
+  padding: 8px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 600;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* ====searchBar==== */
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+}
+
+.fa-solid.fa-magnifying-glass {
+  color: gray;
+  background: white;
+  padding: 16px 16px 17px 16px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.search-input {
+  padding: 15px;
+  font-size: 16px;
+  border: none;
+  flex-grow: 1;
+  outline: none;
+}
+
+.search-button {
+  background-color: white;
+  color: gray;
+  border: none;
+  padding: 15px 16px;
+  border-radius: 8px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* ===dropdown=== */
+/* Header.css */
+.search-bar {
+  position: relative; /* Để dropdown hiển thị đúng vị trí */
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%; /* Đặt ngay dưới input */
+  left: 0;
+  right: 0;
+  border: 1px solid #ccc;
+  background-color: white;
+  z-index: 1000;
+  max-height: 200px; /* Để giới hạn chiều cao */
+  overflow-y: auto; /* Thêm cuộn nếu cần */
+}
+
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #f0f0f0; /* Hiệu ứng hover */
+}
+
+/* =====nav===== */
+
+.navigation {
+  background-color: black;
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.navigation ul {
+  padding-left: 100px ;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin: 0;
+}
+
+.navigation li {
+  /* display: inline-block; */
+}
+
+.navigation a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+}
+
+.navigation a:hover {
+  color: yellow;
+}
