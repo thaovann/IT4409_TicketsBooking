@@ -97,7 +97,7 @@ import { useState } from "react";
 import { registerUser } from "../../../redux/apiRequest";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import "./RegisterPage.css";
+//import "../Register/RegisterPage.css";
 
 const RegisterPage = () => {
     const [FullName, setFullName] = useState('');
@@ -105,7 +105,7 @@ const RegisterPage = () => {
     const [Email, setEmail] = useState('');
     const [Password, setPassword] = useState('');
     const [Phone, setPhone] = useState('');
-    const [Role, setRole] = useState(1);  // Mặc định là 1, bạn có thể thay đổi logic này
+    const [Role, setRole] = useState(0);  // Mặc định là 0
     const [Gender, setGender] = useState(0);  // Mặc định là 0 (Nam)
     const [DoB, setDob] = useState('');
     const dispatch = useDispatch();
@@ -141,10 +141,10 @@ const RegisterPage = () => {
                 <label>PHONE</label>
                 <input type="text" placeholder="Enter your phone number" onChange={(e) => setPhone(e.target.value)} />
                 <label>ROLE</label>
-                <select onChange={(e) => setRole(e.target.value)}>
+                {/* <select onChange={(e) => setRole(e.target.value)}>
                     <option value={1}>User</option>
                     <option value={2}>Admin</option>
-                </select>
+                </select> */}
                 <label>GENDER</label>
                 <select onChange={(e) => setGender(e.target.value)}>
                     <option value={0}>Male</option>
