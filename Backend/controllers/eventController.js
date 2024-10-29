@@ -204,24 +204,31 @@ exports.createEvent = async (req, res) => {
 };
 
 
-exports.getImageById = (req, res) => {
-  try {
-    const { id } = req.params; 
-    const readStream = gridfsBucket.openDownloadStream(mongoose.Types.ObjectId(id));
+exports.getImageById = async (req, res) => {
+  try
+  {
+    const fileId = new mongoose.Types.ObjectId(req.params.id);
 
-    readStream.on("error", (error) => {
-      console.error("Error streaming image:", error);
+    // Check if file exists
+    const file = await gridfsBucket.find({ _id: fileId }).toArray();
+    if (!file || file.length === 0)
+    {
       return res.status(404).json({ message: "Image not found" });
-    });
+    }
 
-    res.set("Content-Type", "image/jpeg"); 
-    readStream.pipe(res);
-  } catch (error) {
-    console.error("Error fetching image by ID:", error);
-    res.status(500).json({ message: "Error retrieving image" });
+    // Stream the file from GridFS to the response
+    const downloadStream = gridfsBucket.openDownloadStream(fileId);
+    downloadStream.pipe(res);
+    downloadStream.on("error", (err) => {
+      console.error("Error streaming file:", err);
+      res.status(500).json({ message: "Error streaming file" });
+    });
+  } catch (error)
+  {
+    console.error("Error fetching image:", error);
+    res.status(500).json({ message: "Error fetching image" });
   }
 };
-
 
 
 
