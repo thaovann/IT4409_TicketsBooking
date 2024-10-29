@@ -86,7 +86,12 @@ export const loginUser = async (user, dispatch, navigate) => {
         localStorage.setItem("role", role);
 
         dispatch(loginSuccess(res.data));
-        navigate("/");
+        if (role === 1) {
+            navigate("/admin");
+        }
+        else if (role === 0) {
+            navigate("/");
+        }
     } catch (error) {
         dispatch(loginFailed());
     }
@@ -102,3 +107,32 @@ export const registerUser = async (user, dispatch, navigate) => {
         dispatch(registerFailed());
     }
 };
+
+// hàm gửi request quên mật khẩu
+export const passwordForgot = async (Email) => {
+    try {
+        const response = await axios.post("http://localhost:3001/auth/password/forgot", { Email });
+        return response.data;
+    } catch (error) {
+        throw error.response ? error.response.data : error.message;
+    }
+}
+
+// hàm xác thực OTP
+export const verifyOTP = async (Email, OTP) => {
+    try {
+        const response = await api.post("http://localhost:3001/auth/password/otp", { Email, OTP });
+        console.log(response.data);
+        return response.data; // Trả về kết quả xác thực OTP
+    } catch (error) {
+        throw error.response ? error.response.data : error.message;
+    }
+};
+
+export const resetPassword = async (Email, Password) => {
+    try {
+        const response = await axios.post("http://localhost:3001/auth/password/reset", { Email, Password });
+    } catch (error) {
+        throw error.response ? error.response.data : error.message;
+    }
+}
