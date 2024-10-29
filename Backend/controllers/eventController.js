@@ -204,6 +204,27 @@ exports.createEvent = async (req, res) => {
 };
 
 
+exports.getImageById = (req, res) => {
+  try {
+    const { id } = req.params; 
+    const readStream = gridfsBucket.openDownloadStream(mongoose.Types.ObjectId(id));
+
+    readStream.on("error", (error) => {
+      console.error("Error streaming image:", error);
+      return res.status(404).json({ message: "Image not found" });
+    });
+
+    res.set("Content-Type", "image/jpeg"); 
+    readStream.pipe(res);
+  } catch (error) {
+    console.error("Error fetching image by ID:", error);
+    res.status(500).json({ message: "Error retrieving image" });
+  }
+};
+
+
+
+
 exports.getAllEvents = async (req, res) => {
   try {
     const events = await Event.find();

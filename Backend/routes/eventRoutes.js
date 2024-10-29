@@ -20,6 +20,8 @@ router.put(
   eventController.uploadImagesAndVideo, 
   eventController.updateEvent 
 );
+router.get("/images/:id", eventController.getImageById);
+
 
 // EventTypes ----------------------------------------------------------------
 router.post("/createEventType", eventController.createEventType);
