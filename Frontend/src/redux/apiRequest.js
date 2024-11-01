@@ -54,7 +54,7 @@ import {
     loginSuccess,
     registerStart,
     registerSuccess,
-    registerFailed
+    registerFailed,
 } from "./authSlice";
 
 const api = axios.create({
@@ -121,7 +121,7 @@ export const passwordForgot = async (Email) => {
 // hàm xác thực OTP
 export const verifyOTP = async (Email, OTP) => {
     try {
-        const response = await api.post("http://localhost:3001/auth/password/otp", { Email, OTP });
+        const response = await axios.post("http://localhost:3001/auth/password/otp", { Email, OTP });
         console.log(response.data);
         return response.data; // Trả về kết quả xác thực OTP
     } catch (error) {
@@ -136,3 +136,30 @@ export const resetPassword = async (Email, Password) => {
         throw error.response ? error.response.data : error.message;
     }
 }
+
+export const getAllUsers = async () => {
+    try {
+        const response = await api.get("/user");
+        return response;
+    } catch (error) {
+        console.error("Failed to fetch users:", error);
+    }
+}
+
+export const getUserById = async (UserId) => {
+    try {
+        const response = await api.get(`/user/id/${UserId}`);
+        return response;
+    } catch (error) {
+        console.error("Failed to fetch user by id:", error);
+    }
+};
+
+export const deleteUserById = async (UserId) => {
+    try {
+        const response = await api.delete(`/user/id/${UserId}`);
+        return response;
+    } catch (error) {
+        console.error("Failed to delete user:", error);
+    }
+};

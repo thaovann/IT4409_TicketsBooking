@@ -4,14 +4,15 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import LoginPage from "./pages/Auth/Login/LoginPage";
 import RegisterPage from "./pages/Auth/Register/RegisterPage";
-// import HomePage from "./pages/User/HomePage";
-import HomePage from "./pages/HomePage"
+import HomePage from "./pages/User/HomePage";
+//import HomePage from "./pages/HomePage"
 import AdminPage from "./pages/Admin/AdminPage";
 import EventsPage from "./pages/EventsPage";
 import EventDetail from "./components/events/EventDetail";
 import SearchResults from "./components/events/SearchResult";
 import NavBar from "./components/NavBar/NavBar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 import ForgotPassword from "./pages/Auth/ChangePassword/ForgotPassword";
 import ResetPassword from "./pages/Auth/ChangePassword/ResetPassword";
 import VerifyOTP from "./pages/Auth/ChangePassword/VerifyOTP";
@@ -27,6 +28,16 @@ function App() {
             <Route path="/" element={<HomePage />} />
 
             {/* Auth routes */}
+            {/* <Route path="/login" element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            } />
+            <Route path="/register" element={
+              <PublicRoute>
+                <RegisterPage />
+              </PublicRoute>
+            } /> */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -40,7 +51,7 @@ function App() {
 
             {/* Admin route */}
             <Route
-              path="/admin"
+              path="/admin/*"
               element={
                 <ProtectedRoute role={1}>
                   <AdminPage />
