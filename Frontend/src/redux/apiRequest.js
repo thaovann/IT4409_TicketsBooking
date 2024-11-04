@@ -1,52 +1,3 @@
-// import axios from 'axios';
-
-// // Tạo một instance axios với cấu hình mặc định
-// const api = axios.create({
-//     baseURL: 'http://localhost:3001',
-//     headers: {
-//         'Content-Type': 'application/json',
-//     },
-// });
-
-// api.interceptors.request.use((config) => {
-//     const token = localStorage.getItem('token');    // lấy token từ localStorage
-//     if (token) {
-//         config.headers.Authorization = `Bearer ${token}`;   // Gắn token vào header Authorization
-//     }
-//     return config;
-// }, (error) => {
-//     return Promise.reject(error);
-// });
-
-// // hàm login
-// export const loginApi = async (credentials) => {
-//     try {
-//         const response = await api.post('/auth/login', credentials);
-//         console.log('Login response:', response.data);
-//         return response.data; // Trả về dữ liệu từ response, bao gồm token
-//     } catch (error) {
-//         throw error.response?.data?.message || 'Login failed'; // Xử lý lỗi trả về
-//     }
-// };
-
-// // hàm register
-// export const registerApi = async (credentials) => {
-//     try {
-//         const response = await api.post('/auth/register', credentials);
-//         console.log('Register response:', response.data);
-//         return response.data; // Trả về dữ liệu từ response, bao gồm token
-//     } catch (error) {
-//         throw error.response?.data?.message || 'Registration failed'; // Xử lý lỗi trả về
-//     }
-// };
-
-// // hàm logout
-// export const logoutApi = () => {
-//     localStorage.removeItem('token');
-// }
-
-// export default api;
-
 import axios from "axios";
 import {
     loginFailed,
@@ -137,6 +88,7 @@ export const resetPassword = async (Email, Password) => {
     }
 }
 
+// Các hàm user
 export const getAllUsers = async () => {
     try {
         const response = await api.get("/user");
@@ -161,5 +113,17 @@ export const deleteUserById = async (UserId) => {
         return response;
     } catch (error) {
         console.error("Failed to delete user:", error);
+    }
+};
+
+// Các hàm event
+export const getAllEvents = async () => {
+    try {
+        const response = await api.get("/api/event/allEvents");
+        console.log(response.data)
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching events:', error);
+        throw error;
     }
 };

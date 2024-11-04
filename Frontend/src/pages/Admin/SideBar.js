@@ -7,8 +7,11 @@ function SideBar() {
     return (
         <Drawer variant="permanent" anchor="left" sx={{ bgcolor: '#ffea99' }}>
             <List>
+                <ListItem button onClick={() => navigate('/admin/manage-events')}>
+                    <ListItemText primary="Events" />
+                </ListItem>
                 <ListItem button onClick={() => navigate('/admin/manage-users')}>
-                    <ListItemText primary="Manage Users" />
+                    <ListItemText primary="Users" />
                 </ListItem>
 
                 {/* các mục quản lý khác */}
