@@ -1,1 +1,11 @@
-
+/* Reset margin và padding của toàn bộ trang */
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Ngăn trang cuộn ngang nếu có khoảng trống bất thường */
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+:root{
+  --primary-color: #ffea99;
+}

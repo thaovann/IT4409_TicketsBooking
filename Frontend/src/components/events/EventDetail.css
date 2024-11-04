@@ -1,0 +1,160 @@
+/* Container chính */
+.event-detail-container {
+  margin-top: 80px;
+    background-color: #f0f0f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Phần nội dung sự kiện */
+  .event-detail-content {
+    display: flex;
+    justify-content: center;
+    background-color: #1c1c1e;
+    padding: 40px;
+    border-radius: 10px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .event-detail-ticket{
+    display: flex;
+    max-width: 1200px;
+    background-color: #3e3e40;
+    overflow: hidden;
+    border-radius: 30px;
+
+  }
+
+  /* Banner sự kiện */
+  .event-banner img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    display: block;
+    border-left: 5px dashed #1c1c1e;
+  }
+  
+  /* Phần thông tin sự kiện */
+  .event-info {
+    position: relative;
+    padding: 30px;
+    color: #fff;
+    flex: 1;
+  }
+
+  .event-info::before{/*2 hình tròn ở giữa vé*/
+    position: absolute;
+    content: "";
+    width: 60px;
+    height: 60px;
+    background-color: #1c1c1e;
+    border-radius: 50%;
+    z-index: 1;
+    top: -30px;
+    right: -30px;
+}
+.event-info::after{/*2 hình tròn ở giữa vé*/
+  position: absolute;
+  content: "";
+  width: 60px;
+  height: 60px;
+  background-color: #1c1c1e;
+  border-radius: 50%;
+  z-index: 1;
+  bottom: -30px;
+  right: -30px;
+}
+  
+  .event-title {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #fff;
+  }
+  
+  .event-date-location {
+    margin-top: 20px;
+    font-size: 1em;
+    color: #a0a0a0;
+  }
+  
+  .event-date,
+  .event-location {
+    display: block;
+  }
+  
+  .event-price-book::before{
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 1px;
+    background-color: white;
+    top: -10px;
+
+  }
+  .event-price-book {
+    position: relative;
+    margin-top: 100px;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .event-price {
+    display: flex;
+    align-items: center;
+    font-size: 1.2em;
+    color: white !important;
+
+
+  }
+  
+  .event-price span {
+    padding-left: 10px;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: var(--primary-color);
+
+  }
+  
+  .book-button {
+    display: block;
+    width: 100%;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: 0.3s;
+  }
+  
+  .book-button:hover {
+    background-color: white;
+    color: var(--primary-color);
+  }
+  
+  /* Phần mô tả sự kiện */
+  .event-description {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 1200px;
+    width: 100%;
+    color: #333;
+  }
+  
+  .event-description h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  
+  .event-description p {
+    line-height: 1.6;
+  }
+  
+  /* thông tin vé */
+.ticket-info{
+  
+}

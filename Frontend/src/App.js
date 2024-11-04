@@ -6,11 +6,12 @@ import LoginPage from "./pages/Auth/Login/LoginPage";
 import RegisterPage from "./pages/Auth/Register/RegisterPage";
 import HomePage from "./pages/User/HomePage";
 import AdminPage from "./pages/Admin/AdminPage";
-import EventsPage from "./pages/EventsPage";
+import EventsPage from "./pages/User/EventsPage";
 import EventDetail from "./components/events/EventDetail";
 import SearchResults from "./components/events/SearchResult";
 import NavBar from "./components/NavBar/NavBar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import './App.css';
 
 function App() {
   return (
