@@ -11,6 +11,8 @@ import EventDetail from "./components/events/EventDetail";
 import SearchResults from "./components/events/SearchResult";
 import NavBar from "./components/NavBar/NavBar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import OrganizerEvents from "./pages/EventManager/OrganizerEvents";
+import CreateEventForm from "./pages/EventManager/CreateEventForm"
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
             <Route path="/events" element={<EventsPage />} />
             <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="organizer/events" element={<OrganizerEvents />} />
+            <Route path="organizer/create-event" element={<CreateEventForm />} />
 
             {/* Admin route */}
             <Route
