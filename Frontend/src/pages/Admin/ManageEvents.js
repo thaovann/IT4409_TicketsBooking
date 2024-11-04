@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Tab, Tabs, Box, Typography, Button, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Grid, Tab, Tabs, Box, Typography, Button, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Swal from 'sweetalert2';
 import { getAllEvents } from '../../redux/apiRequest';
@@ -44,7 +44,7 @@ const ManageEvents = () => {
     const handleApprove = (eventId) => {
         setEvents((prevEvents) =>
             prevEvents.map((event) =>
-                event.id === eventId && event.state === 'under review'
+                event._id === eventId && event.state === 'under review'
                     ? { ...event, state: 'approved' }
                     : event
             )
@@ -58,53 +58,59 @@ const ManageEvents = () => {
     };
 
     return (
-        <Box>
-            <Tabs value={selectedTab} onChange={handleTabChange}>
-                <Tab label="All" />
-                <Tab label="ĐANG DIỄN RA" />
-                <Tab label="ĐÃ DUYỆT" />
-                <Tab label="CHỜ DUYỆT" />
-                <Tab label="KHÔNG ĐƯỢC DUYỆT" />
-                <Tab label="ĐÃ HỦY" />
-            </Tabs>
+        <Grid>
+            <Box>
+                <Tabs value={selectedTab} onChange={handleTabChange}>
+                    <Tab label="All" />
+                    <Tab label="ĐANG DIỄN RA" />
+                    <Tab label="ĐÃ DUYỆT" />
+                    <Tab label="CHỜ DUYỆT" />
+                    <Tab label="KHÔNG ĐƯỢC DUYỆT" />
+                    <Tab label="ĐÃ HỦY" />
+                </Tabs>
 
-            <Box sx={{ padding: 2 }}>
-                {filteredEvents.map(event => (
-                    <Accordion key={event.id}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            <Typography variant="h6">{event.name}</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Typography variant="body2">
-                                <strong>Start Time:</strong> {new Date(event.startTime).toLocaleString()}
-                            </Typography>
-                            <Typography variant="body2">
-                                <strong>End Time:</strong> {new Date(event.endTime).toLocaleString()}
-                            </Typography>
-                            <Typography variant="body2">
-                                <strong>Location:</strong> {event.location}
-                            </Typography>
-                            <Typography variant="body2">
-                                <strong>Description:</strong> {event.description}
-                            </Typography>
-                            <Typography variant="body2">
-                                <strong>Organizer:</strong> {event.organizerName}
-                            </Typography>
-                            {selectedTab === 3 && (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => handleApprove(event.id)}
-                                    sx={{ marginTop: 2 }}
-                                >
-                                    Duyệt
-                                </Button>
-                            )}
-                        </AccordionDetails>
-                    </Accordion>
-                ))}
+                <Box sx={{ padding: 2 }}>
+                    <Grid container spacing={2}>
+                        {filteredEvents.map(event => (
+                            <Grid item xs={12} sm={6} md={4} key={event.id}>
+                                <Accordion>
+                                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                        <Typography variant="h6">{event.name}</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Typography variant="body2">
+                                            <strong>Start Time:</strong> {new Date(event.startTime).toLocaleString()}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            <strong>End Time:</strong> {new Date(event.endTime).toLocaleString()}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            <strong>Location:</strong> {event.location}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            <strong>Description:</strong> {event.description}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            <strong>Organizer:</strong> {event.organizerName}
+                                        </Typography>
+                                        {selectedTab === 3 && (
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={() => handleApprove(event._id)}
+                                                sx={{ marginTop: 2 }}
+                                            >
+                                                Duyệt
+                                            </Button>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
             </Box>
-        </Box>
+        </Grid>
     );
 };
 
