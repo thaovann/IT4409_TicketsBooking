@@ -1,11 +1,11 @@
 import axios from "axios";
 import {
-  loginFailed,
-  loginStart,
-  loginSuccess,
-  registerStart,
-  registerSuccess,
-  registerFailed,
+    loginFailed,
+    loginStart,
+    loginSuccess,
+    registerStart,
+    registerSuccess,
+    registerFailed,
 } from "./authSlice";
 
 import {
@@ -45,11 +45,16 @@ export const loginUser = async (user, dispatch, navigate) => {
     localStorage.setItem("token", token);
     localStorage.setItem("role", role);
 
-    dispatch(loginSuccess(res.data));
-    navigate("/");
-  } catch (error) {
-    dispatch(loginFailed());
-  }
+        dispatch(loginSuccess(res.data));
+        if (role === 1) {
+            navigate("/admin");
+        }
+        else if (role === 0) {
+            navigate("/");
+        }
+    } catch (error) {
+        dispatch(loginFailed());
+    }
 };
 
 export const registerUser = async (user, dispatch, navigate) => {
@@ -61,6 +66,62 @@ export const registerUser = async (user, dispatch, navigate) => {
   } catch (error) {
     dispatch(registerFailed());
   }
+};
+
+// hàm gửi request quên mật khẩu
+export const passwordForgot = async (Email) => {
+    try {
+        const response = await axios.post("http://localhost:3001/auth/password/forgot", { Email });
+        return response.data;
+    } catch (error) {
+        throw error.response ? error.response.data : error.message;
+    }
+}
+
+// hàm xác thực OTP
+export const verifyOTP = async (Email, OTP) => {
+    try {
+        const response = await axios.post("http://localhost:3001/auth/password/otp", { Email, OTP });
+        console.log(response.data);
+        return response.data; // Trả về kết quả xác thực OTP
+    } catch (error) {
+        throw error.response ? error.response.data : error.message;
+    }
+};
+
+export const resetPassword = async (Email, Password) => {
+    try {
+        const response = await axios.post("http://localhost:3001/auth/password/reset", { Email, Password });
+    } catch (error) {
+        throw error.response ? error.response.data : error.message;
+    }
+}
+
+export const getAllUsers = async () => {
+    try {
+        const response = await api.get("/user");
+        return response;
+    } catch (error) {
+        console.error("Failed to fetch users:", error);
+    }
+}
+
+export const getUserById = async (UserId) => {
+    try {
+        const response = await api.get(`/user/id/${UserId}`);
+        return response;
+    } catch (error) {
+        console.error("Failed to fetch user by id:", error);
+    }
+};
+
+export const deleteUserById = async (UserId) => {
+    try {
+        const response = await api.delete(`/user/id/${UserId}`);
+        return response;
+    } catch (error) {
+        console.error("Failed to delete user:", error);
+    }
 };
 
 export const createEvent = async (eventData, dispatch) => {
