@@ -137,6 +137,15 @@ export const getAllEvents = async () => {
     }
 };
 
+export const updateEvent = async (eventId, updatedData) => {
+    try {
+        const response = await api.put(`/api/event/update/${eventId}`, updatedData);
+        return response.data;
+    } catch (error) {
+        throw error.response ? error.response.data : new Error('Failed to update event');
+    }
+}
+
 export const createEvent = async (eventData, dispatch) => {
     dispatch(createEventStart());
     try {
