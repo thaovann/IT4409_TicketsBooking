@@ -11,6 +11,7 @@ import EventDetail from "./components/events/EventDetail";
 import SearchResults from "./components/events/SearchResult";
 import NavBar from "./components/NavBar/NavBar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import TicketBookingPage from "./pages/User/TicketBookingPage";
 import './App.css';
 
 function App() {
@@ -26,6 +27,8 @@ function App() {
             <Route path="/events" element={<EventsPage />} />
             <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="/booking/:eventId" element={<TicketBookingPage />} />
+
 
             {/* Admin route */}
             <Route

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Header from "../common/Header";
@@ -10,6 +10,10 @@ const EventDetail = () => {
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [tickets, setTickets] = useState([]);
+  const [minPrice, setMinPrice] = useState(null);
+  
+  // Tạo một tham chiếu cho phần thông tin vé
+  const ticketInfoRef = useRef(null);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -17,22 +21,32 @@ const EventDetail = () => {
         const response = await axios.get(`http://localhost:3001/api/event/getEventById/${id}`);
         setEvent(response.data);
       } catch (error) {
-        console.error("Error fetching event details:", error);
+        console.error("Lỗi khi lấy thông tin sự kiện:", error);
       }
     };
 
     const fetchTickets = async () => {
       try {
         const response = await axios.get(`http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${id}`);
-        setTickets(response.data);
+        setTickets(response.data.ticketCategories);
+
+        if (response.data.ticketCategories.length > 0) {
+          const minTicketPrice = Math.min(...response.data.ticketCategories.map(ticket => ticket.price));
+          setMinPrice(minTicketPrice);
+        }
       } catch (error) {
-        console.error("Error fetching ticket categories:", error);
+        console.error("Lỗi khi lấy danh sách vé:", error);
       }
     };
 
     fetchEvent();
     fetchTickets();
   }, [id]);
+
+  // Cuộn đến phần thông tin vé
+  const handleScrollToTickets = () => {
+    ticketInfoRef.current.scrollIntoView({ behavior: "smooth" });
+  };
 
   const handleBookNow = () => {
     navigate(`/booking/${id}`);
@@ -53,8 +67,8 @@ const EventDetail = () => {
                 <span className="event-location">📍 {event.location}</span>
               </p>
               <div className="event-price-book">
-                <p className="event-price">Giá từ <span>450,000 đ</span></p>
-                <button className="book-button" onClick={handleBookNow}>Book now</button>
+                <p className="event-price">Giá từ <span>{minPrice !== null ? minPrice.toLocaleString() : "Đang cập nhật"} đ</span></p>
+                <button className="book-button" onClick={handleScrollToTickets}>Book now</button>
               </div>
             </div>
             <div className="event-banner">
@@ -63,28 +77,42 @@ const EventDetail = () => {
           </div>
         </div>
         
-        <div className="event-description">
-          <h2>Giới thiệu</h2>
-          <p>{event.description}</p>
-        </div>
+        <div className="ticket-info-container" ref={ticketInfoRef}>
+          <div className="event-description">
+            <h2>Giới thiệu</h2>
+            <p>{event.description}</p>
+          </div>
 
-        {/* Ticket Information */}
-        <div className="ticket-info">
-          <h2 className="ticket-info-title">Thông tin vé</h2>
-          {tickets.length > 0 ? (
-            tickets.map((ticket) => (
-              <div key={ticket._id} className="ticket-category">
-                <h3>{ticket.name}</h3>
-                <p>Giá vé: {ticket.price.toLocaleString()} đ</p>
-                <p>Tình trạng: {ticket.leftQuantity > 0 ? "Còn vé" : "Hết vé"}</p>
-                <button className="buy-ticket-button" onClick={handleBookNow}>
-                  Mua vé ngay
-                </button>
-              </div>
-            ))
-          ) : (
-            <p>Không có thông tin vé</p>
-          )}
+          <div className="ticket-info">
+            <h2 className="ticket-info-title">Thông tin vé</h2>
+            {tickets.length > 0 ? (
+              tickets.map((ticket) => (
+                <div key={ticket._id} className="ticket-category">
+                  <div className="ticket-category-container">
+                    <h3>{ticket.name}</h3>
+                    <p>Giá vé: <span className="ticket-price">{ticket.price.toLocaleString()} đ</span></p>
+                    <p>Tình trạng: {ticket.leftQuantity > 0 ? "Còn vé" : "Hết vé"}</p>
+                  </div>
+                  
+                  <button
+                    className={`buy-ticket-button ${ticket.leftQuantity > 0 ? "" : "disabled"}`}
+                    onClick={handleBookNow}
+                    disabled={ticket.leftQuantity === 0}
+                  >
+                    Mua vé ngay
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p>Không có thông tin vé</p>
+            )}
+          </div>
+
+          <div className="organizer-info">
+            <h2 className="organizer-info-title">Ban tổ chức sự kiện</h2>
+            <h3 className="organizer-name">{event.organizerName}</h3>
+            <p className="organizer-description">{event.organizerInfor}</p>
+          </div>
         </div>
       </div>
       <Footer />

@@ -134,27 +134,141 @@
     background-color: white;
     color: var(--primary-color);
   }
-  
+
+  /* ====ticket-info==== */
+  .ticket-info-container{
+    max-width: 1200px;
+  }
+
   /* Phần mô tả sự kiện */
   .event-description {
     background-color: #fff;
     border-radius: 10px;
     padding: 20px;
-    max-width: 1200px;
-    width: 100%;
     color: #333;
   }
   
   .event-description h2 {
+    position: relative;
     font-size: 1.5em;
     margin-bottom: 10px;
   }
   
+  .event-description h2:after{
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 1px;
+    background: rgb(163, 156, 156);
+    bottom: -10px;
+    left: 0;
+  }
+
+
   .event-description p {
+    margin-top: 40px;
     line-height: 1.6;
   }
   
-  /* thông tin vé */
-.ticket-info{
+  /* =======ticket-info====== */
+  .ticket-info {
+    margin-top: 20px;
+    background-color: #1c1c1e;
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+  }
   
-}
+  .ticket-info-title {
+    position: relative;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+  
+  .ticket-info-title:after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 0.5px;
+    background: white;
+    bottom: -10px;
+    left: 0;
+  }
+
+  .ticket-category {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .ticket-category-container{
+  }
+
+  .ticket-category h3 {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+    color: var(--primary-color);
+  }
+  
+  .ticket-price{
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 1.3em;
+  }
+
+  .buy-ticket-button {
+    height: 30%;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 1.1em;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  
+  .buy-ticket-button.disabled {
+    background-color: #ccc; /* Màu khi vé đã hết */
+    color: #666;
+    cursor: not-allowed;
+  }
+  
+
+  .buy-ticket-button:hover {
+    background-color: white;
+    color: var(--primary-color);
+  }
+  
+
+  /* ==== Organizer Infor ======= */
+
+  .organizer-info{
+    border-radius: 8px;
+    background-color: #bbb0b0;
+    margin-top : 20px;  
+    padding: 20px;  
+  }
+
+  .organizer-info-title{
+     position: relative;
+     font-size: 1.5em;
+  }
+
+  .organizer-info-title:after{
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 1px;
+    background: rgb(163, 156, 156);
+    bottom: -10px;
+    left: 0;
+  }
+
+  .organizer-name{
+    margin-top: 30px;
+    text-align: center;
+  }
