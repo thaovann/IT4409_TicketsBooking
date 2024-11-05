@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const {
     findAll,
     findOne,
-    // findAllByUser
+    findAllByUser
 } = require('../services/orderServices');
 
 exports.getAllOrders = async (req, res, next) => {
@@ -23,7 +23,7 @@ exports.getFilteredOrders = async (req, res, next) => {
     res.send(response);
 };
 
-// exports.getUserBookings = async (req, res, next) => {
-//     const response = await BookingsRepository.findAllByUser(req.params.id, req.query);
-//     res.send(response);
-// };
+exports.getUserOrders = async (req, res, next) => {
+    const response = await findAllByUser(req.params.id, req.query);
+    res.send(response);
+};

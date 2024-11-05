@@ -24,26 +24,84 @@ exports.findOne = async (params) => {
     return structureResponse(order, 1, "Success");
 }
 
-// exports.findAllByUser = async (id, query = {}) => {
-//     let bookingDuplicates = await BookingModel.findAllByUser(id, query);
-//     if (!bookingDuplicates.length) {
-//         throw new NotFoundException('Bookings for this user not found');
-//     }
+exports.findAllByUser = async (id, query = {}) => {
+    let orderDuplicates = await orderFindAllByUser(id, query);
+    if (!orderDuplicates.length) {
+        throw new NotFoundException('Orders for this user not found');
+    }
 
-//     let bookingList = {};
+    let orderList = {};
 
-//     for (let booking of bookingDuplicates) {
-//         const { title, poster_url, show_id, start_time, date, show_type, ...bookingDetails } = booking;
-//         if (!bookingList[show_id]) {
-//             bookingList[show_id] = { title, poster_url };
-//             const show_datetime = `${date} ${parseTime(start_time)}`;
-//             bookingList[show_id].show = { show_id, show_type, show_datetime };
-//             bookingList[show_id].bookings = [];
-//         }
-//         bookingList[show_id].bookings.push(bookingDetails);
-//     }
+    for (let order of orderDuplicates) {
+        // seat, serialNumber
+        const { eventImageBackground, eventName, eventId, eventTypeId, startTime, endTime, voucherName, voucherDiscount, ...orderDetails } = order;
+        if (!orderList[eventId]) {
+            orderList[eventId] = { eventName, eventImageBackground };
+            const show_startTime = `${startTime}`;
+            const show_endTime = `${endTime}`;
+            orderList[eventId].event = { eventId, eventTypeId, show_startTime, show_endTime };
+            orderList[eventId].voucher = { voucherName, voucherDiscount };
+            orderList[eventId].orders = [];
+        }
+        orderList[eventId].orders.push(orderDetails);
+    }
 
-//     bookingList = Object.values(bookingList);
+    orderList = Object.values(orderList);
 
-//     return structureResponse(bookingList, 1, "Success");
-// }
+    return structureResponse(orderList, 1, "Success");
+}
+
+const orderFindAllByUser = async (userId, params = {}) => {
+    try {
+        const orders = await OrderModel.find({ userId, ...params })
+            .populate({
+                path: 'eventId',
+                select: 'imageBackground name _id eventTypeId startTime endTime',
+            })
+            .populate({
+                path: 'tickets.ticketId',
+                select: 'seat serialNumber categoryId',
+                populate: {
+                    path: 'categoryId',
+                    model: 'TicketCategory',
+                    select: 'name price',
+                },
+            })
+            .populate({
+                path: 'voucherId',
+                select: 'name discount',
+            });
+
+        return orders.map(order => ({
+            orderId: order._id,
+            userId: order.userId,
+            eventId: order.eventId ? order.eventId._id : null,
+            eventName: order.eventId ? order.eventId.name : null,
+            eventImageBackground: order.eventId ? order.eventId.imageBackground : null,
+            eventTypeId: order.eventId ? order.eventId.eventTypeId : null,
+            startTime: order.eventId ? order.eventId.startTime : null,
+            endTime: order.eventId ? order.eventId.endTime : null,
+            voucherName: order.voucherId ? order.voucherId.name : null,
+            voucherDiscount: order.voucherId ? order.voucherId.discount : null,
+            tickets: order.tickets.map(ticket => ({
+                ticketId: ticket.ticketId ? ticket.ticketId._id : null,
+                seat: ticket.ticketId ? ticket.ticketId.seat : null,
+                serialNumber: ticket.ticketId ? ticket.ticketId.serialNumber : null,
+                ticketCategoryName: ticket.ticketId && ticket.ticketId.categoryId ?
+                    ticket.ticketId.categoryId.name : null,
+                ticketCategoryPrice: ticket.ticketId && ticket.ticketId.categoryId ?
+                    ticket.ticketId.categoryId.price : null,
+                quantity: ticket.quantity,
+            })),
+            orderDate: order.orderDate,
+            totalPrice: order.totalPrice,
+            finalPrice: order.finalPrice,
+            state: order.state,
+            createdAt: order.createdAt,
+            updatedAt: order.updatedAt,
+        }));
+    } catch (error) {
+        console.error("Error fetching orders for user:", error);
+        throw error;
+    }
+};
