@@ -9,7 +9,6 @@ import AdminPage from "./pages/Admin/AdminPage";
 import EventsPage from "./pages/User/EventsPage";
 import EventDetail from "./components/events/EventDetail";
 import SearchResults from "./components/events/SearchResult";
-import NavBar from "./components/NavBar/NavBar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import OrganizerEvents from "./pages/EventManager/OrganizerEvents";
 import CreateEventForm from "./pages/EventManager/CreateEventForm"
@@ -25,7 +24,6 @@ function App() {
   return (
     <Provider store={store}>
       <Router>
-        <NavBar />
         <div className="App">
           <Routes>
             {/* Trang home */}
