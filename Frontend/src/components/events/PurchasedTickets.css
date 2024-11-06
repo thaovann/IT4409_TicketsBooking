@@ -1,0 +1,18 @@
+.purchased-tickets-page {
+    margin-top: 80px;
+    padding: 20px;
+}
+
+.tickets-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.ticket-card {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 10px;
+    width: 300px;
+}

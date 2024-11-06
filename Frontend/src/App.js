@@ -7,7 +7,7 @@ import RegisterPage from "./pages/Auth/Register/RegisterPage";
 //import HomePage from "./pages/User/HomePage";
 import HomePage from "./pages/HomePage"
 import AdminPage from "./pages/Admin/AdminPage";
-import EventsPage from "./pages/EventsPage";
+import EventsPage from "./pages/User/EventsPage";
 import EventDetail from "./components/events/EventDetail";
 import SearchResults from "./components/events/SearchResult";
 import NavBar from "./components/NavBar/NavBar";
@@ -18,6 +18,9 @@ import PublicRoute from "./components/PublicRoute";
 import ForgotPassword from "./pages/Auth/ChangePassword/ForgotPassword";
 import ResetPassword from "./pages/Auth/ChangePassword/ResetPassword";
 import VerifyOTP from "./pages/Auth/ChangePassword/VerifyOTP";
+import TicketBookingPage from "./pages/User/TicketBookingPage";
+import PurchasedTickets from "./components/events/PurchasedTickets";
+import './App.css';
 
 function App() {
   return (
@@ -52,6 +55,9 @@ function App() {
             <Route path="/search" element={<SearchResults />} />
             <Route path="organizer/events" element={<OrganizerEvents />} />
             <Route path="organizer/create-event" element={<CreateEventForm />} />
+            <Route path="/booking/:eventId" element={<TicketBookingPage />} />
+            <Route path="/purchased-tickets" element={<PurchasedTickets />} />
+
 
             {/* Admin route */}
             <Route
