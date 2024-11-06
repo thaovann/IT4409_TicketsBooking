@@ -1,6 +1,7 @@
 const { structureResponse, parseTime } = require('../utils/common.utils');
 
 const OrderModel = require('../models/Order');
+const TicketModel = require('../models/Ticket');
 const {
     NotFoundException,
     CreateFailedException
@@ -176,11 +177,33 @@ const orderFindAllByEvent = async (eventId, params = {}) => {
 };
 
 exports.create = async (orderBody) => {
+    const ticketIds = [];
+    orderBody.tickets.forEach(ticket => {
+        ticket.ticketCategories.forEach(category => {
+            category.ticketDetails.forEach(detail => {
+                ticketIds.push(detail.ticketId);
+            });
+        });
+    });
+
+    const availableTickets = await TicketModel.find({
+        _id: { $in: ticketIds },
+        state: 'available'
+    });
+
+    if (availableTickets.length !== ticketIds.length) {
+        throw new CreateFailedException('One or more tickets are not available');
+    }
+
+    await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'reserved' } });
+
     const result = await OrderModel.create(orderBody);
 
     if (!result) {
+        await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'available' } });
+
         throw new CreateFailedException('Order failed to be created');
     }
 
     return structureResponse(result, 1, 'Order was created!');
-}
+};
