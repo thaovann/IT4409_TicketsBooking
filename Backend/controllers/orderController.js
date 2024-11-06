@@ -6,7 +6,8 @@ const {
     findOne,
     findAllByUser,
     findAllByEvent,
-    create
+    create,
+    update
 } = require('../services/orderServices');
 
 exports.getAllOrders = async (req, res, next) => {
@@ -47,4 +48,10 @@ exports.createOrder = async (req, res, next) => {
     checkValidation(req);
     const response = await create(req.body);
     res.status(201).send(response);
+};
+
+exports.updateOrder = async (req, res, next) => {
+    checkValidation(req);
+    const response = await update(req.body, req.params.id);
+    res.send(response);
 };

@@ -10,7 +10,7 @@ const {
     getUserOrders,
     getEventOrders,
     createOrder,
-    // updateOrder,
+    updateOrder,
     // deleteOrder
 } = require('../controllers/orderController');
 const UserRole = require('../utils/enums/userRoles');
@@ -26,7 +26,7 @@ router.get('/filters', auth(), orderGetFiltersSchema, awaitHandlerFactory(getFil
 router.get('/users/:id', auth(), awaitHandlerFactory(getUserOrders));
 router.get('/events/:id', auth(), awaitHandlerFactory(getEventOrders));
 router.post('/', auth(), createOrderSchema, awaitHandlerFactory(createOrder));
-// router.patch('/id/:id', auth(UserRole.Admin), updateOrderSchema, awaitHandlerFactory(updateOrder));
+router.patch('/id/:id', auth(UserRole.Admin), updateOrderSchema, awaitHandlerFactory(updateOrder));
 // router.delete('/id/:id', auth(UserRole.Admin), awaitHandlerFactory(deleteOrder));
 
 module.exports = router;

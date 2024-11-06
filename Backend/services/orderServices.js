@@ -4,7 +4,9 @@ const OrderModel = require('../models/Order');
 const TicketModel = require('../models/Ticket');
 const {
     NotFoundException,
-    CreateFailedException
+    CreateFailedException,
+    UnexpectedException,
+    UpdateFailedException
 } = require('../utils/exceptions/database');
 const { default: mongoose } = require('mongoose');
 
@@ -206,4 +208,33 @@ exports.create = async (orderBody) => {
     }
 
     return structureResponse(result, 1, 'Order was created!');
+};
+
+exports.update = async (body, id) => {
+    const existingOrder = await OrderModel.findById(id);
+    if (!existingOrder) throw new NotFoundException('Order not found');
+
+    console.log(existingOrder);
+    const ticketIds = [];
+    existingOrder.tickets.forEach(ticket => {
+        ticket.ticketCategories.forEach(category => {
+            category.ticketDetails.forEach(detail => {
+                ticketIds.push(detail.ticketId);
+            });
+        });
+    });
+
+    const updatedOrder = await OrderModel.findByIdAndUpdate(
+        id,
+        body, { new: true, runValidators: true }
+    );
+    if (!updatedOrder) throw new UnexpectedException('Something went wrong with updating the order');
+
+    if (body.state === 'successed') {
+        await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'sold' } });
+    } else if (body.state === 'cancelled') {
+        await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'available' } });
+    }
+
+    return structureResponse(updatedOrder, 1, 'Order updated successfully');
 };

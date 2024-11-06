@@ -120,3 +120,22 @@ exports.createOrderSchema = [
         .custom(value => mongoose.Types.ObjectId.isValid(value))
         .withMessage('Invalid VoucherID format')
 ];
+
+exports.updateOrderSchema = [
+    body('state')
+        .optional()
+        .trim()
+        .isIn([...Object.values(OrderState)])
+        .withMessage('Invalid order status'),
+    body()
+        .custom(value => {
+            return Object.keys(value).length !== 0;
+        })
+        .withMessage('Please provide required fields to update')
+        .custom(value => {
+            const updates = Object.keys(value);
+            const allowUpdates = ['state'];
+            return updates.every(update => allowUpdates.includes(update));
+        })
+        .withMessage('Invalid updates!')
+];
