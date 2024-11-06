@@ -4,8 +4,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import LoginPage from "./pages/Auth/Login/LoginPage";
 import RegisterPage from "./pages/Auth/Register/RegisterPage";
-//import HomePage from "./pages/User/HomePage";
-import HomePage from "./pages/HomePage"
+import HomePage from "./pages/User/HomePage";
 import AdminPage from "./pages/Admin/AdminPage";
 import EventsPage from "./pages/User/EventsPage";
 import EventDetail from "./components/events/EventDetail";
