@@ -9,7 +9,7 @@ const {
     getFilteredOrders,
     getUserOrders,
     getEventOrders,
-    // createOrder,
+    createOrder,
     // updateOrder,
     // deleteOrder
 } = require('../controllers/orderController');
