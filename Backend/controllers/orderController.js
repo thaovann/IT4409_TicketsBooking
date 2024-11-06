@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const {
     findAll,
     findOne,
-    findAllByUser
+    findAllByUser,
+    findAllByEvent
 } = require('../services/orderServices');
 
 exports.getAllOrders = async (req, res, next) => {
@@ -25,5 +26,10 @@ exports.getFilteredOrders = async (req, res, next) => {
 
 exports.getUserOrders = async (req, res, next) => {
     const response = await findAllByUser(req.params.id, req.query);
+    res.send(response);
+};
+
+exports.getEventOrders = async (req, res, next) => {
+    const response = await findAllByEvent(req.params.id, req.query);
     res.send(response);
 };

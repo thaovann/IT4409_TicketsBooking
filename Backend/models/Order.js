@@ -13,11 +13,20 @@ const OrderSchema = new Schema({
     required: true,
   },
   tickets: [{
-    ticketId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Ticket",
-      required: true,
-    },
+    ticketCategories: [{
+      ticketCategoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "TicketCategory",
+        required: true,
+      },
+      ticketDetails: [{
+        ticketId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Ticket",
+          required: true,
+        }
+      }]
+    }],
     quantity: {
       type: Number,
       required: true,

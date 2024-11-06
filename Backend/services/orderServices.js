@@ -4,6 +4,7 @@ const OrderModel = require('../models/Order');
 const {
     NotFoundException
 } = require('../utils/exceptions/database');
+const { default: mongoose } = require('mongoose');
 
 exports.findAll = async (params = {}) => {
     const hasParams = Object.keys(params).length !== 0;
@@ -37,9 +38,9 @@ exports.findAllByUser = async (id, query = {}) => {
         const { eventImageBackground, eventName, eventId, eventTypeId, startTime, endTime, voucherName, voucherDiscount, ...orderDetails } = order;
         if (!orderList[eventId]) {
             orderList[eventId] = { eventName, eventImageBackground };
-            const show_startTime = `${startTime}`;
-            const show_endTime = `${endTime}`;
-            orderList[eventId].event = { eventId, eventTypeId, show_startTime, show_endTime };
+            const event_startTime = `${startTime}`;
+            const event_endTime = `${endTime}`;
+            orderList[eventId].event = { eventId, eventTypeId, event_startTime, event_endTime };
             orderList[eventId].voucher = { voucherName, voucherDiscount };
             orderList[eventId].orders = [];
         }
@@ -59,13 +60,12 @@ const orderFindAllByUser = async (userId, params = {}) => {
                 select: 'imageBackground name _id eventTypeId startTime endTime',
             })
             .populate({
-                path: 'tickets.ticketId',
-                select: 'seat serialNumber categoryId',
-                populate: {
-                    path: 'categoryId',
-                    model: 'TicketCategory',
-                    select: 'name price',
-                },
+                path: 'tickets.ticketCategories.ticketCategoryId',
+                select: 'name price',
+            })
+            .populate({
+                path: 'tickets.ticketCategories.ticketDetails.ticketId',
+                select: 'seat serialNumber',
             })
             .populate({
                 path: 'voucherId',
@@ -84,13 +84,16 @@ const orderFindAllByUser = async (userId, params = {}) => {
             voucherName: order.voucherId ? order.voucherId.name : null,
             voucherDiscount: order.voucherId ? order.voucherId.discount : null,
             tickets: order.tickets.map(ticket => ({
-                ticketId: ticket.ticketId ? ticket.ticketId._id : null,
-                seat: ticket.ticketId ? ticket.ticketId.seat : null,
-                serialNumber: ticket.ticketId ? ticket.ticketId.serialNumber : null,
-                ticketCategoryName: ticket.ticketId && ticket.ticketId.categoryId ?
-                    ticket.ticketId.categoryId.name : null,
-                ticketCategoryPrice: ticket.ticketId && ticket.ticketId.categoryId ?
-                    ticket.ticketId.categoryId.price : null,
+                ticketCategories: ticket.ticketCategories.map(category => ({
+                    ticketCategoryId: category.ticketCategoryId ? category.ticketCategoryId._id : null,
+                    ticketCategoryName: category.ticketCategoryId ? category.ticketCategoryId.name : null,
+                    ticketCategoryPrice: category.ticketCategoryId ? category.ticketCategoryId.price : null,
+                    ticketDetails: category.ticketDetails.map(detail => ({
+                        ticketId: detail.ticketId ? detail.ticketId._id : null,
+                        seat: detail.ticketId ? detail.ticketId.seat : null,
+                        serialNumber: detail.ticketId ? detail.ticketId.serialNumber : null,
+                    })),
+                })),
                 quantity: ticket.quantity,
             })),
             orderDate: order.orderDate,
@@ -102,6 +105,71 @@ const orderFindAllByUser = async (userId, params = {}) => {
         }));
     } catch (error) {
         console.error("Error fetching orders for user:", error);
+        throw error;
+    }
+};
+
+exports.findAllByEvent = async (id, params = {}) => {
+    const seatsList = await orderFindAllByEvent(id, params);
+
+    if (!seatsList.length) {
+        throw new NotFoundException('No orders found');
+    }
+
+    return structureResponse(seatsList, 1, "Success");
+}
+
+const orderFindAllByEvent = async (eventId, params = {}) => {
+    try {
+        const eventObjectId = new mongoose.Types.ObjectId(eventId);
+
+        const orders = await OrderModel.find({ eventId: eventObjectId, ...params })
+            .populate({
+                path: 'eventId',
+                select: 'name startTime endTime',
+            })
+            .populate({
+                path: 'tickets.ticketCategories.ticketCategoryId',
+                select: 'name',
+            })
+            .populate({
+                path: 'tickets.ticketCategories.ticketDetails.ticketId',
+                select: 'seat serialNumber',
+            });
+
+        // console.log(orders);
+        // Collect event information and consolidate tickets into a single list with the order state
+        const result = [];
+        orders.forEach(order => {
+            const eventInfo = order.eventId ? {
+                eventName: order.eventId.name,
+                startTime: order.eventId.startTime,
+                endTime: order.eventId.endTime,
+            } : null;
+
+            const seats = [];
+            order.tickets.forEach(ticket => {
+                ticket.ticketCategories.forEach(category => {
+                    category.ticketDetails.forEach(detail => {
+                        seats.push({
+                            seat: detail.ticketId ? detail.ticketId.seat : null,
+                            serialNumber: detail.ticketId ? detail.ticketId.serialNumber : null,
+                            ticketCategoryName: category.ticketCategoryId ? category.ticketCategoryId.name : null,
+                        });
+                    });
+                });
+            });
+
+            result.push({
+                state: order.state,
+                event: eventInfo,
+                seats,
+            });
+        });
+
+        return result;
+    } catch (error) {
+        console.error("Error fetching orders for event:", error);
         throw error;
     }
 };
