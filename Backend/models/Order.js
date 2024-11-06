@@ -38,7 +38,6 @@ const OrderSchema = new Schema({
   voucherId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Voucher",
-    required: true,
   },
   finalPrice: { type: Number, required: true, min: 0 },
   state: { type: String, required: true }

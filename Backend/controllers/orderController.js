@@ -5,7 +5,8 @@ const {
     findAll,
     findOne,
     findAllByUser,
-    findAllByEvent
+    findAllByEvent,
+    create
 } = require('../services/orderServices');
 
 exports.getAllOrders = async (req, res, next) => {
@@ -40,4 +41,10 @@ exports.getUserOrders = async (req, res, next) => {
 exports.getEventOrders = async (req, res, next) => {
     const response = await findAllByEvent(req.params.id, req.query);
     res.send(response);
+};
+
+exports.createOrder = async (req, res, next) => {
+    checkValidation(req);
+    const response = await create(req.body);
+    res.status(201).send(response);
 };

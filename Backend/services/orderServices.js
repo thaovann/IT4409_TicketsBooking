@@ -2,7 +2,8 @@ const { structureResponse, parseTime } = require('../utils/common.utils');
 
 const OrderModel = require('../models/Order');
 const {
-    NotFoundException
+    NotFoundException,
+    CreateFailedException
 } = require('../utils/exceptions/database');
 const { default: mongoose } = require('mongoose');
 
@@ -173,3 +174,13 @@ const orderFindAllByEvent = async (eventId, params = {}) => {
         throw error;
     }
 };
+
+exports.create = async (orderBody) => {
+    const result = await OrderModel.create(orderBody);
+
+    if (!result) {
+        throw new CreateFailedException('Order failed to be created');
+    }
+
+    return structureResponse(result, 1, 'Order was created!');
+}
