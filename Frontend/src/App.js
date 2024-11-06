@@ -12,6 +12,7 @@ import SearchResults from "./components/events/SearchResult";
 import NavBar from "./components/NavBar/NavBar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TicketBookingPage from "./pages/User/TicketBookingPage";
+import PurchasedTickets from "./components/events/PurchasedTickets";
 import './App.css';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/booking/:eventId" element={<TicketBookingPage />} />
+            <Route path="/purchased-tickets" element={<PurchasedTickets />} />
 
 
             {/* Admin route */}

@@ -7,7 +7,8 @@ import "./TicketBookingPage.css"
 const TicketBookingPage = () => {
   return (
     <div>
-      <Header />
+      <Header hideCreateEvent={true} />
+
       <h2>Book Your Tickets</h2>
       <form>
         <label>
