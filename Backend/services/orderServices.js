@@ -238,3 +238,24 @@ exports.update = async (body, id) => {
 
     return structureResponse(updatedOrder, 1, 'Order updated successfully');
 };
+
+exports.del = async (id) => {
+    const existingOrder = await OrderModel.findById(id);
+    if (!existingOrder) throw new NotFoundException('Order not found');
+
+    const ticketIds = [];
+    existingOrder.tickets.forEach(ticket => {
+        ticket.ticketCategories.forEach(category => {
+            category.ticketDetails.forEach(detail => {
+                ticketIds.push(detail.ticketId);
+            });
+        });
+    });
+
+    const result = await OrderModel.findByIdAndDelete(id);
+    if (!result) throw new NotFoundException('Order not found');
+
+    await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'available' } });
+
+    return structureResponse({}, 1, 'Order has been deleted and ticket states have been updated to available');
+};
