@@ -232,6 +232,22 @@ exports.update = async (body, id) => {
 
     if (body.state === 'successed') {
         await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'sold' } });
+
+        const userId = existingOrder.userId;
+        const totalPrice = existingOrder.totalPrice;
+
+        await UserModel.findByIdAndUpdate(userId, {
+            $inc: { totalSpend: totalPrice, orderCount: 1 }
+        });
+    } else if (body.state === 'cancelled' && existingOrder.state === 'successed') {
+        await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'available' } });
+
+        const userId = existingOrder.userId;
+        const totalPrice = existingOrder.totalPrice;
+
+        await UserModel.findByIdAndUpdate(userId, {
+            $inc: { totalSpend: -totalPrice, orderCount: -1 }
+        });
     } else if (body.state === 'cancelled') {
         await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'available' } });
     }
