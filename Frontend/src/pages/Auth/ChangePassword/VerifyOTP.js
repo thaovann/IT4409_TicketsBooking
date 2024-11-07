@@ -1,6 +1,5 @@
 // src/pages/Auth/ChangePassword/VerifyOTP.js
 import React, { useState } from "react";
-import axios from "axios";
 import { verifyOTP } from "../../../redux/apiRequest";
 import { useNavigate } from "react-router-dom";
 

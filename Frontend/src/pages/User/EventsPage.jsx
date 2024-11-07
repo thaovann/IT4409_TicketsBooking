@@ -1,10 +1,10 @@
 //trang danh sách sự kiện
 // src/pages/EventsPage.jsx
 import React from 'react';
-import useFetch from '../hooks/useFetch';
-import Header from '../components/common/Header';
-import Footer from '../components/common/Footer';
-import EventCard from '../components/events/EventCard';
+import useFetch from '../../hooks/useFetch';
+import Header from '../../components/common/Header';
+import Footer from '../../components/common/Footer';
+import EventCard from '../../components/events/EventCard';
 
 const EventsPage = () => {
   const { data, loading, error } = useFetch('https://api.example.com/events');

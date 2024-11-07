@@ -1,17 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "./Header.css";
 import SearchBar from "../events/SearchBar";
+import logo from '../../assets/img/ticketbox.png';
+import avatarUser from '../../assets/img/avatar-clone-user.jpg';
 
-function Header() {
+function Header({ hideCreateEvent, onLoginClick }) {
+  const user = useSelector((state) => state.auth.login.currentUser); // Lấy thông tin người dùng từ Redux
+
   const handleSearch = async (query) => {
     try {
       const response = await fetch(
-        `https://api.example.com/events?query=${query}`
+        `https://localhost:3001/api/event/getEventByTypeId/?query=${query}`
       );
       const results = await response.json();
       console.log("Search results:", results);
-      // Cập nhật state để hiển thị kết quả trên trang
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
@@ -22,27 +26,38 @@ function Header() {
       <div className="header-container">
         <div className="logo">
           <Link to="/">
-            <img src="../../assets/img/ticketbox.png" alt="Logo" />
+            <img src={logo} alt="Logo" />
           </Link>
         </div>
         <div className="search-Bar">
           <SearchBar onSearch={handleSearch} />
         </div>
-        <div className="create-buttons">
-          <Link to="/login" className="create-btn btn">
-            Tạo sự kiện
-          </Link>
-        </div>
+
+        {!hideCreateEvent && (
+          <div className="create-buttons">
+            <Link to={user ? "organizer/create-event" : "/login"} className="create-btn btn">
+              Tạo sự kiện
+            </Link>
+          </div>
+        )}
+
         <div className="history-buttons">
-          <Link to="/login" className="history-btn btn">
-            <i class="fa-solid fa-ticket"></i> Vé đã mua
+          <Link to={user ? "/purchased-tickets" : "/login"} className="history-btn btn">
+            <i className="fa-solid fa-ticket"></i> Vé đã mua
           </Link>
         </div>
 
         <div className="auth-buttons">
-          <Link to="/login" className="login-btn btn">
-            Đăng nhập | Đăng ký
-          </Link>
+          {user ? (
+            <span className="user-greeting">
+              <img src={avatarUser} alt="avatar user" />
+              <p>Nguyen Ngoc Tung{user.FullName}</p>
+            </span>
+          ) : (
+            <button onClick={onLoginClick} className="login-btn btn">
+              Đăng nhập | Đăng ký
+            </button>
+          )}
         </div>
       </div>
       <nav className="navigation">

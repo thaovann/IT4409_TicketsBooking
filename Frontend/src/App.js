@@ -5,25 +5,25 @@ import store from "./redux/store";
 import LoginPage from "./pages/Auth/Login/LoginPage";
 import RegisterPage from "./pages/Auth/Register/RegisterPage";
 import HomePage from "./pages/User/HomePage";
-//import HomePage from "./pages/HomePage"
 import AdminPage from "./pages/Admin/AdminPage";
-import EventsPage from "./pages/EventsPage";
+import EventsPage from "./pages/User/EventsPage";
 import EventDetail from "./components/events/EventDetail";
 import SearchResults from "./components/events/SearchResult";
-import NavBar from "./components/NavBar/NavBar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import OrganizerEvents from "./pages/EventManager/OrganizerEvents";
+import CreateEventForm from "./pages/EventManager/CreateEventForm"
 import PublicRoute from "./components/PublicRoute";
 import ForgotPassword from "./pages/Auth/ChangePassword/ForgotPassword";
 import ResetPassword from "./pages/Auth/ChangePassword/ResetPassword";
 import VerifyOTP from "./pages/Auth/ChangePassword/VerifyOTP";
-import OrganizerEvents from "./pages/EventManager/OrganizerEvents";
-import CreateEventForm from "./pages/EventManager/CreateEventForm"
+import TicketBookingPage from "./pages/User/TicketBookingPage";
+import PurchasedTickets from "./components/events/PurchasedTickets";
+import './App.css';
 
 function App() {
   return (
     <Provider store={store}>
       <Router>
-        <NavBar />
         <div className="App">
           <Routes>
             {/* Trang home */}
@@ -52,6 +52,9 @@ function App() {
             <Route path="/search" element={<SearchResults />} />
             <Route path="organizer/events" element={<OrganizerEvents />} />
             <Route path="organizer/create-event" element={<CreateEventForm />} />
+            <Route path="/booking/:eventId" element={<TicketBookingPage />} />
+            <Route path="/purchased-tickets" element={<PurchasedTickets />} />
+
 
             {/* Admin route */}
             <Route

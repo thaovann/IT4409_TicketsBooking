@@ -105,7 +105,7 @@ const RegisterPage = () => {
     const [Email, setEmail] = useState('');
     const [Password, setPassword] = useState('');
     const [Phone, setPhone] = useState('');
-    const [Role, setRole] = useState(1);  // Mặc định là 0
+    const [Role, setRole] = useState(0);  // Mặc định là 0
     const [Gender, setGender] = useState(0);  // Mặc định là 0 (Nam)
     const [DoB, setDob] = useState('');
     const dispatch = useDispatch();

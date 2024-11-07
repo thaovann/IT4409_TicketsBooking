@@ -1,12 +1,14 @@
 //trang đặt vé
 import React from 'react';
-import Header from '../components/common/Header';
-import Footer from '../components/common/Footer';
+import Header from '../../components/common/Header';
+import Footer from '../../components/common/Footer';
+import "./TicketBookingPage.css"
 
 const TicketBookingPage = () => {
   return (
     <div>
-      <Header />
+      <Header hideCreateEvent={true} />
+
       <h2>Book Your Tickets</h2>
       <form>
         <label>
