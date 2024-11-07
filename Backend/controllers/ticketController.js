@@ -180,27 +180,36 @@ exports.updateTicketCategory = [
   },
 ];
 
-
 exports.deleteTicketCategory = [
-  async(req, res) => {
+  async (req, res) => {
+    const { categoryId } = req.params;
+
     try {
-      const { id } = req.params;
-
-      const deletedTicketCategory = await TicketCategory.findByIdAndDelete(id);
-
-      if(!deletedTicketCategory) {
-        return res.status(404).json({ message: 'Ticket category not found' });
+      
+      const ticketCategory = await TicketCategory.findById(categoryId);
+      if (!ticketCategory) {
+        return res.status(404).json({ message: "Ticket category not found" });
       }
 
-    res.status(200).json({
-        message: 'Ticket category deleted successfully',
-        ticketCategory: deletedTicketCategory,
-      });
-    } catch(error) {
-      console.error('Error deleting ticket category:', error);
-      res.status(500).json({ message: 'Error deleting ticket category', error: error.message });
+      await Ticket.deleteMany({ categoryId: categoryId });
+      await TicketCategory.findByIdAndDelete(categoryId);
+
+      res
+        .status(200)
+        .json({
+          message:
+            "Ticket category and associated tickets deleted successfully",
+        });
+    } catch (error) {
+      console.error("Error deleting ticket category:", error);
+      res
+        .status(500)
+        .json({
+          message: "Error deleting ticket category",
+          error: error.message,
+        });
     }
-  }
+  },
 ];
 
 

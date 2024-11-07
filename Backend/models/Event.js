@@ -24,7 +24,7 @@ const EventSchema = new Schema(
       type: String,
       trim: true,
       required: function () {
-        return this.eventType === "offline";
+        return this.eventTypeLocation === "offline";
       },
     },
     description: { type: String, trim: true },
@@ -33,7 +33,7 @@ const EventSchema = new Schema(
     imageLogo: { type: String, trim: true },
     video: { type: String, trim: true },
 
-    organizerLogo: { type: String, require: true, trim: true },
+    organizerLogo: { type: String, trim: true },
     organizerName: { type: String, required: true, trim: true },
     organizerInfor: { type: String, required: true, trim: true },
 
@@ -56,6 +56,12 @@ const EventSchema = new Schema(
       enum: ["online", "offline"],
       required: true,
     },
+
+    bankName: { type: String, trim: true },
+    bankNumber: { type: String, trim: true },
+    accountHolderName: { type: String, trim: true },
+
+    
   },
   { timestamps: true }
 );
