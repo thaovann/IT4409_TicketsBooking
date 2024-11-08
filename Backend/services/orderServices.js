@@ -219,8 +219,7 @@ exports.create = async (orderBody) => {
         const voucher = await VoucherModel.findOne({ code: orderBody.voucherCode, isActive: true });
 
         // Check if the voucher exists, is active, and is within the valid date range
-        const now = new Date();
-        if (!voucher || voucher.startDate > now || voucher.endDate < now) {
+        if (!voucher || voucher.startDate > orderBody.orderDate || voucher.endDate < orderBody.orderDate) {
             throw new CreateFailedException('Voucher is invalid or expired');
         }
 
@@ -304,6 +303,14 @@ exports.update = async (body, id) => {
         await UserModel.findOneAndUpdate({ UserId: userId }, {
             $inc: { totalSpend: totalPrice, orderCount: 1 }
         });
+
+        const voucher = await VoucherModel.findOne({ code: existingOrder.voucherCode });
+
+        if (!voucher) {
+            throw new CreateFailedException('Voucher is invalid');
+        }
+
+        await UserModel.findOneAndUpdate({ UserId: userId }, { $pull: { Vouchers: voucher._id } });
     } else if (body.state === 'cancelled' && existingOrder.state === 'successed') {
         await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'available' } });
 
