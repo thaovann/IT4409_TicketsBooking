@@ -31,7 +31,7 @@ const TicketCategorySchema = new Schema(
     leftQuantity: {
       type: Number,
       required: true,
-      min: 0, // Minimum can be 0, as the tickets can be sold out.
+      min: 0, 
     },
     minPerOrder: {
       type: Number,
