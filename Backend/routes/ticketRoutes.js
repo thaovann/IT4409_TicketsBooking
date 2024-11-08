@@ -6,6 +6,9 @@ router.post("/createTicketCategory", ticketController.createTicketCategory);
 router.get("/getTicketCategoriesByEvent/:eventId", ticketController.getTicketCategoriesByEvent);
 router.get("/getAllTicketCategories", ticketController.getAllTicketCategories);
 router.put("/updateTicketCategory/:id", ticketController.updateTicketCategory);
-router.delete("/deleteTicketCategory/:id", ticketController.deleteTicketCategory);
+router.delete(
+  "/deleteTicketCategory/:categoryId",
+  ticketController.deleteTicketCategory
+);
 
 module.exports = router;

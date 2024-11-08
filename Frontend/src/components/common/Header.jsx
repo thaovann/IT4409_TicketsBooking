@@ -48,7 +48,7 @@ function Header({ hideCreateEvent, onLoginClick }) {
 
         {!hideCreateEvent && (
           <div className="create-buttons">
-            <Link to={user ? "/create-event" : "/login"} className="create-btn btn">
+            <Link to={user ? "organizer/create-event" : "/login"} className="create-btn btn">
               Tạo sự kiện
             </Link>
           </div>

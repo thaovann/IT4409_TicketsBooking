@@ -5,6 +5,8 @@ const path = require("path");
 const sharp = require("sharp");
 const EventType = require("../models/eventType");
 const Event = require("../models/Event");
+const TicketCategory = require("../models/TicketCategory");
+const Ticket = require("../models/Ticket");
 
 const mongoURI =
   "mongodb+srv://lethithaovan2711:pusrmHtnJpkmMNAB@cluster0.uhim5.mongodb.net/TicketBookingService";
@@ -77,22 +79,26 @@ exports.createEvent = async (req, res) => {
       endTime,
       eventTypeLocation,
       tags,
-      organizerInfor, // Added this
-      organizerName, // Added this
+      organizerInfor, 
+      organizerName,
+      bankName,
+      bankNumber,
+      accountHolderName
     } = req.body;
 
-    // Validate required fields
+
     if (
-      !userId ||
-      !eventTypeId ||
-      !name ||
-      !startTime ||
-      !endTime ||
-      !eventTypeLocation ||
-      !organizerInfor || // Validate this field
-      !organizerName || // Validate this field
-      !req.files.logo ||
-      !req.files.background
+      (!userId ||
+        !eventTypeId ||
+        !name ||
+        !startTime ||
+        !endTime ||
+        !eventTypeLocation ||
+        !organizerInfor ||
+        !organizerName ||
+        !req.files.logo ||
+        !req.files.background ||
+        !bankName ||!bankNumber|| !accountHolderName)
     ) {
       return res
         .status(400)
@@ -105,7 +111,7 @@ exports.createEvent = async (req, res) => {
       return res.status(404).send("Event Type not found");
     }
 
-    // Validate location for offline events
+    
     if (eventTypeLocation === "offline" && !location) {
       return res
         .status(400)
@@ -159,36 +165,43 @@ exports.createEvent = async (req, res) => {
       });
     }
 
-    // Validate video size
+   
     if (videoFile && videoFile.size > 50 * 1024 * 1024) {
       return res.status(400).json({ message: "Video size must be under 50MB" });
     }
-
-    // Validate start and end times
     if (new Date(endTime) <= new Date(startTime)) {
       return res
         .status(400)
         .json({ message: "End time must be after the start time." });
     }
 
-    // Create a new event
     const newEvent = new Event({
       userId,
       eventTypeId,
+
       name,
       description,
+      eventTypeLocation,
       location: eventTypeLocation === "offline" ? location : null,
+
       startTime: new Date(startTime),
       endTime: new Date(endTime),
+
       video: videoFile ? videoFile.id : null,
       imageBackground: backgroundFile.id,
       imageLogo: logoFile.id,
       state: "under review",
       averageRating: 0,
-      eventTypeLocation,
+
       tags: tags ? tags.split(",").map((tag) => tag.trim()) : [],
-      organizerInfor, // Store the organizer information
-      organizerName, // Store the organizer name
+
+      organizerLogo: organizerLogoFile ? organizerLogoFile.id : null,
+      organizerInfor,
+      organizerName,
+
+      bankName,
+      bankNumber,
+      accountHolderName
     });
 
     await newEvent.save();
@@ -209,14 +222,14 @@ exports.getImageById = async (req, res) => {
   {
     const fileId = new mongoose.Types.ObjectId(req.params.id);
 
-    // Check if file exists
+   
     const file = await gridfsBucket.find({ _id: fileId }).toArray();
     if (!file || file.length === 0)
     {
       return res.status(404).json({ message: "Image not found" });
     }
 
-    // Stream the file from GridFS to the response
+   
     const downloadStream = gridfsBucket.openDownloadStream(fileId);
     downloadStream.pipe(res);
     downloadStream.on("error", (err) => {
@@ -296,14 +309,25 @@ exports.getEventsByCustomerId = async (req, res) => {
 exports.deleteEvent = async (req, res) => {
   const { id } = req.params;
   try {
+    const ticketCategories = await TicketCategory.find({ eventId: id });
+    const categoryIds = ticketCategories.map((category) => category._id);
+    await Ticket.deleteMany({ categoryId: { $in: categoryIds } });
+    await TicketCategory.deleteMany({ eventId: id });
     const result = await Event.findByIdAndDelete(id);
     if (!result) {
       return res.status(404).json({ message: "Event not found" });
     }
-    res.status(200).json({ message: "Event deleted successfully" });
+    res
+      .status(200)
+      .json({
+        message:
+          "Event and related ticket categories and tickets deleted successfully",
+      });
   } catch (error) {
     console.error("Error deleting event:", error);
-    res.status(500).json({ message: "Error deleting event" });
+    res
+      .status(500)
+      .json({ message: "Error deleting event", error: error.message });
   }
 };
 
@@ -311,8 +335,6 @@ exports.updateEvent = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedData = { ...req.body };
-
-    // Convert date strings to Date objects if present
     if (updatedData.startTime) {
       updatedData.startTime = new Date(updatedData.startTime);
     }

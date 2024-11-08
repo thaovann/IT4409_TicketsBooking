@@ -69,6 +69,7 @@ a {
 }
 
 .user-greeting p{
+  display: inline-block;
   font-size: 1.2em;
   font-weight: 700;
 }
