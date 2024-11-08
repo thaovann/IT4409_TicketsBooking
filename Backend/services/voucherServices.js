@@ -40,12 +40,18 @@ exports.create = async (voucherBody) => {
         throw new CreateFailedException('maxDiscountAmount should not be provided for fixed discount type');
     }
 
-    voucherBody.isActive = true;
+    if (voucherBody.discountType === 'percentage' && voucherBody.discountValue > 80) {
+        throw new UpdateFailedException('discountValue should not be greater than 80%');
+    }
 
     const result = await VoucherModel.create(voucherBody);
 
     if (!result) {
         throw new CreateFailedException('Voucher failed to be created');
+    }
+
+    if (voucherBody.isActive === false) {
+        return structureResponse(result, 1, 'Voucher was created!');
     }
 
     await updateUserVouchers(result);
@@ -55,15 +61,38 @@ exports.create = async (voucherBody) => {
 
 
 // Update an existing voucher
-exports.update = async (voucherBody, query) => {
-    const updatedVoucher = await Voucher.findOneAndUpdate(query, voucherBody, { new: true });
+exports.update = async (voucherBody, id) => {
+    if (new Date(voucherBody.startDate) >= new Date(voucherBody.endDate)) {
+        throw new UpdateFailedException('startDate must be earlier than endDate');
+    }
 
-    if (updatedVoucher) {
-        // Update users' vouchers if criteria change
+    if (voucherBody.discountType === 'fixed' && voucherBody.maxDiscountAmount != null) {
+        throw new UpdateFailedException('maxDiscountAmount should not be provided for fixed discount type');
+    }
+
+    if (voucherBody.discountType === 'percentage' && voucherBody.discountValue === undefined) {
+        throw new UpdateFailedException('discountValue should be provided for percentage discount type');
+    }
+
+    if (voucherBody.discountType === 'percentage' && voucherBody.discountValue > 80) {
+        throw new UpdateFailedException('discountValue should not be greater than 80%');
+    }
+
+    if (voucherBody.discountType === 'fixed') {
+        voucherBody.maxDiscountAmount = null;
+    }
+
+    const updatedVoucher = await VoucherModel.findByIdAndUpdate(id, voucherBody, { new: true, runValidators: true });
+
+    if (!updatedVoucher) throw new UnexpectedException('Something went wrong with updating the voucher');
+
+    if (voucherBody.isActive === false) {
+        await removeVoucherFromUsers(id);
+    } else {
         await updateUserVouchers(updatedVoucher);
     }
 
-    return updatedVoucher;
+    return structureResponse(updatedVoucher, 1, 'Voucher was created!');
 };
 
 // Delete a voucher by query (e.g., code)
@@ -92,6 +121,6 @@ const updateUserVouchers = async (voucher) => {
 }
 
 // Helper function to remove a voucher from all users when it is deleted
-async function removeVoucherFromUsers(voucherId) {
-    await User.updateMany({ Vouchers: voucherId }, { $pull: { Vouchers: voucherId } });
+const removeVoucherFromUsers = async (voucherId) => {
+    await UserModel.updateMany({ Vouchers: voucherId }, { $pull: { Vouchers: voucherId } });
 }

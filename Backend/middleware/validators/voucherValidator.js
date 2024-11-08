@@ -24,10 +24,6 @@ exports.createVoucherSchema = [
         .optional()
         .isNumeric()
         .withMessage('Maximum discount amount must be a number'),
-    body('usageLimit')
-        .optional()
-        .isInt({ min: 1 })
-        .withMessage('Usage limit must be an integer greater than 0'),
     body('isActive')
         .optional()
         .isBoolean()
@@ -52,10 +48,7 @@ exports.createVoucherSchema = [
         .withMessage('Minimum order count must be a non-negative integer')
 ];
 
-exports.validateVoucherUpdate = [
-    param('code')
-        .isString().withMessage('Voucher code must be a string')
-        .notEmpty().withMessage('Voucher code is required in the URL'),
+exports.updateVoucherSchema = [
     body('discountType')
         .optional()
         .isIn(['percentage', 'fixed']).withMessage('Invalid discount type'),
@@ -68,9 +61,6 @@ exports.validateVoucherUpdate = [
     body('maxDiscountAmount')
         .optional()
         .isNumeric().withMessage('Maximum discount amount must be a number'),
-    body('usageLimit')
-        .optional()
-        .isInt({ min: 1 }).withMessage('Usage limit must be an integer greater than 0'),
     body('isActive')
         .optional()
         .isBoolean().withMessage('isActive must be a boolean'),
@@ -85,5 +75,15 @@ exports.validateVoucherUpdate = [
         .isNumeric().withMessage('Minimum total spend must be a number'),
     body('minOrderCount')
         .optional()
-        .isInt({ min: 0 }).withMessage('Minimum order count must be a non-negative integer')
+        .isInt({ min: 0 }).withMessage('Minimum order count must be a non-negative integer'),
+    body()
+        .custom(value => Object.keys(value).length !== 0)
+        .withMessage('Please provide required field to update')
+        .custom(value => {
+            const updates = Object.keys(value);
+            const allowUpdates = ['discountType', 'discountValue', 'minOrderValue', 'maxDiscountAmount', 'isActive', 'startDate', 'endDate', 'minTotalSpend', 'minOrderCount'];
+            // ensures that every field in the request body is part of the allowed fields.
+            return updates.every(update => allowUpdates.includes(update));
+        })
+        .withMessage('Invalid updates!')
 ];
