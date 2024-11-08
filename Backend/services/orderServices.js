@@ -2,6 +2,10 @@ const { structureResponse, parseTime } = require('../utils/common.utils');
 
 const OrderModel = require('../models/Order');
 const TicketModel = require('../models/Ticket');
+const VoucherModel = require('../models/Voucher');
+const TicketCategoryModel = require('../models/TicketCategory');
+const UserModel = require('../models/User');
+
 const {
     NotFoundException,
     CreateFailedException,
@@ -197,6 +201,68 @@ exports.create = async (orderBody) => {
         throw new CreateFailedException('One or more tickets are not available');
     }
 
+    let totalPrice = 0;
+    for (const ticket of orderBody.tickets) {
+        for (const category of ticket.ticketCategories) {
+            const ticketCategory = await TicketCategoryModel.findById(category.ticketCategoryId);
+            if (!ticketCategory) {
+                throw new CreateFailedException(`Ticket category ${category.ticketCategoryId} not found`);
+            }
+            totalPrice += (ticketCategory.price * ticket.quantity);
+        }
+    }
+
+    // Initialize discount-related variables
+    let discount = 0;
+
+    if (orderBody.voucherCode) {
+        const voucher = await VoucherModel.findOne({ code: orderBody.voucherCode, isActive: true });
+
+        // Check if the voucher exists, is active, and is within the valid date range
+        const now = new Date();
+        if (!voucher || voucher.startDate > now || voucher.endDate < now) {
+            throw new CreateFailedException('Voucher is invalid or expired');
+        }
+
+        // Check if the voucher meets usage limits
+        if (voucher.usageLimit && voucher.usedCount >= voucher.usageLimit) {
+            throw new CreateFailedException('Voucher usage limit has been reached');
+        }
+
+        // Check if the total price meets the minimum order value for this voucher
+        if (voucher.minOrderValue && totalPrice < voucher.minOrderValue) {
+            throw new CreateFailedException(`Order must be at least ${voucher.minOrderValue} to apply this voucher`);
+        }
+
+        const user = await UserModel.findOne({ userId: orderBody.userId, isActive: true });
+        // Check user's minimum spending and order count if necessary
+        if (voucher.minTotalSpend && user.totalSpend < voucher.minTotalSpend) {
+            throw new CreateFailedException(`User must have spent at least ${voucher.minTotalSpend} to use this voucher`);
+        }
+        if (voucher.minOrderCount && user.orderCount < voucher.minOrderCount) {
+            throw new CreateFailedException(`User must have at least ${voucher.minOrderCount} orders to use this voucher`);
+        }
+
+        // Apply discount based on discount type
+        if (voucher.discountType === 'percentage') {
+            discount = totalPrice * (voucher.discountValue / 100);
+            // If there's a maximum discount amount, cap the discount
+            if (voucher.maxDiscountAmount && discount > voucher.maxDiscountAmount) {
+                discount = voucher.maxDiscountAmount;
+            }
+        } else if (voucher.discountType === 'fixed') {
+            discount = voucher.discountValue;
+        }
+    }
+
+    // Calculate final price with the discount applied
+    const calculatedFinalPrice = totalPrice - discount;
+
+    // Verify if the finalPrice in orderBody matches the calculated one
+    if (orderBody.finalPrice !== calculatedFinalPrice) {
+        throw new CreateFailedException('Final price calculation is incorrect');
+    }
+
     await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'reserved' } });
 
     const result = await OrderModel.create(orderBody);
@@ -214,7 +280,6 @@ exports.update = async (body, id) => {
     const existingOrder = await OrderModel.findById(id);
     if (!existingOrder) throw new NotFoundException('Order not found');
 
-    console.log(existingOrder);
     const ticketIds = [];
     existingOrder.tickets.forEach(ticket => {
         ticket.ticketCategories.forEach(category => {
@@ -230,13 +295,13 @@ exports.update = async (body, id) => {
     );
     if (!updatedOrder) throw new UnexpectedException('Something went wrong with updating the order');
 
-    if (body.state === 'successed') {
+    if (body.state === 'successed' && existingOrder.state !== 'successed') {
         await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'sold' } });
 
         const userId = existingOrder.userId;
         const totalPrice = existingOrder.totalPrice;
 
-        await UserModel.findByIdAndUpdate(userId, {
+        await UserModel.findOneAndUpdate({ UserId: userId }, {
             $inc: { totalSpend: totalPrice, orderCount: 1 }
         });
     } else if (body.state === 'cancelled' && existingOrder.state === 'successed') {
@@ -245,7 +310,7 @@ exports.update = async (body, id) => {
         const userId = existingOrder.userId;
         const totalPrice = existingOrder.totalPrice;
 
-        await UserModel.findByIdAndUpdate(userId, {
+        await UserModel.findOneAndUpdate({ UserId: userId }, {
             $inc: { totalSpend: -totalPrice, orderCount: -1 }
         });
     } else if (body.state === 'cancelled') {
@@ -272,6 +337,15 @@ exports.del = async (id) => {
     if (!result) throw new NotFoundException('Order not found');
 
     await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'available' } });
+
+    if (existingOrder.state === 'successed') {
+        const userId = existingOrder.userId;
+        const totalPrice = existingOrder.totalPrice;
+
+        await UserModel.findOneAndUpdate({ UserId: userId }, {
+            $inc: { totalSpend: -totalPrice, orderCount: -1 }
+        });
+    }
 
     return structureResponse({}, 1, 'Order has been deleted and ticket states have been updated to available');
 };
