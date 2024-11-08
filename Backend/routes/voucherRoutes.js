@@ -20,6 +20,6 @@ router.post('/', auth(UserRole.Admin), createVoucherSchema, awaitHandlerFactory(
 router.get('/', auth(UserRole.Admin), awaitHandlerFactory(getAllVouchers));
 router.get('/code/:code', auth(UserRole.Admin), awaitHandlerFactory(getVoucherByCode));
 router.patch('/id/:id', auth(UserRole.Admin), updateVoucherSchema, awaitHandlerFactory(updateVoucher));
-// router.delete('/code/:code', auth(UserRole.Admin), awaitHandlerFactory(deleteVoucher));
+router.delete('/id/:id', auth(UserRole.Admin), awaitHandlerFactory(deleteVoucher));
 
 module.exports = router;

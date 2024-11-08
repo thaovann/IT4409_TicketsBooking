@@ -40,8 +40,12 @@ exports.create = async (voucherBody) => {
         throw new CreateFailedException('maxDiscountAmount should not be provided for fixed discount type');
     }
 
+    if (voucherBody.discountType === 'percentage' && voucherBody.discountValue === undefined) {
+        throw new CreateFailedException('discountValue should be provided for percentage discount type');
+    }
+
     if (voucherBody.discountType === 'percentage' && voucherBody.discountValue > 80) {
-        throw new UpdateFailedException('discountValue should not be greater than 80%');
+        throw new CreateFailedException('discountValue should not be greater than 80%');
     }
 
     const result = await VoucherModel.create(voucherBody);
@@ -96,7 +100,7 @@ exports.update = async (voucherBody, id) => {
 };
 
 // Delete a voucher by query (e.g., code)
-exports.delete = async (query) => {
+exports.del = async (query) => {
     const voucherToDelete = await Voucher.findOne(query);
     if (!voucherToDelete) return null;
 
@@ -106,19 +110,30 @@ exports.delete = async (query) => {
     return await Voucher.deleteOne(query);
 };
 
+exports.del = async (id) => {
+    const existingVoucher = await VoucherModel.findById(id);
+    if (!existingVoucher) throw new NotFoundException('Voucher not found');
+
+    const result = await VoucherModel.findByIdAndDelete(id);
+    if (!result) throw new NotFoundException('Voucher not found');
+
+    await removeVoucherFromUsers(id);
+
+    return structureResponse({}, 1, 'Voucher has been deleted and removed from all users');
+};
+
 const updateUserVouchers = async (voucher) => {
-    const qualifiedUsers = await UserModel.find({
+    const result = await UserModel.updateMany({
         totalSpend: { $gte: voucher.minTotalSpend },
         orderCount: { $gte: voucher.minOrderCount },
+        Vouchers: { $ne: voucher._id } // Ensure the voucher is not already present
+    }, {
+        $addToSet: { Vouchers: voucher._id } // Adds voucher ID to the array only if it's not already present
     });
 
-    await Promise.all(qualifiedUsers.map(async (user) => {
-        if (!user.Vouchers.includes(voucher._id)) {
-            user.Vouchers.push(voucher._id);
-            await user.save();
-        }
-    }));
-}
+    console.log(`${result.modifiedCount} users updated with new voucher.`);
+};
+
 
 // Helper function to remove a voucher from all users when it is deleted
 const removeVoucherFromUsers = async (voucherId) => {
