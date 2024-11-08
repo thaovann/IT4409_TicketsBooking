@@ -35,8 +35,8 @@ const OrderSchema = new Schema({
   }],
   orderDate: { type: Date, required: true, default: Date.now },
   totalPrice: { type: Number, required: true, min: 0 },
-  voucherId: {
-    type: mongoose.Schema.Types.ObjectId,
+  voucherCode: {
+    type: String,
     ref: "Voucher",
   },
   finalPrice: { type: Number, required: true, min: 0 },

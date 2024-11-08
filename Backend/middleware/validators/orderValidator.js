@@ -27,10 +27,12 @@ exports.orderGetFiltersSchema = [
         .isISO8601()
         .withMessage('Invalid order date format. Use ISO8601 format (YYYY-MM-DD)'),
 
-    query('voucherId')
+    query('voucherCode')
         .optional()
-        .custom(value => mongoose.Types.ObjectId.isValid(value))
-        .withMessage('Invalid VoucherID format'),
+        .isString()
+        .withMessage('Voucher code must be a string')
+        .notEmpty()
+        .withMessage('Voucher code cannot be empty'),
 
     query('state')
         .optional()
@@ -115,10 +117,12 @@ exports.createOrderSchema = [
         .withMessage('Order state is required')
         .isIn(Object.values(OrderState))
         .withMessage('Invalid order state'),
-    body('voucherId')
+    body('voucherCode')
         .optional()
-        .custom(value => mongoose.Types.ObjectId.isValid(value))
-        .withMessage('Invalid VoucherID format')
+        .isString()
+        .withMessage('Voucher code must be a string')
+        .notEmpty()
+        .withMessage('Voucher code cannot be empty'),
 ];
 
 exports.updateOrderSchema = [

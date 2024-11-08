@@ -234,7 +234,7 @@ exports.create = async (orderBody) => {
             throw new CreateFailedException(`Order must be at least ${voucher.minOrderValue} to apply this voucher`);
         }
 
-        const user = await UserModel.findOne({ userId: orderBody.userId, isActive: true });
+        const user = await UserModel.findOne({ UserId: orderBody.userId, isActive: true });
         // Check user's minimum spending and order count if necessary
         if (voucher.minTotalSpend && user.totalSpend < voucher.minTotalSpend) {
             throw new CreateFailedException(`User must have spent at least ${voucher.minTotalSpend} to use this voucher`);
