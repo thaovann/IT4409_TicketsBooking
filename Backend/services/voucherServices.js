@@ -30,7 +30,50 @@ exports.findOne = async (params) => {
     return structureResponse(voucher, 1, "Success");
 }
 
-// Create a new voucher
+exports.findAllByUser = async (id, query = {}) => {
+    const filterCriteria = {};
+
+    if (query.discountType) {
+        filterCriteria.discountType = query.discountType;
+    }
+    if (query.isActive !== undefined) {
+        filterCriteria.isActive = query.isActive === 'true';
+    }
+    if (query.startDate) {
+        filterCriteria.startDate = { $gte: new Date(query.startDate) };
+    }
+    if (query.endDate) {
+        filterCriteria.endDate = { $lte: new Date(query.endDate) };
+    }
+
+    const user = await UserModel.findById(id)
+        .populate({
+            path: 'Vouchers',
+            match: filterCriteria,
+            select: 'code discountType discountValue maxDiscountAmount startDate endDate',
+        })
+        .exec();
+
+    if (!user) {
+        throw new NotFoundException('User not found');
+    }
+    if (!user.Vouchers || user.Vouchers.length === 0) {
+        throw new NotFoundException('No vouchers found for this user with the specified criteria');
+    }
+
+    const vouchers = user.Vouchers.map(voucher => ({
+        code: voucher.code,
+        discountType: voucher.discountType,
+        discountValue: voucher.discountValue,
+        maxDiscountAmount: voucher.maxDiscountAmount,
+        startDate: voucher.startDate,
+        endDate: voucher.endDate
+    }));
+
+    return structureResponse(vouchers, 1, "Success");
+};
+
+
 exports.create = async (voucherBody) => {
     if (new Date(voucherBody.startDate) >= new Date(voucherBody.endDate)) {
         throw new CreateFailedException('startDate must be earlier than endDate');
@@ -63,8 +106,6 @@ exports.create = async (voucherBody) => {
     return structureResponse(result, 1, 'Voucher was created!');
 };
 
-
-// Update an existing voucher
 exports.update = async (voucherBody, id) => {
     if (new Date(voucherBody.startDate) >= new Date(voucherBody.endDate)) {
         throw new UpdateFailedException('startDate must be earlier than endDate');
@@ -97,17 +138,6 @@ exports.update = async (voucherBody, id) => {
     }
 
     return structureResponse(updatedVoucher, 1, 'Voucher was created!');
-};
-
-// Delete a voucher by query (e.g., code)
-exports.del = async (query) => {
-    const voucherToDelete = await Voucher.findOne(query);
-    if (!voucherToDelete) return null;
-
-    // Remove the voucher from users before deletion
-    await removeVoucherFromUsers(voucherToDelete._id);
-
-    return await Voucher.deleteOne(query);
 };
 
 exports.del = async (id) => {

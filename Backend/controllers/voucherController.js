@@ -4,6 +4,7 @@ const { Types } = require('mongoose');
 const {
     findAll,
     findOne,
+    findAllByUser,
     create,
     update,
     del
@@ -19,24 +20,10 @@ exports.getVoucherByCode = async (req, res, next) => {
     res.send(response);
 };
 
-// exports.getFilteredOrders = async (req, res, next) => {
-//     checkValidation(req);
-
-//     if (req.query.orderDate) {
-//         req.query.orderDate = new Date(req.query.orderDate);
-//         if (isNaN(req.query.orderDate.getTime())) {
-//             return res.status(400).json({ error: 'Invalid date format for orderDate' });
-//         }
-//     }
-
-//     const response = await findAll(req.query);
-//     res.send(response);
-// };
-
-// exports.getUserOrders = async (req, res, next) => {
-//     const response = await findAllByUser(req.params.id, req.query);
-//     res.send(response);
-// };
+exports.getUserVouchers = async (req, res, next) => {
+    const response = await findAllByUser(req.params.id, req.query);
+    res.send(response);
+};
 
 exports.createVoucher = async (req, res, next) => {
     checkValidation(req);

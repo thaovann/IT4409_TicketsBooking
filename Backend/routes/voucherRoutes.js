@@ -7,6 +7,7 @@ const {
     createVoucher,
     getAllVouchers,
     getVoucherByCode,
+    getUserVouchers,
     updateVoucher,
     deleteVoucher
 } = require('../controllers/voucherController');
@@ -17,8 +18,9 @@ const {
 } = require('../middleware/validators/voucherValidator');
 
 router.post('/', auth(UserRole.Admin), createVoucherSchema, awaitHandlerFactory(createVoucher));
-router.get('/', auth(UserRole.Admin), awaitHandlerFactory(getAllVouchers));
-router.get('/code/:code', auth(UserRole.Admin), awaitHandlerFactory(getVoucherByCode));
+router.get('/', auth(), awaitHandlerFactory(getAllVouchers));
+router.get('/code/:code', auth(), awaitHandlerFactory(getVoucherByCode));
+router.get('/users/:id', auth(), awaitHandlerFactory(getUserVouchers));
 router.patch('/id/:id', auth(UserRole.Admin), updateVoucherSchema, awaitHandlerFactory(updateVoucher));
 router.delete('/id/:id', auth(UserRole.Admin), awaitHandlerFactory(deleteVoucher));
 
