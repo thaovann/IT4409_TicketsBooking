@@ -25,6 +25,9 @@ app.use("/api/event", eventRoutes);
 const ticketRoutes = require("./routes/ticketRoutes");
 app.use("/api/ticket", ticketRoutes);
 
+const orderRoutes = require("./routes/orderRoutes");
+app.use("/order", orderRoutes);
+
 // Server setup
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
