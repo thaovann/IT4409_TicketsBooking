@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import CreateTicketCategoryForm from "./CreateTicketCategoryForm"; 
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const CreateEventForm = () => {
-  const user = "6715fa1fe5a6fc4631f55aa7";
+  const navigate = useNavigate();
+  // const user = useSelector((state) => state.user); 
+  const user = {
+    id: "1"
+  }
   const [formData, setFormData] = useState({
-    userId: user,
+    userId: "",
     eventTypeId: "",
     name: "",
     description: "",
@@ -21,6 +27,21 @@ const CreateEventForm = () => {
     bankNumber: "",
     accountHolderName: "",
   });
+  useEffect(() => {
+    if (!user) {
+      
+      navigate("/login");
+    } else
+    {
+      console.log(user._id);
+      setFormData((prevData) => ({
+        ...prevData,
+        userId: user._id, // Assign the userId from Redux state
+      }));
+    }
+  }, [user, navigate]);
+
+  
 
   const [files, setFiles] = useState({
     logo: null,
@@ -155,19 +176,31 @@ const CreateEventForm = () => {
       alert("Error: " + (error.response?.data?.message || error.message));
     }
   };
-
+  const handleReturnHome = () => {
+    navigate("/");
+  };
 
   return (
-    <div className="container" style={{ marginTop: "20px" }}>
+    <div
+      className="container"
+      style={{ marginTop: "20px", backgroundColor: "#2c2c2c" }}
+    >
       <h2 className="text-center" style={{ color: "#ffea99" }}>
         Create Event
       </h2>
+      <button
+        onClick={handleReturnHome}
+        className="btn btn-primary mb-4"
+        style={{ backgroundColor: "#ffea99", color: "#000000", padding:"20px", marginLeft:"20px", marginTop:"20px", }}
+      >
+        Return to Homepage
+      </button>
       <div className="d-flex">
         <div
           className="event-form"
           style={{
             flex: 1,
-            backgroundColor: "#fff",
+            backgroundColor: "#2c2c2c",
             padding: "20px",
             borderRadius: "5px",
             marginRight: "10px",
@@ -176,7 +209,12 @@ const CreateEventForm = () => {
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             {/* Event Details Section */}
             <div
-              style={{ backgroundColor: "#fff5e6", padding: "15px", borderRadius: "5px", marginBottom: "20px" }}
+              style={{
+                backgroundColor: "#fff5e6",
+                padding: "15px",
+                borderRadius: "5px",
+                marginBottom: "20px",
+              }}
             >
               <h4 className="text-secondary">Event Details</h4>
               <div className="mb-3">
