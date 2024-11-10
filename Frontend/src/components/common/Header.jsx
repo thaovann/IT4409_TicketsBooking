@@ -51,7 +51,7 @@ function Header({ hideCreateEvent, onLoginClick }) {
           {user ? (
             <span className="user-greeting">
               <img src={avatarUser} alt="avatar user" />
-              <p>Nguyen Ngoc Tung{user.FullName}</p>
+              <p>{user.body?._doc?.FullName}</p>
             </span>
           ) : (
             <button onClick={onLoginClick} className="login-btn btn">
