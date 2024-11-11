@@ -1,13 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "./Header.css";
 import SearchBar from "../events/SearchBar";
 import logo from '../../assets/img/ticketbox.png';
 import avatarUser from '../../assets/img/avatar-clone-user.jpg';
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/authSlice";
 
 function Header({ hideCreateEvent, onLoginClick }) {
   const user = useSelector((state) => state.auth.login.currentUser); // Lấy thông tin người dùng từ Redux
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSearch = async (query) => {
     try {
@@ -20,6 +24,12 @@ function Header({ hideCreateEvent, onLoginClick }) {
       console.error("Error fetching search results:", error);
     }
   };
+
+  // xử lý logout Tuấn thêm
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  }
 
   return (
     <header className="header">
@@ -52,6 +62,8 @@ function Header({ hideCreateEvent, onLoginClick }) {
             <span className="user-greeting">
               <img src={avatarUser} alt="avatar user" />
               <p>{user.body?._doc?.FullName}</p>
+              {/* button logout test Tuấn thêm */}
+              <button onClick={handleLogout}>Đăng xuất</button>
             </span>
           ) : (
             <button onClick={onLoginClick} className="login-btn btn">
