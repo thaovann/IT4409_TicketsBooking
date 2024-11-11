@@ -23,7 +23,7 @@ function PurchasedTickets() {
         const fetchPurchasedTickets = async () => {
             if (user) {
                 try {
-                    const response = await axios.get(`http://localhost:3001/api/ticket/purchased/${user.userId}`);
+                    const response = await axios.get(`http://localhost:3001/api/users${user.userId}`);
                     setTickets(response.data);
                 } catch (error) {
                     console.error("Lỗi khi lấy vé đã mua:", error);

@@ -29,4 +29,4 @@ router.post('/', auth(), createOrderSchema, awaitHandlerFactory(createOrder));
 router.patch('/id/:id', auth(UserRole.Admin), updateOrderSchema, awaitHandlerFactory(updateOrder));
 router.delete('/id/:id', auth(UserRole.Admin), awaitHandlerFactory(deleteOrder));
 
-module.exports = router;
+module.exports = router;    

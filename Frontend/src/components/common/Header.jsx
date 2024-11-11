@@ -1,13 +1,17 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import "./Header.css";
 import SearchBar from "../events/SearchBar";
 import logo from '../../assets/img/ticketbox.png';
 import avatarUser from '../../assets/img/avatar-clone-user.jpg';
+import { logout } from "../../redux/authSlice"; // Import hành động đăng xuất từ Redux
 
 function Header({ hideCreateEvent, onLoginClick }) {
-  const user = useSelector((state) => state.auth.login.currentUser); // Lấy thông tin người dùng từ Redux
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSearch = async (query) => {
     try {
@@ -20,6 +24,15 @@ function Header({ hideCreateEvent, onLoginClick }) {
       console.error("Error fetching search results:", error);
     }
   };
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  // const handleLogout = () => {
+  //   dispatch(logout()); // Thực hiện đăng xuất
+  //   navigate("/login");
+  // };
 
   return (
     <header className="header">
@@ -49,10 +62,18 @@ function Header({ hideCreateEvent, onLoginClick }) {
 
         <div className="auth-buttons">
           {user ? (
-            <span className="user-greeting">
+            <div className="user-greeting" onClick={toggleDropdown}>
               <img src={avatarUser} alt="avatar user" />
               <p>{user.body?._doc?.FullName}</p>
-            </span>
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  <Link to="/profile" className="dropdown-item"><i class="fa-regular fa-user"></i> Trang cá nhân</Link>
+                  <Link to="/purchased-tickets" className="dropdown-item"><i class="fa-solid fa-ticket"></i> Vé đã mua</Link>
+                  <Link to="/my-events" className="dropdown-item"><i class="fa-regular fa-calendar-days"></i> Sự kiện của tôi</Link>
+                  <button /*onClick={handleLogout}*/ className="dropdown-item logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</button>
+                </div>
+              )}
+            </div>
           ) : (
             <button onClick={onLoginClick} className="login-btn btn">
               Đăng nhập | Đăng ký
