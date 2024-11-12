@@ -7,10 +7,10 @@ import { Navigate, useNavigate } from 'react-router-dom';
 
 const CreateEventForm = () => {
   const navigate = useNavigate();
-  // const user = useSelector((state) => state.user); 
-  const user = {
-    id: "1"
-  }
+  const user = useSelector((state) => state.auth.login.currentUser); 
+  // const user = {
+  //   id: "1"
+  // }
   const [formData, setFormData] = useState({
     userId: "",
     eventTypeId: "",
@@ -29,14 +29,15 @@ const CreateEventForm = () => {
   });
   useEffect(() => {
     if (!user) {
-      
+      // Redirect to login if user is not found
       navigate("/login");
     } else
     {
-      console.log(user._id);
+      console.log(user)
+      
       setFormData((prevData) => ({
         ...prevData,
-        userId: user._id, // Assign the userId from Redux state
+        userId: user.body?._doc?._id,
       }));
     }
   }, [user, navigate]);
