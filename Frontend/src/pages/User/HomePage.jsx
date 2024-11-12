@@ -20,7 +20,7 @@ function HomePage() {
                 const approvedEvents = response.data
                     .filter(event => event.state === "approved")
                     .sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
-                    .slice(0, 4);
+                    .slice(0, 6); // Lấy 6 sự kiện cho 3 slide (2 sự kiện mỗi slide)
                 setEvents(approvedEvents);
             } catch (error) {
                 console.error("Error fetching events:", error);
@@ -32,13 +32,28 @@ function HomePage() {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setCurrentBannerIndex(prevIndex => (prevIndex + 1) % events.length);
+            setCurrentBannerIndex(prevIndex => (prevIndex + 1) % Math.ceil(events.length / 2));
         }, 5000);
         
         return () => clearInterval(interval);
     }, [events.length]);
 
-    // chuyển hướng đăng nhập
+    const handleDotClick = (index) => {
+        setCurrentBannerIndex(index);
+    };
+
+    const prevSlide = () => {
+        setCurrentBannerIndex(prevIndex => 
+            prevIndex === 0 ? Math.ceil(events.length / 2) - 1 : prevIndex - 1
+        );
+    };
+
+    const nextSlide = () => {
+        setCurrentBannerIndex(prevIndex => 
+            (prevIndex + 1) % Math.ceil(events.length / 2)
+        );
+    };
+
     const handleLoginClick = () => {
         navigate("/login");
     };
@@ -49,29 +64,55 @@ function HomePage() {
             <div className='body-container'>    
                 <section className="banner">
                     {events.length > 0 && (
-                        <Link to={`/events/${events[currentBannerIndex]._id}`} className="banner-slide">
-                            <img
-                                src={`http://localhost:3001/api/event/images/${events[currentBannerIndex].imageBackground}`}
-                                alt={events[currentBannerIndex].name}
-                                className="banner-image"
-                            />
-                            <div className="banner-info">
-                                <div className="event-price">Từ {events[currentBannerIndex].price || "750.000đ"}</div>
-                                <div className="event-date">
-                                    {new Date(events[currentBannerIndex].startTime).toLocaleDateString('vi-VN')}
-                                </div>
-                                <button className="event-button">Xem chi tiết</button>
+                        <div className="banner-container">
+                            <div
+                                className="banner-slide-group"
+                                style={{ transform: `translateX(-${currentBannerIndex * 100}%)` }}
+                            >
+                                {events.map((event, index) => (
+                                    <Link
+                                        to={`/events/${event._id}`}
+                                        className="banner-slide"
+                                        key={event._id}
+                                    >
+                                        <img
+                                            src={`http://localhost:3001/api/event/images/${event.imageBackground}`}
+                                            alt={event.name}
+                                            className="banner-image"
+                                        />
+                                        <div className="banner-info">
+                                            <div className="event-price">Từ {event.price || "750.000đ"}</div>
+                                            <div className="event-date">
+                                                {new Date(event.startTime).toLocaleDateString('vi-VN')}
+                                            </div>
+                                            <button className="event-button">Xem chi tiết</button>
+                                        </div>
+                                    </Link>
+                                ))}
                             </div>
-                        </Link>
+
+                            {/* Nút mũi tên điều hướng */}
+                            <button className="banner-arrow banner-arrow-left" onClick={prevSlide}>❮</button>
+                            <button className="banner-arrow banner-arrow-right" onClick={nextSlide}>❯</button>
+
+                            {/* Dots điều hướng */}
+                            <div className="banner-dots">
+                                {Array.from({ length: Math.ceil(events.length / 2) }).map((_, index) => (
+                                    <div
+                                        key={index}
+                                        className={`banner-dot ${index === currentBannerIndex ? "active" : ""}`}
+                                        onClick={() => handleDotClick(index)}
+                                    ></div>
+                                ))}
+                            </div>
+                        </div>
                     )}
                 </section>
                 <section className="featured-events">
                     <h2>Sự kiện nổi bật</h2>
                     <div className="event-list">
                         {events.length > 0 ? (
-                            events
-                            .filter(event => event.state === "approved")
-                            .map((event) => (
+                            events.map((event) => (
                                 <EventCard key={event.id} event={event} />
                             ))
                         ) : (
