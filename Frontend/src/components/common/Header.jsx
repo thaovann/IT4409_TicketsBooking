@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import "./Header.css";
 import SearchBar from "../events/SearchBar";
-import logo from '../../assets/img/ticketbox.png';
+import logo from '../../assets/img/ticketsup-black.png';
 import avatarUser from '../../assets/img/avatar-clone-user.jpg';
 import { logout } from "../../redux/authSlice"; // Import hành động đăng xuất từ Redux
 
