@@ -67,7 +67,7 @@ const EventDetail = () => {
                 <span className="event-location">📍 {event.location}</span>
               </p>
               <div className="event-price-book">
-                <p className="event-price">Giá từ <span>{minPrice !== null ? minPrice.toLocaleString() : "Đang cập nhật"} đ</span></p>
+                <p className="event-price">Giá từ <span>{minPrice !== null ? minPrice.toLocaleString() : "N/A"} đ</span></p>
                 <button className="book-button" onClick={handleScrollToTickets}>Book now</button>
               </div>
             </div>
@@ -91,7 +91,7 @@ const EventDetail = () => {
                   <div className="ticket-category-container">
                     <h3>{ticket.name}</h3>
                     <p>Giá vé: <span className="ticket-price">{ticket.price.toLocaleString()} đ</span></p>
-                    <p>Tình trạng: {ticket.leftQuantity > 0 ? "Còn vé" : "Hết vé"}</p>
+                    <p>Tình trạng: <span className="state-ticket">{ticket.leftQuantity > 0 ? "Còn vé" : "Hết vé"}</span></p>
                   </div>
                   
                   <button
