@@ -29,10 +29,10 @@ function Header({ hideCreateEvent, onLoginClick }) {
     setDropdownOpen(!dropdownOpen);
   };
 
-  // const handleLogout = () => {
-  //   dispatch(logout()); // Thực hiện đăng xuất
-  //   navigate("/login");
-  // };
+  const handleLogout = () => {
+    dispatch(logout()); // Thực hiện đăng xuất
+    navigate("/login");
+  };
 
   return (
     <header className="header">
@@ -70,7 +70,7 @@ function Header({ hideCreateEvent, onLoginClick }) {
                   <Link to="/profile" className="dropdown-item"><i class="fa-regular fa-user"></i> Trang cá nhân</Link>
                   <Link to="/purchased-tickets" className="dropdown-item"><i class="fa-solid fa-ticket"></i> Vé đã mua</Link>
                   <Link to="/my-events" className="dropdown-item"><i class="fa-regular fa-calendar-days"></i> Sự kiện của tôi</Link>
-                  <button /*onClick={handleLogout}*/ className="dropdown-item logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</button>
+                  <button onClick={handleLogout} className="dropdown-item logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</button>
                 </div>
               )}
             </div>

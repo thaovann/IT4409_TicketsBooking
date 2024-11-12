@@ -146,29 +146,30 @@ export const updateEvent = async (eventId, updatedData) => {
     }
 }
 
+// hàm tạo sự kiện
 export const createEvent = async (eventData, dispatch) => {
-  dispatch(createEventStart());
-  try {
-    // Adjust headers if sending FormData
-    const headers =
-      eventData instanceof FormData
-        ? { "Content-Type": "multipart/form-data" }
-        : {};
+    dispatch(createEventStart());
+    try {
+        // Adjust headers if sending FormData
+        const headers =
+            eventData instanceof FormData
+                ? { "Content-Type": "multipart/form-data" }
+                : {};
 
-    // Post the event data to the API
-    const response = await api.post("/api/event/create", eventData, {
-      headers,
-    });
-    dispatch(createEventSuccess(response.data));
-  } catch (error) {
-    console.error("Error creating event:", error);
+        // Post the event data to the API
+        const response = await api.post("/api/event/create", eventData, {
+            headers,
+        });
+        dispatch(createEventSuccess(response.data));
+    } catch (error) {
+        console.error("Error creating event:", error);
 
-    // Log detailed error if available
-    if (error.response) {
-      console.error("Response data:", error.response.data);
-      console.error("Response status:", error.response.status);
-      console.error("Response headers:", error.response.headers);
-    }
+        // Log detailed error if available
+        if (error.response) {
+            console.error("Response data:", error.response.data);
+            console.error("Response status:", error.response.status);
+            console.error("Response headers:", error.response.headers);
+        }
 
         if (eventData instanceof FormData) {
             const data = Object.fromEntries(eventData.entries());
