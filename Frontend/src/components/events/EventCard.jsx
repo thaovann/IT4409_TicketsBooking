@@ -5,36 +5,16 @@ import { Link } from "react-router-dom";
 import "./EventCard.css";
 
 const EventCard = ({ event }) => {
-  const { _id, name, startTime, location, imageBackground } = event;
+  const { _id, name, startTime, price, imageBackground } = event;
 
   return (
-    <Link to={`/events/${_id}`} style={{ textDecoration: 'none' }}><Card className="event-card">
-      <CardMedia
-        component="img"
-        className="event-image"
-        image={`http://localhost:3001/api/event/images/${imageBackground}` || "path/to/default-image.jpg"}
-        alt={name}
-      />
-      <CardContent className="event-content">
-        <Typography gutterBottom variant="h5" component="div" className="event-title">
-          {name}
-        </Typography>
-        <Typography variant="body2" className="event-date">
-          <strong>Date:</strong> {new Date(startTime).toLocaleDateString()}
-        </Typography>
-        <Typography variant="body2" className="event-location">
-          <strong>Location:</strong> {location || "Online"}
-        </Typography>
-        <Button
-          variant="contained"
-          className="book-button"
-          component={Link}
-          to={`/events/${_id}`} // Đã sửa lại
-        >
-          Book Now
-        </Button>
-      </CardContent>
-    </Card>
+    <Link to={`/events/${_id}`} style={{ textDecoration: 'none' }} className="event-card">
+       <img src= {`http://localhost:3001/api/event/images/${event.imageBackground}`} alt="" className="event-img" />
+       <div className="event-content">
+        <h3 className="event-title">{name}</h3>
+        <span className="event-price">Từ {price || "500.000"} đ</span>
+        <span className="event-date"><i class="fa-regular fa-calendar-days"></i> {new Date(startTime).toLocaleDateString()}</span>
+       </div>
     </Link>
   );
 };

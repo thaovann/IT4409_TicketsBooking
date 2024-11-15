@@ -112,7 +112,9 @@ function HomePage() {
                     <h2>Sự kiện nổi bật</h2>
                     <div className="event-list">
                         {events.length > 0 ? (
-                            events.map((event) => (
+                            events
+                            .filter(event => event.state === "approved") // lọc sự kiện có trạng thái đã duyệt
+                            .map((event) => (
                                 <EventCard key={event.id} event={event} />
                             ))
                         ) : (
