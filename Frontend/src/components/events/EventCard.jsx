@@ -12,7 +12,7 @@ const EventCard = ({ event }) => {
        <img src= {`http://localhost:3001/api/event/images/${event.imageBackground}`} alt="" className="event-img" />
        <div className="event-content">
         <h3 className="event-title">{name}</h3>
-        <span className="event-price">Từ {price || "500.000"} đ</span>
+        <span className="event-price">Từ {price ? `${price.toLocaleString('vi-VN')}` : "500.000"} đ</span>
         <span className="event-date"><i class="fa-regular fa-calendar-days"></i> {new Date(startTime).toLocaleDateString()}</span>
        </div>
     </Link>

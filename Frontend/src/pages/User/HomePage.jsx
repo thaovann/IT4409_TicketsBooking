@@ -20,13 +20,28 @@ function HomePage() {
                 const approvedEvents = response.data
                     .filter(event => event.state === "approved")
                     .sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
-                    .slice(0, 6); // Lấy 6 sự kiện cho 3 slide (2 sự kiện mỗi slide)
-                setEvents(approvedEvents);
+                    .slice(0, 6);
+    
+                const eventsWithPrices = await Promise.all(
+                    approvedEvents.map(async (event) => {
+                        try {
+                            const ticketResponse = await axios.get(`http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${event._id}`);
+                            const tickets = ticketResponse.data.ticketCategories;
+                            const minPrice = tickets.length > 0 ? Math.min(...tickets.map(ticket => ticket.price)) : "500.000";
+                            return { ...event, price: minPrice }; // gắn giá vé vào sự kiện
+                        } catch (error) {
+                            console.error(`Error fetching tickets for event ${event._id}:`, error);
+                            return event;
+                        }
+                    })
+                );
+    
+                setEvents(eventsWithPrices);
             } catch (error) {
                 console.error("Error fetching events:", error);
             }
         };
-
+    
         fetchEvents();
     }, []);
 
@@ -81,7 +96,7 @@ function HomePage() {
                                             className="banner-image"
                                         />
                                         <div className="banner-info">
-                                            <div className="event-price">Từ {event.price || "750.000đ"}</div>
+                                            <div className="event-price">Từ {event.price ? `${event.price.toLocaleString('vi-VN')}` : "500.000"} đ</div>
                                             <div className="event-date">
                                                 {new Date(event.startTime).toLocaleDateString('vi-VN')}
                                             </div>
