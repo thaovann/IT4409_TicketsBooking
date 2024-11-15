@@ -24,6 +24,32 @@ const boxstyle = {
     boxShadow: 24,
 };
 
+const textFieldStyles = {
+    "& .MuiOutlinedInput-root": {
+        "& fieldset": {
+            borderColor: "#333333", // Default border color
+        },
+        "&:hover fieldset": {
+            borderColor: "#333333", // Hover border color
+        },
+        "&.Mui-focused fieldset": {
+            borderColor: "#333333", // Focused border color
+        },
+        "& input": {
+            color: "#333333", // Text color
+        },
+    },
+    "& .MuiInputLabel-root": {
+        color: "#333333", // Default label color
+    },
+    "&:hover .MuiInputLabel-root": {
+        color: "#333333", // Hover label color
+    },
+    "&.Mui-focused .MuiInputLabel-root": {
+        color: "#333333", // Focused label color
+    },
+}
+
 export default function LoginPage() {
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
@@ -47,7 +73,7 @@ export default function LoginPage() {
                     //backgroundImage: `url(${bgimg})`,
                     backgroundSize: "cover",
                     height: "100vh",
-                    color: "#f5f5f5",
+                    color: "#333333",
                 }}
             >
                 <Box sx={boxstyle}>
@@ -68,7 +94,7 @@ export default function LoginPage() {
                                     backgroundSize: "cover",
                                     height: "70vh",
                                     minHeight: "500px",
-                                    backgroundColor: "#3b33d5",
+                                    backgroundColor: "#ffea99",
                                 }}
                             >
                                 <ThemeProvider theme={darkTheme}>
@@ -76,7 +102,7 @@ export default function LoginPage() {
                                         <Box height={35} />
                                         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', }}>
                                             <Avatar sx={{ mb: "4px", bgColor: "#ffffff" }}>
-                                                <LockOutlinedIcon />
+                                                <LockOutlinedIcon sx={{ color: '#ffffff' }} />
                                             </Avatar>
                                             <Typography component="h1" variant="h4">
                                                 Đăng nhập
@@ -100,6 +126,7 @@ export default function LoginPage() {
                                                         autoFocus
                                                         value={Email}
                                                         onChange={(e) => setEmail(e.target.value)}
+                                                        sx={textFieldStyles}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
@@ -107,12 +134,13 @@ export default function LoginPage() {
                                                         required
                                                         fullWidth
                                                         name="password"
-                                                        label="Password"
+                                                        label="Mật khẩu"
                                                         type="password"
                                                         id="password"
                                                         autoComplete="new-password"
                                                         value={Password}
                                                         onChange={(e) => setPassword(e.target.value)}
+                                                        sx={textFieldStyles}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
@@ -120,8 +148,18 @@ export default function LoginPage() {
                                                         <FormControlLabel
                                                             sx={{ width: "60%" }}
                                                             onClick={() => setRemember(!remember)}
-                                                            control={<Checkbox checked={remember} />}
-                                                            label="Remember me"
+                                                            control={
+                                                                <Checkbox
+                                                                    checked={remember}
+                                                                    sx={{
+                                                                        color: '#333333',
+                                                                        '&.Mui-checked': {
+                                                                            color: '#333333',
+                                                                        },
+                                                                    }}
+                                                                />
+                                                            }
+                                                            label="Nhớ tài khoản"
                                                         />
                                                         <Typography
                                                             variant="body1"
@@ -146,10 +184,10 @@ export default function LoginPage() {
                                                             borderRadius: 28,
                                                             color: "#ffffff",
                                                             minWidth: "170px",
-                                                            backgroundColor: "#FF9A01",
+                                                            backgroundColor: "#008080",
                                                         }}
                                                     >
-                                                        Continue
+                                                        Tiếp tục
                                                     </Button>
                                                 </Grid>
                                                 <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
