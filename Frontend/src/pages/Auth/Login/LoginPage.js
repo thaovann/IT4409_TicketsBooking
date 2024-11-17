@@ -9,7 +9,7 @@ import { loginUser } from "../../../redux/apiRequest";
 
 const darkTheme = createTheme({
     palette: {
-        mode: "dark",
+        mode: "light",
     },
 });
 
@@ -25,29 +25,25 @@ const boxstyle = {
 };
 
 const textFieldStyles = {
-    "& .MuiOutlinedInput-root": {
-        "& fieldset": {
-            borderColor: "#333333", // Default border color
+    '& .MuiOutlinedInput-root': {
+        backgroundColor: '#ffea99', // Custom background color 
+        '& fieldset': {
+            borderColor: '#333333', // Default border color 
         },
-        "&:hover fieldset": {
-            borderColor: "#333333", // Hover border color
+        '&:hover fieldset': {
+            borderColor: '#333333', // Border color on hover 
         },
-        "&.Mui-focused fieldset": {
-            borderColor: "#333333", // Focused border color
-        },
-        "& input": {
-            color: "#333333", // Text color
+        '&.Mui-focused fieldset': {
+            borderColor: '#333333', // Border color when focused 
         },
     },
-    "& .MuiInputLabel-root": {
-        color: "#333333", // Default label color
+    '& .MuiInputLabel-root': {
+        color: '#333333', // Label color 
     },
-    "&:hover .MuiInputLabel-root": {
-        color: "#333333", // Hover label color
+    '& .MuiInputBase-input': {
+        color: '#333333', // Text color 
     },
-    "&.Mui-focused .MuiInputLabel-root": {
-        color: "#333333", // Focused label color
-    },
+
 }
 
 export default function LoginPage() {
@@ -74,6 +70,7 @@ export default function LoginPage() {
                     backgroundSize: "cover",
                     height: "100vh",
                     color: "#333333",
+                    backgroundColor: "#2c2c2c",
                 }}
             >
                 <Box sx={boxstyle}>
@@ -84,7 +81,7 @@ export default function LoginPage() {
                                     backgroundImage: `url(${ccimg})`,
                                     backgroundSize: "cover",
                                     height: "70vh",
-                                    color: "#f5f5f5",
+                                    backgroundColor: "#FFECC8",
                                 }}
                             ></Box>
                         </Grid>
@@ -94,7 +91,7 @@ export default function LoginPage() {
                                     backgroundSize: "cover",
                                     height: "70vh",
                                     minHeight: "500px",
-                                    backgroundColor: "#ffea99",
+                                    backgroundColor: "#FFF7D1",
                                 }}
                             >
                                 <ThemeProvider theme={darkTheme}>
@@ -102,7 +99,7 @@ export default function LoginPage() {
                                         <Box height={35} />
                                         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', }}>
                                             <Avatar sx={{ mb: "4px", bgColor: "#ffffff" }}>
-                                                <LockOutlinedIcon sx={{ color: '#ffffff' }} />
+                                                <LockOutlinedIcon sx={{ bgColor: '#FFC300' }} />
                                             </Avatar>
                                             <Typography component="h1" variant="h4">
                                                 Đăng nhập
@@ -122,11 +119,9 @@ export default function LoginPage() {
                                                         id="email"
                                                         label="Email"
                                                         name="email"
-                                                        autoComplete="email"
-                                                        autoFocus
                                                         value={Email}
                                                         onChange={(e) => setEmail(e.target.value)}
-                                                        sx={textFieldStyles}
+                                                    //sx={textFieldStyles}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
@@ -137,10 +132,9 @@ export default function LoginPage() {
                                                         label="Mật khẩu"
                                                         type="password"
                                                         id="password"
-                                                        autoComplete="new-password"
                                                         value={Password}
                                                         onChange={(e) => setPassword(e.target.value)}
-                                                        sx={textFieldStyles}
+                                                    //sx={textFieldStyles}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
@@ -184,7 +178,7 @@ export default function LoginPage() {
                                                             borderRadius: 28,
                                                             color: "#ffffff",
                                                             minWidth: "170px",
-                                                            backgroundColor: "#008080",
+                                                            backgroundColor: "#FFC300",
                                                         }}
                                                     >
                                                         Tiếp tục

@@ -64,68 +64,70 @@ function ManageUsers() {
     const displayedUsers = filteredUsers.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage);
 
     return (
-        <Container sx={{ padding: '2rem', height: '100vh' }}>
-            {/* <Grid container spacing={2}> */}
-            <Grid item xs={9}>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel>Filter by Role</InputLabel>
-                    <Select
-                        value={roleFilter}
-                        label="Filter by Role"
-                        onChange={handleRoleFilterChange}
-                    >
-                        <MenuItem value="all">All</MenuItem>
-                        <MenuItem value="user">User</MenuItem>
-                        <MenuItem value="admin">Admin</MenuItem>
-                    </Select>
-                </FormControl>
+        <>
+            <Container sx={{ padding: '2rem', height: '100vh' }}>
+                {/* <Grid container spacing={2}> */}
+                <Grid item xs={9}>
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel>Filter by Role</InputLabel>
+                        <Select
+                            value={roleFilter}
+                            label="Filter by Role"
+                            onChange={handleRoleFilterChange}
+                        >
+                            <MenuItem value="all">All</MenuItem>
+                            <MenuItem value="user">User</MenuItem>
+                            <MenuItem value="admin">Admin</MenuItem>
+                        </Select>
+                    </FormControl>
 
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Full Name</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>ID Card</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Phone</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Role</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Gender</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Date of Birth</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {displayedUsers.map((user) => (
-                            <TableRow key={user._id}>
-                                <TableCell>{user.FullName}</TableCell>
-                                <TableCell>{user.IdCard}</TableCell>
-                                <TableCell>{user.Email}</TableCell>
-                                <TableCell>{user.Phone}</TableCell>
-                                <TableCell>{user.Role === 0 ? "User" : "Admin"}</TableCell>
-                                <TableCell>{user.Gender === 0 ? "Male" : "Female"}</TableCell>
-                                <TableCell>{new Date(user.DoB).toLocaleDateString()}</TableCell>
-                                <TableCell>
-                                    <Button
-                                        color="error"
-                                        onClick={() => handleDelete(user.UserId)}
-                                        sx={{ backgroundColor: '#ffea99', borderRadius: '8px' }}>
-                                        Delete
-                                    </Button>
-                                </TableCell>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Full Name</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>ID Card</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Phone</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Role</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Gender</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Date of Birth</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                        </TableHead>
+                        <TableBody>
+                            {displayedUsers.map((user) => (
+                                <TableRow key={user._id}>
+                                    <TableCell>{user.FullName}</TableCell>
+                                    <TableCell>{user.IdCard}</TableCell>
+                                    <TableCell>{user.Email}</TableCell>
+                                    <TableCell>{user.Phone}</TableCell>
+                                    <TableCell>{user.Role === 0 ? "User" : "Admin"}</TableCell>
+                                    <TableCell>{user.Gender === 0 ? "Male" : "Female"}</TableCell>
+                                    <TableCell>{new Date(user.DoB).toLocaleDateString()}</TableCell>
+                                    <TableCell>
+                                        <Button
+                                            color="error"
+                                            onClick={() => handleDelete(user.UserId)}
+                                            sx={{ backgroundColor: '#ffea99', borderRadius: '8px' }}>
+                                            Delete
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
 
-                <Pagination
-                    count={Math.ceil(filteredUsers.length / usersPerPage)}
-                    page={currentPage}
-                    onChange={handlePageChange}
-                    color="primary"
-                    sx={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
-                />
-            </Grid>
-            {/* </Grid> */}
-        </Container>
+                    <Pagination
+                        count={Math.ceil(filteredUsers.length / usersPerPage)}
+                        page={currentPage}
+                        onChange={handlePageChange}
+                        color="primary"
+                        sx={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
+                    />
+                </Grid>
+                {/* </Grid> */}
+            </Container>
+        </>
     );
 }
 
