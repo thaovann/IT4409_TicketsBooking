@@ -47,7 +47,7 @@ function App() {
               path="organizer/create-ticket"
               element={<CreateTicketCategoryForm />}
             />
-            <Route path="/booking/:eventId" element={<TicketBookingPage />} />
+            <Route path="/booking/:id" element={<TicketBookingPage />} />
             <Route path="/purchased-tickets" element={<PurchasedTickets />} />
 
 
