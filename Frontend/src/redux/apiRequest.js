@@ -39,7 +39,8 @@ api.interceptors.request.use(
 export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginStart());
     try {
-        const res = await api.post("/auth/login", user);
+        //const res = await api.post("/auth/login", user);
+        const res = await axios.post("http://localhost:3001/auth/login", user)
         const token = res.data.body.token;
         const role = res.data.body._doc.Role;
         localStorage.setItem("token", token);
@@ -60,7 +61,9 @@ export const loginUser = async (user, dispatch, navigate) => {
 export const registerUser = async (user, dispatch, navigate) => {
     dispatch(registerStart());
     try {
-        await api.post("/auth/register", user);
+        //const response = await api.post("/auth/register", user);
+        const response = await axios.post("http://localhost:3001/auth/register", user);
+        console.log(response.data);
         dispatch(registerSuccess());
         navigate("/login");
     } catch (error) {
