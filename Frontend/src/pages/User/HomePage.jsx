@@ -11,7 +11,10 @@ function HomePage() {
     const user = useSelector((state) => state.auth.login.currentUser);
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
+    // State cho banner
     const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+    // State cho EventCard slider
+    const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -57,17 +60,32 @@ function HomePage() {
         setCurrentBannerIndex(index);
     };
 
-    const prevSlide = () => {
+    // Hàm điều khiển banner
+    const prevBannerSlide = () => {
         setCurrentBannerIndex(prevIndex => 
             prevIndex === 0 ? Math.ceil(events.length / 2) - 1 : prevIndex - 1
         );
     };
 
-    const nextSlide = () => {
+    const nextBannerSlide = () => {
         setCurrentBannerIndex(prevIndex => 
             (prevIndex + 1) % Math.ceil(events.length / 2)
         );
     };
+
+    // Hàm điều khiển EventCard slider
+const prevCardSlide = () => {
+    setCurrentCardIndex((prevIndex) =>
+        prevIndex === 0 ? events.length - 1 : prevIndex - 1
+    );
+};
+
+const nextCardSlide = () => {
+    setCurrentCardIndex((prevIndex) =>
+        (prevIndex + 1) % events.length
+    );
+};
+
 
     const handleLoginClick = () => {
         navigate("/login");
@@ -107,8 +125,8 @@ function HomePage() {
                             </div>
 
                             {/* Nút mũi tên điều hướng */}
-                            <button className="banner-arrow banner-arrow-left" onClick={prevSlide}>❮</button>
-                            <button className="banner-arrow banner-arrow-right" onClick={nextSlide}>❯</button>
+                            <button className="banner-arrow banner-arrow-left" onClick={prevBannerSlide}>❮</button>
+                            <button className="banner-arrow banner-arrow-right" onClick={nextBannerSlide}>❯</button>
 
                             {/* Dots điều hướng */}
                             <div className="banner-dots">
@@ -124,19 +142,23 @@ function HomePage() {
                     )}
                 </section>
                 <section className="featured-events">
-                    <h2>Sự kiện nổi bật</h2>
-                    <div className="event-list">
-                        {events.length > 0 ? (
-                            events
-                            .filter(event => event.state === "approved") // lọc sự kiện có trạng thái đã duyệt
-                            .map((event) => (
-                                <EventCard key={event.id} event={event} />
-                            ))
-                        ) : (
-                            <p>Không có sự kiện nào.</p>
-                        )}
-                    </div>
-                </section>
+            <h2>Sự kiện nổi bật</h2>
+            <div className="event-list" style={{ transform: `translateX(-${currentCardIndex * 100}%)` }}>
+                {events.length > 0 ? (
+                    events
+                    .filter(event => event.state === "approved")
+                    .map((event) => (
+                        <EventCard key={event.id} event={event} />
+                    ))
+                ) : (
+                    <p>Không có sự kiện nào.</p>
+                )}
+            </div>
+            {/* Nút điều hướng slider */}
+            <button className="slider-arrow slider-arrow-left" onClick={prevCardSlide}>❮</button>
+            <button className="slider-arrow slider-arrow-right" onClick={nextCardSlide}>❯</button>
+        </section>
+
             </div>
             <Footer />
         </div>

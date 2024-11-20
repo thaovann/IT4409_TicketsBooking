@@ -1,6 +1,5 @@
 // Component hiển thị card sự kiện
 import React from "react";
-import { Card, CardContent, Typography, Button, CardMedia } from "@mui/material";
 import { Link } from "react-router-dom";
 import "./EventCard.css";
 
@@ -9,7 +8,7 @@ const EventCard = ({ event }) => {
 
   return (
     <Link to={`/events/${_id}`} style={{ textDecoration: 'none' }} className="event-card">
-       <img src= {`http://localhost:3001/api/event/images/${event.imageBackground}`} alt="" className="event-img" />
+       <img src= {`http://localhost:3001/api/event/images/${event.imageBackground}`} alt={name} className="event-img" />
        <div className="event-content">
         <h3 className="event-title">{name}</h3>
         <span className="event-price">Từ {price ? `${price.toLocaleString('vi-VN')}` : "500.000"} đ</span>
