@@ -9,7 +9,8 @@ import EventsPage from "./pages/User/EventsPage";
 import EventDetail from "./components/events/EventDetail";
 import SearchResults from "./components/events/SearchResult";
 import ProtectedRoute from "./components/ProtectedRoute";
-import OrganizerEvents from "./pages/EventManager/OrganizerEvents";
+//import OrganizerEvents from "./pages/EventManager/OrganizerEvents";
+import MyEvents from "./pages/User/OrganizerCenter/MyEvents";
 import CreateEventForm from "./pages/EventManager/CreateEventForm"
 import CreateTicketCategoryForm from "./pages/EventManager/CreateTicketCategoryForm";
 import ForgotPassword from "./pages/Auth/ChangePassword/ForgotPassword";
@@ -39,7 +40,7 @@ function App() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/search" element={<SearchResults />} />
-          <Route path="organizer/events" element={<OrganizerEvents />} />
+          <Route path="organizer/events" element={<MyEvents />} />
           <Route path="organizer/create-event" element={<CreateEventForm />} />
           <Route
             path="organizer/create-event"
