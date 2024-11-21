@@ -11,7 +11,10 @@ function HomePage() {
     const user = useSelector((state) => state.auth.login.currentUser);
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
+    // State cho banner
     const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+    // State cho EventCard slider
+    const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -20,13 +23,28 @@ function HomePage() {
                 const approvedEvents = response.data
                     .filter(event => event.state === "approved")
                     .sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
-                    .slice(0, 6); // Lấy 6 sự kiện cho 3 slide (2 sự kiện mỗi slide)
-                setEvents(approvedEvents);
+                    .slice(0, 6);
+    
+                const eventsWithPrices = await Promise.all(
+                    approvedEvents.map(async (event) => {
+                        try {
+                            const ticketResponse = await axios.get(`http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${event._id}`);
+                            const tickets = ticketResponse.data.ticketCategories;
+                            const minPrice = tickets.length > 0 ? Math.min(...tickets.map(ticket => ticket.price)) : "500.000";
+                            return { ...event, price: minPrice }; // gắn giá vé vào sự kiện
+                        } catch (error) {
+                            console.error(`Error fetching tickets for event ${event._id}:`, error);
+                            return event;
+                        }
+                    })
+                );
+    
+                setEvents(eventsWithPrices);
             } catch (error) {
                 console.error("Error fetching events:", error);
             }
         };
-
+    
         fetchEvents();
     }, []);
 
@@ -42,17 +60,32 @@ function HomePage() {
         setCurrentBannerIndex(index);
     };
 
-    const prevSlide = () => {
+    // Hàm điều khiển banner
+    const prevBannerSlide = () => {
         setCurrentBannerIndex(prevIndex => 
             prevIndex === 0 ? Math.ceil(events.length / 2) - 1 : prevIndex - 1
         );
     };
 
-    const nextSlide = () => {
+    const nextBannerSlide = () => {
         setCurrentBannerIndex(prevIndex => 
             (prevIndex + 1) % Math.ceil(events.length / 2)
         );
     };
+
+    // Hàm điều khiển EventCard slider
+const prevCardSlide = () => {
+    setCurrentCardIndex((prevIndex) =>
+        prevIndex === 0 ? events.length - 1 : prevIndex - 1
+    );
+};
+
+const nextCardSlide = () => {
+    setCurrentCardIndex((prevIndex) =>
+        (prevIndex + 1) % events.length
+    );
+};
+
 
     const handleLoginClick = () => {
         navigate("/login");
@@ -81,7 +114,7 @@ function HomePage() {
                                             className="banner-image"
                                         />
                                         <div className="banner-info">
-                                            <div className="event-price">Từ {event.price || "750.000đ"}</div>
+                                            <div className="event-price">Từ {event.price ? `${event.price.toLocaleString('vi-VN')}` : "500.000"} đ</div>
                                             <div className="event-date">
                                                 {new Date(event.startTime).toLocaleDateString('vi-VN')}
                                             </div>
@@ -92,8 +125,8 @@ function HomePage() {
                             </div>
 
                             {/* Nút mũi tên điều hướng */}
-                            <button className="banner-arrow banner-arrow-left" onClick={prevSlide}>❮</button>
-                            <button className="banner-arrow banner-arrow-right" onClick={nextSlide}>❯</button>
+                            <button className="banner-arrow banner-arrow-left" onClick={prevBannerSlide}>❮</button>
+                            <button className="banner-arrow banner-arrow-right" onClick={nextBannerSlide}>❯</button>
 
                             {/* Dots điều hướng */}
                             <div className="banner-dots">
@@ -109,17 +142,23 @@ function HomePage() {
                     )}
                 </section>
                 <section className="featured-events">
-                    <h2>Sự kiện nổi bật</h2>
-                    <div className="event-list">
-                        {events.length > 0 ? (
-                            events.map((event) => (
-                                <EventCard key={event.id} event={event} />
-                            ))
-                        ) : (
-                            <p>Không có sự kiện nào.</p>
-                        )}
-                    </div>
-                </section>
+            <h2>Sự kiện nổi bật</h2>
+            <div className="event-list" style={{ transform: `translateX(-${currentCardIndex * 100}%)` }}>
+                {events.length > 0 ? (
+                    events
+                    .filter(event => event.state === "approved")
+                    .map((event) => (
+                        <EventCard key={event.id} event={event} />
+                    ))
+                ) : (
+                    <p>Không có sự kiện nào.</p>
+                )}
+            </div>
+            {/* Nút điều hướng slider */}
+            <button className="slider-arrow slider-arrow-left" onClick={prevCardSlide}>❮</button>
+            <button className="slider-arrow slider-arrow-right" onClick={nextCardSlide}>❯</button>
+        </section>
+
             </div>
             <Footer />
         </div>

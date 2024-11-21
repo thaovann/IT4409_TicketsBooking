@@ -7,7 +7,7 @@ import logo from '../../assets/img/ticketsup-black.png';
 import avatarUser from '../../assets/img/avatar-clone-user.jpg';
 import { logout } from "../../redux/authSlice"; // Import hành động đăng xuất từ Redux
 
-function Header({ hideCreateEvent, onLoginClick }) {
+function Header({ hideCreateEvent, hideNav, onLoginClick }) {
   const user = useSelector((state) => state.auth.login.currentUser);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -92,7 +92,7 @@ function Header({ hideCreateEvent, onLoginClick }) {
           )}
         </div>
       </div>
-      <nav className="navigation">
+      {!hideNav && (<nav className="navigation">
         <ul>
           <li>
             <Link to="/search?query=Nhạc sống">Nhạc sống</Link>
@@ -107,7 +107,7 @@ function Header({ hideCreateEvent, onLoginClick }) {
             <Link to="/search?query=Khác">Khác</Link>
           </li>
         </ul>
-      </nav>
+      </nav>)}
     </header>
   );
 }
