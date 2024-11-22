@@ -40,7 +40,7 @@ function App() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/search" element={<SearchResults />} />
-          <Route path="organizer/events" element={<OrganizerEvents />} />
+          <Route path="organizer/events" element={<MyEvents />} />
           <Route path="organizer/create-event" element={<CreateEventForm />} />
           <Route
             path="organizer/create-event"
