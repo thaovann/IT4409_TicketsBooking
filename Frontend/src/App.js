@@ -15,6 +15,7 @@ import ForgotPassword from "./pages/Auth/ChangePassword/ForgotPassword";
 import ResetPassword from "./pages/Auth/ChangePassword/ResetPassword";
 import VerifyOTP from "./pages/Auth/ChangePassword/VerifyOTP";
 import TicketBookingPage from "./pages/User/TicketBookingPage";
+import PaymentPage from "./pages/User/PaymentPage";
 import PurchasedTickets from "./components/events/PurchasedTickets";
 import './App.css';
 
@@ -48,6 +49,7 @@ function App() {
               element={<CreateTicketCategoryForm />}
             />
             <Route path="/booking/:id" element={<TicketBookingPage />} />
+            <Route path="/payment" element={<PaymentPage />} />
             <Route path="/purchased-tickets" element={<PurchasedTickets />} />
 
 

@@ -23,7 +23,7 @@ function HomePage() {
                 const approvedEvents = response.data
                     .filter(event => event.state === "approved")
                     .sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
-                    .slice(0, 6);
+                    .slice(0, 10);
     
                 const eventsWithPrices = await Promise.all(
                     approvedEvents.map(async (event) => {
