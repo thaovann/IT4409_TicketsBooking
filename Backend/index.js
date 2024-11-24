@@ -27,6 +27,9 @@ app.use("/order", orderRoutes);
 const voucherRoutes = require("./routes/voucherRoutes");
 app.use("/voucher", voucherRoutes);
 
+const paymentRoutes = require("./routes/paymentRoutes");
+app.use("/payment", paymentRoutes);
+
 // Error handling middleware (Global)
 app.use(require('./middleware/errorHandler'));
 
