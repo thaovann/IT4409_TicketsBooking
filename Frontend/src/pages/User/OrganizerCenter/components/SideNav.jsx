@@ -12,10 +12,17 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import EventIcon from '@mui/icons-material/Event';
 import CreateIcon from '@mui/icons-material/Create';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const drawerWidth = 240;
 
 export default function SideNav() {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Hàm kiểm tra nếu tab đang được chọn
+    const isActive = (path) => location.pathname === path;
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -30,7 +37,14 @@ export default function SideNav() {
                 <Toolbar />
                 <Box sx={{ overflow: 'auto' }}>
                     <List>
-                        <ListItem disablePadding>
+                        <ListItem
+                            disablePadding
+                            sx={{
+                                display: 'block',
+                                backgroundColor: isActive("/organizer/events") ? "rgba(0, 0, 0, 0.08)" : "transparent", // Màu nền khi active
+                            }}
+                            onClick={() => navigate("/organizer/events")}
+                        >
                             <ListItemButton>
                                 <ListItemIcon sx={{ minWidth: 40 }}>
                                     <EventIcon />
@@ -38,7 +52,13 @@ export default function SideNav() {
                                 <ListItemText primary="Sự kiện đã tạo" />
                             </ListItemButton>
                         </ListItem>
-                        <ListItem disablePadding>
+                        <ListItem
+                            disablePadding
+                            sx={{
+                                display: 'block',
+                                backgroundColor: isActive("/organizer/create-event") ? "rgba(0, 0, 0, 0.08)" : "transparent", // Màu nền khi active
+                            }}
+                            onClick={() => navigate("/organizer/create-event")}>
                             <ListItemButton>
                                 <ListItemIcon sx={{ minWidth: 40 }}>
                                     <CreateIcon />

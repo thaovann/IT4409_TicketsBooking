@@ -41,8 +41,8 @@ function App() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/search" element={<SearchResults />} />
-          <Route path="organizer/events" element={<OrganizerPage />} />
-          <Route path="organizer/create-event" element={<CreateEventForm />} />
+          <Route path="/organizer/*" element={<OrganizerPage />} />
+          {/* <Route path="organizer/create-event" element={<CreateEventForm />} />
           <Route
             path="organizer/create-event"
             element={<CreateEventForm />}
@@ -50,7 +50,7 @@ function App() {
           <Route
             path="organizer/create-ticket"
             element={<CreateTicketCategoryForm />}
-          />
+          /> */}
           <Route path="/booking/:id" element={<TicketBookingPage />} />
           <Route path="/purchased-tickets" element={<PurchasedTickets />} />
 
