@@ -140,6 +140,16 @@ export const getAllEvents = async () => {
     }
 };
 
+export const getEventByUserId = async (userId) => {
+    try {
+        const response = await api.get(`/api/event/getEventByUserId/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        throw error;
+    }
+};
+
 export const updateEvent = async (eventId, updatedData) => {
     try {
         const response = await api.put(`/api/event/update/${eventId}`, updatedData);

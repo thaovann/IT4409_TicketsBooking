@@ -1,3 +1,4 @@
+// Trang vé đã mua
 import React from 'react';
 import './MyTickets.css';
 

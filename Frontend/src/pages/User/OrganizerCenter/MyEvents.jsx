@@ -1,55 +1,74 @@
-import React from "react";
-import styles from "./MyEvents.module.css";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Box, Grid, Typography, Card, CardContent, CardMedia, Chip } from "@mui/material";
+import { getEventByUserId } from "../../../redux/apiRequest";
+import NavBar from "./components/NavBar";
+import SideNav from "./components/SideNav";
 
 const MyEvents = () => {
+    const [events, setEvents] = useState([]);
+    const user = useSelector((state) => state.auth.login.currentUser);
+    const userId = user.body?._doc?._id;
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const fetchedEvents = await getEventByUserId(userId);
+                setEvents(fetchedEvents);
+            } catch (error) {
+                console.error("Error fetching events by userId :", error);
+            }
+        };
+
+        fetchEvents();
+    }, [userId]);
+
     return (
-        <div className={styles["my-event-container"]}>
-            <aside className={styles.sidebar}>
-                <div className={styles.logo}>
-                    <h2>Organizer Center</h2>
-                </div>
-                <ul className={styles["sidebar-menu"]}>
-                    <li className={`${styles["menu-item"]} ${styles.active}`}>Sự kiện đã tạo</li>
-                    <li className={styles["menu-item"]}>Quản lý xuất file</li>
-                    <li className={styles["menu-item"]}>Tạo sự kiện</li>
-                    <li className={styles["menu-item"]}>Điều khoản cho Ban tổ chức</li>
-                </ul>
-            </aside>
-
-            <main className={styles.content}>
-                <header className={styles.header}>
-                    <h1>Sự kiện đã tạo</h1>
-                    <div className={styles["account-dropdown"]}>
-                        <span>Tài khoản</span>
-                    </div>
-                </header>
-
-                {/* Search bar và tab menu */}
-                <div className={styles["search-and-tabs"]}>
-                    <div className={styles["search-bar"]}>
-                        <input
-                            type="text"
-                            placeholder="Tìm kiếm sự kiện"
-                            className={styles["search-input"]}
-                        />
-                        <button className={styles["search-button"]}>🔍</button>
-                    </div>
-                    <nav className={styles["tab-menu"]}>
-                        <button className={`${styles.tab} ${styles.active}`}>Tất cả</button>
-                        <button className={styles.tab}>Sắp diễn ra</button>
-                        <button className={styles.tab}>Đã qua</button>
-                        <button className={styles.tab}>Chờ duyệt</button>
-                    </nav>
-                </div>
-
-                <div className={styles["content-body"]}>
-                    <div className={styles["empty-state"]}>
-                        <span>Chưa có sự kiện nào</span>
-                    </div>
-                </div>
-            </main>
-        </div>
-    );
-};
+        <>
+            <NavBar />
+            <Box height={60} />
+            <Box sx={{ display: "flex" }}>
+                <SideNav />
+                <Box sx={{ padding: 3 }}>
+                    <Typography variant="h4" gutterBottom>
+                        Các sự kiện của bạn
+                    </Typography>
+                    <Grid container spacing={3}>
+                        {events.map((event) => (
+                            <Grid item xs={12} sm={6} md={4} key={event._id}>
+                                <Card sx={{ maxWidth: 345 }}>
+                                    <CardMedia
+                                        component="img"
+                                        height="180"
+                                        image="https://source.unsplash.com/random/345x180" // Placeholder nếu không có ảnh
+                                        alt={event.name}
+                                    />
+                                    <CardContent>
+                                        <Typography variant="h6" gutterBottom>
+                                            {event.name}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            <strong>Ngày tổ chức:</strong> {event.startTime}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            <strong>Địa điểm:</strong> {event.location}
+                                        </Typography>
+                                        <Box sx={{ marginTop: 2 }}>
+                                            <Chip
+                                                label={event.state === "approved" ? "Đã phê duyệt" : "Chưa phê duyệt"}
+                                                color={event.state === "approved" ? "success" : "warning"}
+                                                size="small"
+                                            />
+                                        </Box>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
+            </Box>
+        </>
+    )
+}
 
 export default MyEvents;
