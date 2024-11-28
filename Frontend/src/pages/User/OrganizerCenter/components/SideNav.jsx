@@ -41,11 +41,10 @@ export default function SideNav() {
                             disablePadding
                             sx={{
                                 display: 'block',
-                                backgroundColor: isActive("/organizer/events") ? "rgba(0, 0, 0, 0.08)" : "transparent", // Màu nền khi active
                             }}
                             onClick={() => navigate("/organizer/events")}
                         >
-                            <ListItemButton>
+                            <ListItemButton selected={isActive("/organizer/events")} sx={{ '&.Mui-selected': { backgroundColor: 'rgba(0, 0, 0, 0.08)' }, '&.Mui-selected:hover': { backgroundColor: 'rgba(0, 0, 0, 0.12)' } }}>
                                 <ListItemIcon sx={{ minWidth: 40 }}>
                                     <EventIcon />
                                 </ListItemIcon>
@@ -56,10 +55,9 @@ export default function SideNav() {
                             disablePadding
                             sx={{
                                 display: 'block',
-                                backgroundColor: isActive("/organizer/create-event") ? "rgba(0, 0, 0, 0.08)" : "transparent", // Màu nền khi active
                             }}
                             onClick={() => navigate("/organizer/create-event")}>
-                            <ListItemButton>
+                            <ListItemButton selected={isActive("/organizer/create-event")} sx={{ '&.Mui-selected': { backgroundColor: 'rgba(0, 0, 0, 0.08)' }, '&.Mui-selected:hover': { backgroundColor: 'rgba(0, 0, 0, 0.12)' } }}>
                                 <ListItemIcon sx={{ minWidth: 40 }}>
                                     <CreateIcon />
                                 </ListItemIcon>

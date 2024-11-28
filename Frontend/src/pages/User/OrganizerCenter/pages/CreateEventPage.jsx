@@ -1,6 +1,6 @@
-import CreateEventForm from "../../EventManager/CreateEventForm";
-import NavBar from "./components/NavBar";
-import SideNav from "./components/SideNav";
+import CreateEventForm from "../../../EventManager/CreateEventForm";
+import NavBar from "../components/NavBar";
+import SideNav from "../components/SideNav";
 import Box from '@mui/material/Box';
 
 const CreateEventPage = () => {

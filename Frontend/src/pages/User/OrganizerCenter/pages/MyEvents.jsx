@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Box, Grid, Typography, Card, CardContent, CardMedia, Chip } from "@mui/material";
-import { getEventByUserId } from "../../../redux/apiRequest";
-import NavBar from "./components/NavBar";
-import SideNav from "./components/SideNav";
+import { getEventByUserId } from "../../../../redux/apiRequest";
+import NavBar from "../components/NavBar";
+import SideNav from "../components/SideNav";
 
 const MyEvents = () => {
     const [events, setEvents] = useState([]);
     const user = useSelector((state) => state.auth.login.currentUser);
     const userId = user.body?._doc?._id;
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -36,7 +38,7 @@ const MyEvents = () => {
                     <Grid container spacing={3}>
                         {events.map((event) => (
                             <Grid item xs={12} sm={6} md={4} key={event._id}>
-                                <Card sx={{ maxWidth: 345 }}>
+                                <Card sx={{ maxWidth: 345, cursor: "pointer" }} onClick={() => navigate(`/organizer/events/${event._id}`)}>
                                     <CardMedia
                                         component="img"
                                         height="180"
