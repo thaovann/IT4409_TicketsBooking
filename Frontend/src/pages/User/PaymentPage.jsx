@@ -47,8 +47,8 @@ const PaymentPage = () => {
         <div className="payment-event-info">
   <h2 className="payment-event-title">{eventDetails?.name}</h2>
   <p className="payment-event-desc">
-    <strong><i class="fa-regular fa-calendar-days"></i> Thời gian:</strong> {new Date(eventDetails?.startTime).toLocaleString()} <br />
-    <strong>Địa điểm:</strong> {eventDetails?.location}
+    <strong><i class="fa-regular fa-calendar-days"></i>  Thời gian:</strong> {new Date(eventDetails?.startTime).toLocaleString()} <br />
+    <strong><i class="fa-solid fa-location-dot"></i>  Địa điểm:</strong> {eventDetails?.location}
   </p>
 </div>
 
@@ -93,7 +93,7 @@ const PaymentPage = () => {
 
         {/* Phần 4: Nhập voucher */}
         <div className="voucher-section">
-          <h2>Nhập voucher</h2>
+          <h2 className="voucher-title">Nhập voucher</h2>
           <div className="voucher-input">
             <input
               type="text"
@@ -107,19 +107,19 @@ const PaymentPage = () => {
 
         {/* Phần 3: Thông tin thanh toán */}
         <div className="payment-info">
-          <h2>Thông tin thanh toán</h2>
+          <h2 className="payment-info-title">Thông tin thanh toán</h2>
           <div className="ticket-summary">
             {selectedTicketDetails.map((ticket, index) => (
               <div key={index} className="ticket-summary-item">
-                <h3>{ticket.name}</h3>
+                <h3 className="ticket-summary-item-title">{ticket.name}</h3>
                 <p>Giá: {ticket.price.toLocaleString()} đ</p>
                 <p>Số lượng: {ticket.quantity}</p>
                 <p>Tổng: {(ticket.price * ticket.quantity).toLocaleString()} đ</p>
               </div>
             ))}
           </div>
-          <h2>
-            Tổng tiền: {(totalPrice - discount).toLocaleString()} đ{" "}
+          <h2 className="ticket-summary-title">
+            Tổng tiền: <strong className="ticket-summary-total">{(totalPrice - discount).toLocaleString()} đ{" "}</strong>
             {discount > 0 && <span className="discount-note"><br/>(Đã áp dụng giảm giá)</span>}
           </h2>
           <button className="confirm-button" onClick={handleConfirmPayment}>
