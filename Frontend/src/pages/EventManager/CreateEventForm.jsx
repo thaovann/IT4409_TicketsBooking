@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import CreateTicketCategoryForm from "./CreateTicketCategoryForm"; 
+import CreateTicketCategoryForm from "./CreateTicketCategoryForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navigate, useNavigate } from 'react-router-dom';
 
 const CreateEventForm = () => {
   const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.login.currentUser); 
+  const user = useSelector((state) => state.auth.login.currentUser);
   // const user = {
   //   id: "1"
   // }
@@ -31,10 +31,9 @@ const CreateEventForm = () => {
     if (!user) {
       // Redirect to login if user is not found
       navigate("/login");
-    } else
-    {
-      console.log(user)
-      
+    } else {
+      //console.log(user)
+
       setFormData((prevData) => ({
         ...prevData,
         userId: user.body?._doc?._id,
@@ -42,7 +41,7 @@ const CreateEventForm = () => {
     }
   }, [user, navigate]);
 
-  
+
 
   const [files, setFiles] = useState({
     logo: null,
@@ -155,14 +154,14 @@ const CreateEventForm = () => {
           }
         );
         setEventId(response.data.event._id);
-        setEventCreated(true); 
+        setEventCreated(true);
         alert("Event created successfully!");
         console.log(response.data);
       } else {
         // If event exists, update it
         const response = await axios.put(
           `http://localhost:3001/api/event/update/${eventId}`,
-          data, 
+          data,
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -192,7 +191,7 @@ const CreateEventForm = () => {
       <button
         onClick={handleReturnHome}
         className="btn btn-primary mb-4"
-        style={{ backgroundColor: "#ffea99", color: "#000000", padding:"20px", marginLeft:"20px", marginTop:"20px", }}
+        style={{ backgroundColor: "#ffea99", color: "#000000", padding: "20px", marginLeft: "20px", marginTop: "20px", }}
       >
         Return to Homepage
       </button>

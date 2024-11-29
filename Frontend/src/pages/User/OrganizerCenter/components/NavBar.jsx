@@ -70,14 +70,15 @@ function NavBar() {
                             letterSpacing: '.3rem',
                             color: 'inherit',
                             textDecoration: 'none',
+                            lineHeight: 1,
                         }}
                     >
-                        LOGO
+                        ORGARNIZER<br />CENTER
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {/* có thể điền tên tab vào đây */}
                     </Box>
-                    <Box sx={{ flexGrow: 0 }}>
+                    <Box sx={{ flexGrow: 0, overflow: "hidden" }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -98,6 +99,7 @@ function NavBar() {
                             }}
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
+                            disableScrollLock   //bỏ lock thanh cuộn để tránh bị co trang
                         >
                             {settings.map((setting) => (
                                 <MenuItem key={setting} onClick={handleCloseUserMenu}>

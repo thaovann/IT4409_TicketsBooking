@@ -39,12 +39,20 @@ export default function SideNav() {
                     <List>
                         <ListItem
                             disablePadding
-                            sx={{
-                                display: 'block',
-                            }}
+                            sx={{ display: 'block' }}
                             onClick={() => navigate("/organizer/events")}
                         >
-                            <ListItemButton selected={isActive("/organizer/events")} sx={{ '&.Mui-selected': { backgroundColor: 'rgba(0, 0, 0, 0.08)' }, '&.Mui-selected:hover': { backgroundColor: 'rgba(0, 0, 0, 0.12)' } }}>
+                            <ListItemButton
+                                selected={isActive("/organizer/events")}
+                                sx={{
+                                    '&.Mui-selected': {
+                                        backgroundColor: 'rgba(0, 0, 0, 0.08)'
+                                    },
+                                    '&.Mui-selected:hover': {
+                                        backgroundColor: 'rgba(0, 0, 0, 0.12)'
+                                    }
+                                }}
+                            >
                                 <ListItemIcon sx={{ minWidth: 40 }}>
                                     <EventIcon />
                                 </ListItemIcon>
@@ -53,11 +61,19 @@ export default function SideNav() {
                         </ListItem>
                         <ListItem
                             disablePadding
-                            sx={{
-                                display: 'block',
-                            }}
-                            onClick={() => navigate("/organizer/create-event")}>
-                            <ListItemButton selected={isActive("/organizer/create-event")} sx={{ '&.Mui-selected': { backgroundColor: 'rgba(0, 0, 0, 0.08)' }, '&.Mui-selected:hover': { backgroundColor: 'rgba(0, 0, 0, 0.12)' } }}>
+                            sx={{ display: 'block' }}
+                            onClick={() => navigate("/organizer/create-event")}
+                        >
+                            <ListItemButton
+                                selected={isActive("/organizer/create-event")}
+                                sx={{
+                                    '&.Mui-selected': {
+                                        backgroundColor: 'rgba(0, 0, 0, 0.08)'
+                                    },
+                                    '&.Mui-selected:hover': {
+                                        backgroundColor: 'rgba(0, 0, 0, 0.12)'
+                                    }
+                                }}>
                                 <ListItemIcon sx={{ minWidth: 40 }}>
                                     <CreateIcon />
                                 </ListItemIcon>
