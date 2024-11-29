@@ -13,7 +13,10 @@ const UserSchema = new Schema({
     Role: Number,
     Gender: Number,
     DoB: Date,
-    Vouchers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Voucher' }]
+    Vouchers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Voucher' }],
+
+    totalSpend: { type: Number, default: 0 }, // Total spending by the user
+    orderCount: { type: Number, default: 0 } // Number of successed orders placed by the user
 });
 
 UserSchema.plugin(AutoIncrement, { inc_field: 'UserId' });
