@@ -50,18 +50,25 @@ const MyEvents = () => {
                     <Box sx={{ display: "flex", gap: 2, marginBottom: 3 }}>
                         <TextField
                             sx={{ flex: 1 }}
-                            label="Tìm kiếm sự kiện"
+                            //label="Tìm kiếm sự kiện"
                             variant="outlined"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Nhập tên sự kiện..."
                         />
-                        <FormControl sx={{ minWidth: 180 }}>
+                        <FormControl
+                            sx={{
+                                minWidth: 180
+                            }}>
                             <InputLabel>Trạng thái</InputLabel>
                             <Select
                                 value={filterState}
                                 onChange={(e) => setFilterState(e.target.value)}
                                 label="Trạng thái"
+                                MenuProps={{
+                                    disableScrollLock: true, // Ngăn việc khóa cuộn khi menu mở
+                                }}
+
                             >
                                 <MenuItem value="">Tất cả</MenuItem>
                                 <MenuItem value="approved">Đã phê duyệt</MenuItem>
@@ -69,18 +76,28 @@ const MyEvents = () => {
                             </Select>
                         </FormControl>
                     </Box>
-                    <Grid container spacing={3}>
+                    <Grid container spacing={2}>
                         {filteredEvents.length > 0 ? (
                             filteredEvents.map((event) => (
                                 <Grid item xs={12} sm={6} md={4} key={event._id}>
-                                    <Card sx={{ maxWidth: 345, cursor: "pointer" }} onClick={() => navigate(`/organizer/events/${event._id}`)}>
+                                    <Card
+                                        sx={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            height: "100%",
+                                            width: "100%",
+                                            cursor: "pointer"
+
+                                        }}
+                                        onClick={() => navigate(`/organizer/events/${event._id}`)}
+                                    >
                                         <CardMedia
                                             component="img"
                                             height="180"
                                             image={`http://localhost:3001/api/event/images/${event.imageBackground}`}
                                             alt={event.name}
                                         />
-                                        <CardContent>
+                                        <CardContent sx={{ flexGrow: 1 }}>
                                             <Typography variant="h6" gutterBottom>
                                                 {event.name}
                                             </Typography>
@@ -111,7 +128,7 @@ const MyEvents = () => {
                         )}
                     </Grid>
                 </Box>
-            </Box>
+            </Box >
         </>
     )
 }
