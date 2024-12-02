@@ -71,7 +71,7 @@ const CreateEventForm = () => {
         );
         setEventTypes(response.data);
       } catch (error) {
-        console.error("Error fetching event types:", error);
+        console.error("Lỗi khi lấy loại sự kiện:", error);
       }
     };
     fetchEventTypes();
@@ -94,7 +94,7 @@ const CreateEventForm = () => {
       [name]: file,
     }));
 
-    // Create a preview URL for the selected file
+    // Tạo một URL xem trước cho file đã chọn
     if (file) {
       const previewURL = URL.createObjectURL(file);
       setFilePreviews((prevPreviews) => ({
@@ -106,11 +106,11 @@ const CreateEventForm = () => {
 
   const validateForm = () => {
     if (!formData.userId) {
-      alert("User ID is required.");
+      alert("ID người dùng là bắt buộc.");
       return false;
     }
     if (new Date(formData.startTime) >= new Date(formData.endTime)) {
-      alert("End time must be after start time.");
+      alert("Thời gian kết thúc phải sau thời gian bắt đầu.");
       return false;
     }
     return true;
@@ -120,16 +120,16 @@ const CreateEventForm = () => {
     e.preventDefault();
 
     if (!formData.userId) {
-      alert("User ID is required.");
+      alert("ID người dùng là bắt buộc.");
       return;
     }
 
     if (!validateForm()) {
-      return; // Exit if validation fails
+      return; // Dừng lại nếu xác thực không thành công
     }
 
-    console.log("Form Data:", formData); // Log form data
-    console.log("Files:", files); // Log files data
+    console.log("Dữ liệu form:", formData); // Ghi lại dữ liệu form
+    console.log("Dữ liệu file:", files); // Ghi lại dữ liệu file
 
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
@@ -143,7 +143,7 @@ const CreateEventForm = () => {
 
     try {
       if (!eventId) {
-        // If no event exists, create a new one
+        // Nếu không có sự kiện, tạo sự kiện mới
         const response = await axios.post(
           "http://localhost:3001/api/event/create",
           data,
@@ -155,10 +155,10 @@ const CreateEventForm = () => {
         );
         setEventId(response.data.event._id);
         setEventCreated(true);
-        alert("Event created successfully!");
+        alert("Tạo sự kiện thành công!");
         console.log(response.data);
       } else {
-        // If event exists, update it
+        // Nếu sự kiện đã có, cập nhật sự kiện
         const response = await axios.put(
           `http://localhost:3001/api/event/update/${eventId}`,
           data,
@@ -168,17 +168,19 @@ const CreateEventForm = () => {
             },
           }
         );
-        console.log("Event updated successfully:", response.data);
-        alert("Event updated successfully!");
+        console.log("Cập nhật sự kiện thành công:", response.data);
+        alert("Cập nhật sự kiện thành công!");
       }
     } catch (error) {
-      console.error("Error:", error.response?.data?.message || error.message);
-      alert("Error: " + (error.response?.data?.message || error.message));
+      console.error("Lỗi:", error.response?.data?.message || error.message);
+      alert("Lỗi: " + (error.response?.data?.message || error.message));
     }
   };
+
   const handleReturnHome = () => {
     navigate("/");
   };
+
 
   return (
     <div
@@ -186,22 +188,21 @@ const CreateEventForm = () => {
       style={{ marginTop: "20px", backgroundColor: "#2c2c2c" }}
     >
       <h2 className="text-center" style={{ color: "#ffea99" }}>
-        Create Event
+        TẠO SỰ KIỆN
       </h2>
-      <button
+      {/* <button
         onClick={handleReturnHome}
         className="btn btn-primary mb-4"
         style={{ backgroundColor: "#ffea99", color: "#000000", padding: "20px", marginLeft: "20px", marginTop: "20px", }}
       >
         Return to Homepage
-      </button>
+      </button> */}
       <div className="d-flex">
         <div
           className="event-form"
           style={{
             flex: 1,
             backgroundColor: "#2c2c2c",
-            padding: "20px",
             borderRadius: "5px",
             marginRight: "10px",
           }}
@@ -216,9 +217,9 @@ const CreateEventForm = () => {
                 marginBottom: "20px",
               }}
             >
-              <h4 className="text-secondary">Event Details</h4>
+              <h4 className="text-secondary">THÔNG TIN SỰ KIỆN</h4>
               <div className="mb-3">
-                <label className="form-label">Name:</label>
+                <label className="form-label">Tên sự kiện:</label>
                 <input
                   type="text"
                   className="form-control"
@@ -229,7 +230,7 @@ const CreateEventForm = () => {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Event Type:</label>
+                <label className="form-label">Kiểu sự kiện:</label>
                 <select
                   className="form-select"
                   name="eventTypeId"
@@ -237,7 +238,7 @@ const CreateEventForm = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select Event Type</option>
+                  <option value="">Chọn kiểu sự kiện</option>
                   {eventTypes.map((type) => (
                     <option key={type.id} value={type._id}>
                       {type.name}
@@ -246,7 +247,7 @@ const CreateEventForm = () => {
                 </select>
               </div>
               <div className="mb-3">
-                <label className="form-label">Description:</label>
+                <label className="form-label">Thông tin mô tả sự kiện:</label>
                 <textarea
                   className="form-control"
                   name="description"
@@ -256,7 +257,7 @@ const CreateEventForm = () => {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Start Time:</label>
+                <label className="form-label">Thời gian diễn ra:</label>
                 <input
                   type="datetime-local"
                   className="form-control"
@@ -267,7 +268,7 @@ const CreateEventForm = () => {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">End Time:</label>
+                <label className="form-label">Thời gian kết thúc:</label>
                 <input
                   type="datetime-local"
                   className="form-control"
@@ -278,7 +279,7 @@ const CreateEventForm = () => {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Event Type Location:</label>
+                <label className="form-label">Kiểu địa điểm diễn ra:</label>
                 <select
                   className="form-select"
                   name="eventTypeLocation"
@@ -286,14 +287,14 @@ const CreateEventForm = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select Location Type</option>
+                  <option value="">Chọn kiểu địa điểm</option>
                   <option value="online">Online</option>
                   <option value="offline">Offline</option>
                 </select>
               </div>
               {formData.eventTypeLocation === "offline" && (
                 <div className="mb-3">
-                  <label className="form-label">Location:</label>
+                  <label className="form-label">Vị trí diễn ra sự kiện:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -315,25 +316,25 @@ const CreateEventForm = () => {
                 marginBottom: "20px",
               }}
             >
-              <h4 className="text-secondary">Organizer Information</h4>
+              <h4 className="text-secondary">Thông tin ban tổ chức</h4>
               <div className="mb-3">
-                <label className="form-label">Organizer Info:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="organizerInfor"
-                  value={formData.organizerInfor}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Organizer Name:</label>
+                <label className="form-label">Tên ban tổ chức:</label>
                 <input
                   type="text"
                   className="form-control"
                   name="organizerName"
                   value={formData.organizerName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Mô tả về ban tổ chức:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="organizerInfor"
+                  value={formData.organizerInfor}
                   onChange={handleChange}
                   required
                 />
@@ -349,9 +350,9 @@ const CreateEventForm = () => {
                 marginBottom: "20px",
               }}
             >
-              <h4 className="text-secondary">Media Uploads</h4>
+              <h4 className="text-secondary">Tải lên các hình ảnh về sự kiện</h4>
               <div className="mb-3">
-                <label className="form-label">Logo Image (720x958):</label>
+                <label className="form-label">Logo sự kiện (720x958):</label>
                 <input
                   type="file"
                   className="form-control"
@@ -369,7 +370,7 @@ const CreateEventForm = () => {
                 )}
               </div>
               <div className="mb-3">
-                <label className="form-label">Organizer Logo (275x275):</label>
+                <label className="form-label">Logo ban tổ chức (275x275):</label>
                 <input
                   type="file"
                   className="form-control"
@@ -387,7 +388,7 @@ const CreateEventForm = () => {
               </div>
               <div className="mb-3">
                 <label className="form-label">
-                  Background Image (1280x720):
+                  Hình nền sự kiện (1280x720):
                 </label>
                 <input
                   type="file"
@@ -417,10 +418,10 @@ const CreateEventForm = () => {
                 {filePreviews.video && (
                   <video
                     controls
-                    style={{ width: "100%", height: "auto", marginTop: "10px" }}
+                    style={{ width: "50%", height: "auto", marginTop: "10px" }}
                   >
                     <source src={filePreviews.video} type="video/mp4" />
-                    Your browser does not support the video tag.
+                    Trình duyệt không hỗ trợ video
                   </video>
                 )}
               </div>
@@ -435,9 +436,9 @@ const CreateEventForm = () => {
                 marginBottom: "20px",
               }}
             >
-              <h4 className="text-secondary">Payment Account</h4>
+              <h4 className="text-secondary">Tài khoản thanh toán</h4>
               <div className="mb-3">
-                <label className="form-label">Bank Name:</label>
+                <label className="form-label">Tên ngân hàng:</label>
                 <textarea
                   className="form-control"
                   name="bankName"
@@ -447,7 +448,7 @@ const CreateEventForm = () => {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Bank Account Number:</label>
+                <label className="form-label">Số tài khoản ngân hàng:</label>
                 <textarea
                   className="form-control"
                   name="bankNumber"
@@ -457,7 +458,7 @@ const CreateEventForm = () => {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Account Holder Name:</label>
+                <label className="form-label">Tên chủ tài khoản:</label>
                 <textarea
                   className="form-control"
                   name="accountHolderName"
@@ -473,7 +474,7 @@ const CreateEventForm = () => {
               className="btn btn-warning"
               style={{ backgroundColor: "#ffea99" }}
             >
-              {eventCreated ? "Update Event" : "Create Event"}
+              {eventCreated ? "Cập nhật sự kiện" : "Tạo sự kiện"}
             </button>
           </form>
         </div>

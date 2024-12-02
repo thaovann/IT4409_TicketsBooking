@@ -209,6 +209,7 @@ exports.create = async (orderBody) => {
                 throw new CreateFailedException(`Ticket category ${category.ticketCategoryId} not found`);
             }
             totalPrice += (ticketCategory.price * ticket.quantity);
+            // console.log(totalPrice);
         }
     }
 
@@ -256,6 +257,7 @@ exports.create = async (orderBody) => {
 
     // Calculate final price with the discount applied
     const calculatedFinalPrice = totalPrice - discount;
+    // console.log(calculatedFinalPrice);
 
     // Verify if the finalPrice in orderBody matches the calculated one
     if (orderBody.finalPrice !== calculatedFinalPrice) {

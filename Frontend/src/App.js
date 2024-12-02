@@ -18,6 +18,7 @@ import ForgotPassword from "./pages/Auth/ChangePassword/ForgotPassword";
 import ResetPassword from "./pages/Auth/ChangePassword/ResetPassword";
 import VerifyOTP from "./pages/Auth/ChangePassword/VerifyOTP";
 import TicketBookingPage from "./pages/User/TicketBookingPage";
+import PaymentPage from "./pages/User/PaymentPage";
 import PurchasedTickets from "./components/events/PurchasedTickets";
 import './App.css';
 
@@ -37,10 +38,21 @@ function App() {
           <Route path="/verify-otp" element={<VerifyOTP />} />
           <Route path="/profile" element={<ProfilePage />} />
 
+            {/* Trang event */}
+            <Route path="/events" element={<EventsPage />} />
+            <Route path="/events/:id" element={<EventDetail />} />
+            <Route path="/search" element={<SearchResults />} />
+            {/* <Route path="organizer/create-event" element={<CreateEventForm />} />
+            <Route
+              path="organizer/create-event"
+              element={<CreateEventForm />}
+            />
+            <Route
+              path="organizer/create-ticket"
+              element={<CreateTicketCategoryForm />}
+            /> */}
+            <Route path="/payment" element={<PaymentPage />} />
           {/* Trang event */}
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/events/:id" element={<EventDetail />} />
-          <Route path="/search" element={<SearchResults />} />
           <Route path="/organizer/*" element={<OrganizerPage />} />
           {/* <Route path="organizer/create-event" element={<CreateEventForm />} />
           <Route
