@@ -1,0 +1,170 @@
+.bao{
+    background-color: #000;
+}
+
+.payment-container {
+    max-width: 70%;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 150px;
+    text-align: center;
+    color: white;
+    background-color: #000;
+  }
+/* ==========phần 1============ */
+  .payment-container .payment-event-info {
+    margin-bottom: 30px;
+    color: white;
+    background: #6b6868;
+    padding: 10px;
+  }
+  
+  .payment-event-title{
+    position: relative;
+    text-align: start;
+    font-weight: 700;
+  }
+  .payment-event-title::after{
+    position: absolute;
+    content:"";
+    height: 2px;
+    width: 100%;
+    background: white;
+    bottom: -10px;
+    left: 0;
+  }
+
+  .payment-event-desc{
+    margin-top: 20px;
+    text-align: start;
+  }
+  
+  .payment-infos{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+/* =========phần 3========== */
+  .payment-info {
+    background:  #6b6868;
+    margin-bottom: 30px;
+    border-radius: 20px;
+    padding: 10px;
+  }
+  
+  .payment-info-title{
+    font-size: 1.3em;
+  }
+
+  .ticket-summary {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .ticket-summary-title{
+    font-size: 1.7em;
+  }
+
+  .ticket-summary-item {
+    margin-bottom: 15px;
+    text-align: start;
+  }
+  .ticket-summary-item-title{
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1.25em;
+    border-bottom: 1px solid white;
+  }
+  .ticket-summary-total{
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+  
+/* ==========phần 4============ */
+
+  .voucher-section {
+    min-width: 30%;
+    margin-bottom: 30px;
+    background: #6b6868;
+    border-radius: 20px;
+    padding: 10px;
+  }
+  
+  .voucher-title{
+    font-size: 1.2em;
+  }
+
+  .voucher-input {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .voucher-input input {
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .voucher-input .voucher-button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .voucher-input .voucher-button:hover {
+    background-color: #2980b9;
+  }
+  /* ========phần 2========= */
+  .payment-method-section {
+    margin-bottom: 30px;
+    padding: 10px 0 10px 0;
+    min-width: 66%;
+    background: #6b6868;
+    border-radius: 20px;
+  }
+  
+  .payment-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .payment-options label {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+  }
+  
+  .payment-options input {
+    margin-right: 10px;
+  }
+  
+  .confirm-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .confirm-button:hover {
+    background-color: white;
+    color: var(--primary-color);
+  }
+  
+  .discount-note {
+    color: var(--primary-color);
+    font-size: 14px;
+  }
+  

@@ -23,8 +23,8 @@ function HomePage() {
                 const approvedEvents = response.data
                     .filter(event => event.state === "approved")
                     .sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
-                    .slice(0, 6);
-    
+                    .slice(0, 12);
+
                 const eventsWithPrices = await Promise.all(
                     approvedEvents.map(async (event) => {
                         try {
@@ -38,13 +38,13 @@ function HomePage() {
                         }
                     })
                 );
-    
+
                 setEvents(eventsWithPrices);
             } catch (error) {
                 console.error("Error fetching events:", error);
             }
         };
-    
+
         fetchEvents();
     }, []);
 
@@ -52,7 +52,7 @@ function HomePage() {
         const interval = setInterval(() => {
             setCurrentBannerIndex(prevIndex => (prevIndex + 1) % Math.ceil(events.length / 2));
         }, 5000);
-        
+
         return () => clearInterval(interval);
     }, [events.length]);
 
@@ -62,29 +62,29 @@ function HomePage() {
 
     // Hàm điều khiển banner
     const prevBannerSlide = () => {
-        setCurrentBannerIndex(prevIndex => 
+        setCurrentBannerIndex(prevIndex =>
             prevIndex === 0 ? Math.ceil(events.length / 2) - 1 : prevIndex - 1
         );
     };
 
     const nextBannerSlide = () => {
-        setCurrentBannerIndex(prevIndex => 
+        setCurrentBannerIndex(prevIndex =>
             (prevIndex + 1) % Math.ceil(events.length / 2)
         );
     };
 
     // Hàm điều khiển EventCard slider
-const prevCardSlide = () => {
-    setCurrentCardIndex((prevIndex) =>
-        prevIndex === 0 ? events.length - 1 : prevIndex - 1
-    );
-};
+    const prevCardSlide = () => {
+        setCurrentCardIndex((prevIndex) =>
+            prevIndex === 0 ? events.length - 1 : prevIndex - 1
+        );
+    };
 
-const nextCardSlide = () => {
-    setCurrentCardIndex((prevIndex) =>
-        (prevIndex + 1) % events.length
-    );
-};
+    const nextCardSlide = () => {
+        setCurrentCardIndex((prevIndex) =>
+            (prevIndex + 1) % events.length
+        );
+    };
 
 
     const handleLoginClick = () => {
@@ -94,7 +94,7 @@ const nextCardSlide = () => {
     return (
         <div className="home-page">
             <Header user={user} onLoginClick={handleLoginClick} />
-            <div className='body-container'>    
+            <div className='body-container'>
                 <section className="banner">
                     {events.length > 0 && (
                         <div className="banner-container">
@@ -142,22 +142,22 @@ const nextCardSlide = () => {
                     )}
                 </section>
                 <section className="featured-events">
-            <h2>Sự kiện nổi bật</h2>
-            <div className="event-list" style={{ transform: `translateX(-${currentCardIndex * 100}%)` }}>
-                {events.length > 0 ? (
-                    events
-                    .filter(event => event.state === "approved")
-                    .map((event) => (
-                        <EventCard key={event.id} event={event} />
-                    ))
-                ) : (
-                    <p>Không có sự kiện nào.</p>
-                )}
-            </div>
-            {/* Nút điều hướng slider */}
-            <button className="slider-arrow slider-arrow-left" onClick={prevCardSlide}>❮</button>
-            <button className="slider-arrow slider-arrow-right" onClick={nextCardSlide}>❯</button>
-        </section>
+                    <h2>Sự kiện nổi bật</h2>
+                    <div className="event-list" style={{ transform: `translateX(-${currentCardIndex * 100}%)` }}>
+                        {events.length > 0 ? (
+                            events
+                                .filter(event => event.state === "approved")
+                                .map((event) => (
+                                    <EventCard key={event.id} event={event} />
+                                ))
+                        ) : (
+                            <p>Không có sự kiện nào.</p>
+                        )}
+                    </div>
+                    {/* Nút điều hướng slider */}
+                    <button className="slider-arrow slider-arrow-left" onClick={prevCardSlide}>❮</button>
+                    <button className="slider-arrow slider-arrow-right" onClick={nextCardSlide}>❯</button>
+                </section>
 
             </div>
             <Footer />

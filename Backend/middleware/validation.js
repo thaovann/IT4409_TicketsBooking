@@ -8,6 +8,6 @@ exports.checkValidation = (req) => {
     console.log('Validation errors:', data.errors); // Log các lỗi validation
 
     if (!data.isEmpty()) {
-        throw new InvalidPropertiesException(`Missing or invalid properties:\n${data.errors[0].msg}`, { data: data.errors });
+        throw new InvalidPropertiesException(`Thiếu hoặc thuộc tính không hợp lệ: ${data.errors[0].msg}`, { data: data.errors });
     }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from "axios";
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
@@ -7,6 +7,7 @@ import "./TicketBookingPage.css";
 
 const TicketBookingPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate(); // Khởi tạo useNavigate
   const [event, setEvent] = useState(null);
   const [tickets, setTickets] = useState([]);
   const [selectedTickets, setSelectedTickets] = useState({});
@@ -52,12 +53,33 @@ const TicketBookingPage = () => {
       return total + ticket.price * selectedTickets[ticket._id];
     }, 0);
   };
+  
+  const handleCheckout = () => {
+    const selectedTicketDetails = tickets
+      .map((ticket) => ({
+        ticketId: ticket._id,
+        name: ticket.name,
+        price: ticket.price,
+        quantity: selectedTickets[ticket._id],
+      }))
+      .filter((ticket) => ticket.quantity > 0); // Lọc vé có số lượng > 0
+  
+    // Chuyển hướng sang trang thanh toán với thông tin vé và sự kiện
+    navigate("/payment", {
+      state: {//truyền dữ liệu sang page sau
+        selectedTicketDetails,
+        totalPrice: calculateTotalPrice(),
+        eventDetails: event, // Thêm thông tin sự kiện
+      },
+    });
+  };
+  
 
   if (!event) return <p>Loading...</p>;
 
   return (
     <div>
-      <Header hideNav={true}/>
+      <Header />
       <div className="ticket-booking-container">
         <div className="event-header">
           <h1>{event.name}</h1>
@@ -98,7 +120,7 @@ const TicketBookingPage = () => {
           <button
             className="checkout-button"
             disabled={calculateTotalPrice() === 0}
-            onClick={() => alert("Đặt vé thành công!")}
+            onClick={handleCheckout}
           >
             Tiến hành thanh toán
           </button>

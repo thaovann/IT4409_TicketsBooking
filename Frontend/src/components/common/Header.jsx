@@ -38,7 +38,7 @@ function Header({ hideCreateEvent, hideNav, onLoginClick }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  
+
 
   const handleLogout = () => {
     dispatch(logout()); // Thực hiện đăng xuất
@@ -80,9 +80,9 @@ function Header({ hideCreateEvent, hideNav, onLoginClick }) {
                 <div className="dropdown-menu active">
                   <Link to="/profile" className="dropdown-item"><i class="fa-regular fa-user"></i> Trang cá nhân</Link>
                   <Link to="/purchased-tickets" className="dropdown-item"><i class="fa-solid fa-ticket"></i> Vé đã mua</Link>
-                  <Link to="/my-events" className="dropdown-item"><i class="fa-regular fa-calendar-days"></i> Sự kiện của tôi</Link>
+                  <Link to="/organizer/events" className="dropdown-item"><i class="fa-regular fa-calendar-days"></i> Sự kiện của tôi</Link>
                   <button onClick={handleLogout} className="dropdown-item logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</button>
-                </div> 
+                </div>
               )}
             </div>
           ) : (
