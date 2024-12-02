@@ -18,7 +18,7 @@ const {
     createOrderSchema,
     updateOrderSchema,
     orderGetFiltersSchema
-} = require('../middleware/validators/OrderValidator');
+} = require('../middleware/validators/orderValidator');
 
 router.get('/', auth(), awaitHandlerFactory(getAllOrders));
 router.get('/id/:id', auth(), awaitHandlerFactory(getOrderById));
