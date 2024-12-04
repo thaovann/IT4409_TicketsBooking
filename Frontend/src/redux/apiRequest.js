@@ -53,8 +53,10 @@ export const loginUser = async (user, dispatch, navigate) => {
         else if (role === 0) {
             navigate("/");
         }
+        return res.data;
     } catch (error) {
         dispatch(loginFailed());
+        return { error: true, message: error.response?.data?.message || "Đăng nhập thất bại" };
     }
 };
 
@@ -63,11 +65,13 @@ export const registerUser = async (user, dispatch, navigate) => {
     try {
         //const response = await api.post("/auth/register", user);
         const response = await axios.post("http://localhost:3001/auth/register", user);
-        console.log(response.data);
+        //console.log(response.data);
         dispatch(registerSuccess());
         navigate("/login");
+        return response.data;
     } catch (error) {
         dispatch(registerFailed());
+        return { error: true, message: error.response?.data?.message || "Đăng ký thất bại" };
     }
 };
 

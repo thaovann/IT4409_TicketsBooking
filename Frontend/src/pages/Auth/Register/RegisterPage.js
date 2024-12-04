@@ -6,6 +6,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { useState } from "react";
 import Stack from "@mui/material/Stack";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../../../redux/apiRequest";
@@ -14,45 +15,11 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import * as yup from 'yup';
-import { useFormik } from 'formik';
-
-// schema xác thực thông tin mà user điền
-const validationSchema = yup.object({
-    FullName: yup.string().required('Ô này không được để trống'),
-    IdCard: yup.string()
-        .matches(/^\d{12}$/, 'CMND/CCCD phải gồm đúng 12 chữ số')
-        .required('Ô này không được để trống'),
-    Email: yup.string()
-        .email('Email không đúng định dạng')
-        .required('Ô này không được để trống'),
-    Password: yup.string()
-        .min(8, 'Mật khẩu phải dài ít nhất 8 ký tự')
-        .matches(/[A-Z]/, 'Mật khẩu cần ít nhất 1 ký tự viết hoa')
-        .matches(/\d/, 'Mật khẩu cần ít nhất 1 chữ số')
-        .matches(/[@$!%*?&]/, 'Mật khẩu cần ít nhất 1 ký tự đặc biệt')
-        .required('Ô này không được để trống'),
-    Phone: yup.string()
-        .matches(/^(\+84\d{9}|0\d{9})$/, 'Số điện thoại không hợp lệ')
-        .required('Ô này không được để trống'),
-    DoB: yup.date()
-        .nullable()
-        .required('Ô này không được để trống')
-        .test('age', 'Tuổi của bạn phải trên 12 tuổi', function (value) {
-            const today = new Date();
-            const birthDate = new Date(value);
-            const age = today.getFullYear() - birthDate.getFullYear();
-            const monthDifference = today.getMonth() - birthDate.getMonth();
-            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-                return age - 1 >= 12;
-            }
-            return age >= 12;
-        }),
-});
+import { Alert, Snackbar } from "@mui/material";
 
 const darkTheme = createTheme({
     palette: {
-        mode: "dark",
+        mode: "light",
     },
 });
 
@@ -67,33 +34,53 @@ const boxstyle = {
     boxShadow: 24,
 };
 
-const center = {
-    position: "relative",
-    top: "50%",
-    left: "30%",
-};
-
-export default function RegisterPage() {
+export default function Register() {
+    const [FullName, setFullName] = useState('');
+    const [IdCard, setIdCard] = useState('');
+    const [Email, setEmail] = useState('');
+    const [Password, setPassword] = useState('');
+    const [Phone, setPhone] = useState('');
+    const [Role, setRole] = useState(0);  // Mặc định là 0
+    const [Gender, setGender] = useState(0);  // Mặc định là 0 (Nam)
+    //const [DoB, setDob] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [error, setError] = useState('');
+    const [open, setOpen] = useState(false);
 
-    const formik = useFormik({
-        initialValues: {
-            FullName: '',
-            IdCard: '',
-            Email: '',
-            Password: '',
-            Phone: '',
-            Role: 0,    // mặc định 0 là role user
-            Gender: 0,  // mặc định 0 là nam
-            DoB: '',
-        },
-        validationSchema: validationSchema,
-        onSubmit: (values) => {
-            // Gửi dữ liệu đến backend
-            registerUser(values, dispatch, navigate);
-        },
-    });
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        const newUser = {
+            FullName: FullName,
+            IdCard: IdCard,
+            Email: Email,
+            Password: Password,
+            Phone: Phone,
+            Role: Role,
+            Gender: Gender,
+            //DoB: DoB
+        };
+        const res = await registerUser(newUser, dispatch, navigate);
+        if (res && res.message) {
+            const msg = res.message;
+            const parts = msg.split(':');
+            const validateErr = parts[2]?.trim();
+            if (newUser.FullName === "" || newUser.IdCard === "" || newUser.Email === "" || newUser.Password === "" || newUser.Phone === "") {
+                setError('Cần điền tất cả các ô');
+                setOpen(true);
+            } else {
+                setError(validateErr);
+                setOpen(true);
+            }
+        }
+    }
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
 
     return (
         <>
@@ -102,7 +89,8 @@ export default function RegisterPage() {
                     //backgroundImage: `url(${bgimg})`,
                     backgroundSize: "cover",
                     height: "100vh",
-                    color: "#f5f5f5",
+                    color: "#333333",
+                    backgroundColor: "#2c2c2c",
                 }}
             >
                 <Box sx={boxstyle}>
@@ -112,11 +100,8 @@ export default function RegisterPage() {
                                 style={{
                                     backgroundImage: `url(${ccimg})`,
                                     backgroundSize: "cover",
-                                    marginTop: "40px",
-                                    marginLeft: "15px",
-                                    marginRight: "15px",
-                                    height: "63vh",
-                                    color: "#f5f5f5",
+                                    height: "70vh",
+                                    backgroundColor: "#FFECC8",
                                 }}
                             ></Box>
                         </Grid>
@@ -126,107 +111,107 @@ export default function RegisterPage() {
                                     backgroundSize: "cover",
                                     height: "70vh",
                                     minHeight: "500px",
-                                    backgroundColor: "#3b33d5",
+                                    backgroundColor: "#FFF7D1",
                                 }}
                             >
                                 <ThemeProvider theme={darkTheme}>
                                     <Container>
-                                        <Box height={25} />
-                                        <Box sx={center}>
+                                        <Box height={35} />
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                                             <Typography component="h1" variant="h4">
                                                 Đăng ký
                                             </Typography>
                                         </Box>
-                                        <Box sx={{ mt: 2 }} />
-                                        <form onSubmit={formik.handleSubmit}>
+                                        <Box
+                                            component="form"
+                                            noValidate
+                                            onSubmit={handleRegister}
+                                            sx={{ mt: 2 }}
+                                        >
                                             <Grid container spacing={1}>
                                                 <Grid item xs={12}>
                                                     <TextField
                                                         required
                                                         fullWidth
-                                                        label="Họ tên"
+                                                        label="Họ và tên"
                                                         size="small"
-                                                        name="FullName"     // name có vai trò như key
-                                                        onChange={formik.handleChange}
-                                                        onBlur={formik.handleBlur}
-                                                        value={formik.values.FullName}
-                                                        error={formik.touched.FullName && Boolean(formik.errors.FullName)}
-                                                        helperText={formik.touched.FullName && formik.errors.FullName}
-                                                    />
-
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <TextField
-                                                        required
-                                                        fullWidth
-                                                        label="CMND/CCCD"
-                                                        size="small"
-                                                        name="IdCard"
-                                                        onChange={formik.handleChange}
-                                                        onBlur={formik.handleBlur}
-                                                        value={formik.values.IdCard}
-                                                        error={formik.touched.IdCard && Boolean(formik.errors.IdCard)}
-                                                        helperText={formik.touched.IdCard && formik.errors.IdCard}
+                                                        name="username"
+                                                        value={FullName}
+                                                        onChange={(e) => setFullName(e.target.value)}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12}>
                                                     <TextField
                                                         required
                                                         fullWidth
+                                                        label="CCCD/CMND"
+                                                        type="number"
+                                                        size="small"
+                                                        name="idcard"
+                                                        value={IdCard}
+                                                        onChange={(e) => setIdCard(e.target.value)}
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <TextField
+                                                        required
+                                                        fullWidth
+                                                        id="email"
                                                         label="Email"
-                                                        type="email"
-                                                        name="Email"
+                                                        name="email"
                                                         size="small"
-                                                        onChange={formik.handleChange}
-                                                        onBlur={formik.handleBlur}
-                                                        value={formik.values.Email}
-                                                        error={formik.touched.Email && Boolean(formik.errors.Email)}
-                                                        helperText={formik.touched.Email && formik.errors.Email}
+                                                        value={Email}
+                                                        onChange={(e) => setEmail(e.target.value)}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <TextField
                                                         required
                                                         fullWidth
+                                                        name="password"
                                                         label="Mật khẩu"
                                                         type="password"
-                                                        name="Password"
                                                         size="small"
-                                                        onChange={formik.handleChange}
-                                                        onBlur={formik.handleBlur}
-                                                        value={formik.values.Password}
-                                                        error={formik.touched.Password && Boolean(formik.errors.Password)}
-                                                        helperText={formik.touched.Password && formik.errors.Password}
+                                                        id="password"
+                                                        value={Password}
+                                                        onChange={(e) => setPassword(e.target.value)}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <TextField
                                                         required
                                                         fullWidth
-                                                        label="Điện thoại"
+                                                        name="confirmpassword"
+                                                        label="Nhập lại mật khẩu"
+                                                        type="password"
                                                         size="small"
-                                                        name="Phone"
-                                                        onChange={formik.handleChange}
-                                                        onBlur={formik.handleBlur}
-                                                        value={formik.values.Phone}
-                                                        error={formik.touched.Phone && Boolean(formik.errors.Phone)}
-                                                        helperText={formik.touched.Phone && formik.errors.Phone}
+                                                        id="confirmpassword"
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <TextField
+                                                        required
+                                                        fullWidth
+                                                        name="mobile"
+                                                        label="Điện thoại"
+                                                        type="number"
+                                                        size="small"
+                                                        value={Phone}
+                                                        onChange={(e) => setPhone(e.target.value)}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <FormControl fullWidth>
-                                                        <InputLabel required id="demo-simple-select-label">
+                                                        <InputLabel id="demo-simple-select-label">
                                                             Giới tính
                                                         </InputLabel>
                                                         <Select
                                                             labelId="demo-simple-select-label"
                                                             id="demo-simple-select"
-                                                            name="Gender"
-                                                            label="Giới tính"
+                                                            value={Gender}
+                                                            label="Gender"
                                                             size="small"
-                                                            value={formik.values.Gender}
-                                                            onChange={formik.handleChange}
-                                                            onBlur={formik.handleBlur}
+                                                            onChange={(e) => setGender(e.target.value)}
                                                         >
                                                             <MenuItem value={0}>Nam</MenuItem>
                                                             <MenuItem value={1}>Nữ</MenuItem>
@@ -234,35 +219,18 @@ export default function RegisterPage() {
                                                         </Select>
                                                     </FormControl>
                                                 </Grid>
-                                                <Grid item xs={6}>
-                                                    <TextField
-                                                        required
-                                                        fullWidth
-                                                        label="Ngày sinh"
-                                                        type="date"
-                                                        name="DoB"
-                                                        size="small"
-                                                        onChange={formik.handleChange}
-                                                        onBlur={formik.handleBlur}
-                                                        value={formik.values.DoB}
-                                                        InputLabelProps={{ shrink: true, }}
-                                                        error={formik.touched.DoB && Boolean(formik.errors.DoB)}
-                                                        helperText={formik.touched.DoB && formik.errors.DoB}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={12} sx={{ ml: "5em", mr: "5em" }}>
+                                                <Grid item xs={12} sx={{ ml: "5em", mr: "5em", display: "flex", justifyContent: "center", alignItems: "center" }}>
                                                     <Button
                                                         type="submit"
                                                         variant="contained"
-                                                        fullWidth="true"
+                                                        fullWidth
                                                         size="large"
                                                         sx={{
-                                                            mt: "15px",
-                                                            mr: "20px",
+                                                            mt: "10px",
                                                             borderRadius: 28,
                                                             color: "#ffffff",
                                                             minWidth: "170px",
-                                                            backgroundColor: "#FF9A01",
+                                                            backgroundColor: "#FFC300",
                                                         }}
                                                     >
                                                         Tạo tài khoản
@@ -288,13 +256,18 @@ export default function RegisterPage() {
                                                     </Stack>
                                                 </Grid>
                                             </Grid>
-                                        </form>
+                                        </Box>
                                     </Container>
                                 </ThemeProvider>
                             </Box>
                         </Grid>
                     </Grid>
                 </Box>
+                <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={open} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                        {error}
+                    </Alert>
+                </Snackbar>
             </div>
         </>
     );

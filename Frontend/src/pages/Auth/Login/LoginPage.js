@@ -1,5 +1,5 @@
 import ccimg from "../../../assets/concert.png";
-import { Avatar, Box, Button, Checkbox, Container, Grid, Stack, TextField, Typography, FormControlLabel } from "@mui/material";
+import { Avatar, Alert, Box, Button, Checkbox, Container, Grid, Stack, TextField, Typography, FormControlLabel, Snackbar } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useState } from "react";
@@ -24,42 +24,66 @@ const boxstyle = {
     boxShadow: 24,
 };
 
-const textFieldStyles = {
-    '& .MuiOutlinedInput-root': {
-        backgroundColor: '#ffea99', // Custom background color 
-        '& fieldset': {
-            borderColor: '#333333', // Default border color 
-        },
-        '&:hover fieldset': {
-            borderColor: '#333333', // Border color on hover 
-        },
-        '&.Mui-focused fieldset': {
-            borderColor: '#333333', // Border color when focused 
-        },
-    },
-    '& .MuiInputLabel-root': {
-        color: '#333333', // Label color 
-    },
-    '& .MuiInputBase-input': {
-        color: '#333333', // Text color 
-    },
-
-}
+// const textFieldStyles = {
+//     '& .MuiOutlinedInput-root': {
+//         backgroundColor: '#ffea99', // Custom background color 
+//         '& fieldset': {
+//             borderColor: '#333333', // Default border color 
+//         },
+//         '&:hover fieldset': {
+//             borderColor: '#333333', // Border color on hover 
+//         },
+//         '&.Mui-focused fieldset': {
+//             borderColor: '#333333', // Border color when focused 
+//         },
+//     },
+//     '& .MuiInputLabel-root': {
+//         color: '#333333', // Label color 
+//     },
+//     '& .MuiInputBase-input': {
+//         color: '#333333', // Text color 
+//     },
+// }
 
 export default function LoginPage() {
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
     const [remember, setRemember] = useState(false);
+    const [error, setError] = useState('');
+    const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         const newUser = {
             Email: Email,
             Password: Password,
         };
-        loginUser(newUser, dispatch, navigate);
+        const res = await loginUser(newUser, dispatch, navigate);
+        //console.log(res);
+        const validateErr = res.message;
+        if (newUser.Email === "" || newUser.Password === "") {
+            setError('Email và Mật khẩu không được trống');
+            setOpen(true);
+        }
+        else if (validateErr === "Lỗi xác thực: Thiếu hoặc thuộc tính không hợp lệ: Email phải hợp lệ") {
+            setError("Email sai định dạng");
+            setOpen(true);
+        } else if (validateErr === "Auth Error: Email not registered") {
+            setError("Email không tồn tại");
+            setOpen(true);
+        } else if (validateErr === "Auth Error: Incorrect Password") {
+            setError("Sai mật khẩu");
+            setOpen(true);
+        }
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
     };
 
     return (
@@ -183,6 +207,7 @@ export default function LoginPage() {
                                                     >
                                                         Tiếp tục
                                                     </Button>
+
                                                 </Grid>
                                                 <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
                                                     <Stack direction="row" spacing={2}>
@@ -211,6 +236,11 @@ export default function LoginPage() {
                         </Grid>
                     </Grid>
                 </Box>
+                <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={open} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                        {error}
+                    </Alert>
+                </Snackbar>
             </div>
         </>
     );
