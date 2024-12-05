@@ -1,0 +1,19 @@
+.payment-qr-container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .payment-qr-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .qr-code {
+    margin-bottom: 20px;
+  }
+  
+  .payment-qr-container a {
+    color: blue;
+    text-decoration: none;
+  }
+  
