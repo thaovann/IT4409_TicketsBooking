@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { passwordForgot } from "../../../redux/apiRequest";
 import { useNavigate } from "react-router-dom";
 import ccimg from "../../../assets/concert.png";
-import { Avatar, Alert, Box, Button, Container, Grid, TextField, Typography, Snackbar } from "@mui/material";
+import { Alert, Box, Button, Container, Grid, TextField, Typography, Snackbar } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const darkTheme = createTheme({
@@ -24,17 +24,35 @@ const boxstyle = {
 
 const ForgotPassword = () => {
     const [Email, setEmail] = useState("");
+    const [error, setError] = useState('');
+    const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const res = await passwordForgot(Email);
-            console.log(res);
+        const res = await passwordForgot(Email);
+        console.log(res);
+        const validateErr = res.message;
+        if (Email === "") {
+            setError('Email không được trống');
+            setOpen(true);
+        } else if (validateErr === "Lỗi xác thực: Thiếu hoặc thuộc tính không hợp lệ: Email phải hợp lệ") {
+            setError("Email sai định dạng");
+            setOpen(true);
+        } else if (validateErr === "Auth Error: Email not registered") {
+            setError("Email không tồn tại");
+            setOpen(true);
+        } else {
+            localStorage.setItem("email", Email);
             navigate("/verify-otp");
-        } catch (error) {
-            console.log("Failed to send OTP. Please try again.");
         }
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
     };
 
     return (
@@ -133,18 +151,11 @@ const ForgotPassword = () => {
                         </Grid>
                     </Grid>
                 </Box>
-                {/* <h2>Forgot Password</h2>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    placeholder="Enter your registered email"
-                    value={Email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <button type="submit">Send OTP</button>
-            </form>
-            {message && <p>{message}</p>} */}
+                <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={open} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                        {error}
+                    </Alert>
+                </Snackbar>
             </div>
         </>
     );
