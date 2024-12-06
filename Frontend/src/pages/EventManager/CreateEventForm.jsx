@@ -3,7 +3,8 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import CreateTicketCategoryForm from "./CreateTicketCategoryForm";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Typography } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 
 const CreateEventForm = () => {
   const navigate = useNavigate();
@@ -57,8 +58,8 @@ const CreateEventForm = () => {
     video: null,
   });
 
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  // const [loading, setLoading] = useState(false);
+  // const [message, setMessage] = useState("");
   const [eventTypes, setEventTypes] = useState([]);
   const [eventCreated, setEventCreated] = useState(false); // New state for event creation
   const [eventId, setEventId] = useState(null); // Store created event ID
@@ -176,27 +177,19 @@ const CreateEventForm = () => {
       alert("Lỗi: " + (error.response?.data?.message || error.message));
     }
   };
-
-  const handleReturnHome = () => {
-    navigate("/");
-  };
-
+  // const handleReturnHome = () => {
+  //   navigate("/");
+  // };
 
   return (
     <div
       className="container"
-      style={{ marginTop: "20px", backgroundColor: "#2c2c2c" }}
+      style={{ marginTop: "20px", backgroundColor: "#2c2c2c", color: "black" }}
     >
-      <h2 className="text-center" style={{ color: "#ffea99" }}>
-        TẠO SỰ KIỆN
-      </h2>
-      {/* <button
-        onClick={handleReturnHome}
-        className="btn btn-primary mb-4"
-        style={{ backgroundColor: "#ffea99", color: "#000000", padding: "20px", marginLeft: "20px", marginTop: "20px", }}
-      >
-        Return to Homepage
-      </button> */}
+      <Typography variant="h4" sx={{ pt: 3, color: "#EEEEEE" }} gutterBottom>
+        Tạo sự kiện
+      </Typography>
+
       <div className="d-flex">
         <div
           className="event-form"

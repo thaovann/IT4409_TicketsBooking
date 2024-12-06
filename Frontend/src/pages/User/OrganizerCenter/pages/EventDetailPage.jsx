@@ -5,6 +5,30 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Box from '@mui/material/Box';
 import "../../../../components/events/EventDetail.css";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const theme = createTheme({
+    palette: {
+        mode: "dark",
+        background: {
+            default: "#222831",
+            paper: "#393E46"
+        },
+        text: {
+            primary: "#EEEEEE",
+            secondary: "#B0BEC5"
+        },
+        primary: {
+            main: "#00ADB5"
+        },
+        secondary: {
+            main: "#FF5722"
+        }
+    },
+    typography: {
+        fontFamily: "Roboto, sans-serif"
+    }
+});
 
 const EventDetailPage = () => {
     const { id } = useParams();
@@ -56,7 +80,7 @@ const EventDetailPage = () => {
     if (!event) return <p>Loading...</p>;
 
     return (
-        <>
+        <ThemeProvider theme={theme}>
             <NavBar />
             <Box sx={{ display: "flex" }}>
                 <SideNav />
@@ -119,7 +143,7 @@ const EventDetailPage = () => {
                     </div>
                 </div>
             </Box>
-        </>
+        </ThemeProvider>
     );
 };
 

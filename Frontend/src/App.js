@@ -12,8 +12,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 //import OrganizerEvents from "./pages/EventManager/OrganizerEvents";
 import OrganizerPage from "./pages/User/OrganizerCenter/OrganizerPage";
 import PurchasedTickets from "./pages/User/MyTicket/PurchasedTickets";
-import CreateEventForm from "./pages/EventManager/CreateEventForm"
-import CreateTicketCategoryForm from "./pages/EventManager/CreateTicketCategoryForm";
+// import CreateEventForm from "./pages/EventManager/CreateEventForm"
+// import CreateTicketCategoryForm from "./pages/EventManager/CreateTicketCategoryForm";
 import ForgotPassword from "./pages/Auth/ChangePassword/ForgotPassword";
 import ResetPassword from "./pages/Auth/ChangePassword/ResetPassword";
 import VerifyOTP from "./pages/Auth/ChangePassword/VerifyOTP";

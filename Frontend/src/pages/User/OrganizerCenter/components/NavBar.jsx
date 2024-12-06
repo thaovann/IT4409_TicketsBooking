@@ -12,8 +12,11 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import { logout } from '../../../../redux/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux";
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Trang cá nhân', 'Đăng xuất'];
 
 const AppBar = styled(MuiAppBar, {
 })(({ theme }) => ({
@@ -22,6 +25,8 @@ const AppBar = styled(MuiAppBar, {
 
 function NavBar() {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -31,11 +36,23 @@ function NavBar() {
         setAnchorElUser(null);
     };
 
+    // xu ly menu
+    const handleMenuAction = (setting) => {
+        handleCloseUserMenu(); // Đóng menu trước
+        if (setting === "Trang cá nhân") {
+            navigate("/profile");
+        } else if (setting === "Đăng xuất") {
+            dispatch(logout());
+            navigate("/login");
+        }
+    };
+
+
     return (
         <AppBar position="fixed">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <BusinessCenterIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} fontSize='large' />
+                    <BusinessCenterIcon sx={{ display: { xs: 'none', md: 'flex', color: "#FFB200" }, mr: 1 }} fontSize='large' />
                     <Typography
                         variant="h6"
                         noWrap
@@ -47,7 +64,7 @@ function NavBar() {
                             fontFamily: 'monospace',
                             fontWeight: 700,
                             letterSpacing: '.2rem',
-                            color: 'inherit',
+                            color: '#FFB200',
                             textDecoration: 'none',
                             lineHeight: 1,  // giảm khoảng cách giữa các dòng
                         }}
@@ -68,7 +85,7 @@ function NavBar() {
                             fontFamily: 'monospace',
                             fontWeight: 700,
                             letterSpacing: '.3rem',
-                            color: 'inherit',
+                            color: '#FFB200',
                             textDecoration: 'none',
                             lineHeight: 1,
                         }}
@@ -81,7 +98,7 @@ function NavBar() {
                     <Box sx={{ flexGrow: 0, overflow: "hidden" }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                <Avatar alt="User" src="/static/images/avatar/2.jpg" />
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -102,7 +119,7 @@ function NavBar() {
                             disableScrollLock   //bỏ lock thanh cuộn để tránh bị co trang
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                <MenuItem key={setting} onClick={() => handleMenuAction(setting)}>
                                     <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
                                 </MenuItem>
                             ))}

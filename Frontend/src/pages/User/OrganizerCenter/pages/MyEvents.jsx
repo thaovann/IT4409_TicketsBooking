@@ -1,10 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Box, Grid, Typography, Card, CardContent, CardMedia, Chip, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { getEventByUserId } from "../../../../redux/apiRequest";
 import NavBar from "../components/NavBar";
 import SideNav from "../components/SideNav";
+
+const theme = createTheme({
+    palette: {
+        mode: "dark",
+        background: {
+            default: "#222831",
+            paper: "#393E46"
+        },
+        text: {
+            primary: "#EEEEEE",
+            secondary: "#B0BEC5"
+        },
+        primary: {
+            main: "#00ADB5"
+        },
+        secondary: {
+            main: "#FF5722"
+        }
+    },
+    typography: {
+        fontFamily: "Roboto, sans-serif"
+    }
+});
 
 const MyEvents = () => {
     const [events, setEvents] = useState([]);
@@ -23,21 +47,18 @@ const MyEvents = () => {
                 console.error("Error fetching events by userId :", error);
             }
         };
-
         fetchEvents();
     }, [userId]);
 
     // lọc sự kiện
     const filteredEvents = events.filter((event) => {
         const matchedSearch = event.name.toLowerCase().includes(searchTerm.toLowerCase());
-
         const matchedState = filterState ? event.state === filterState : true;
-
         return matchedSearch && matchedState;
     });
 
     return (
-        <>
+        <ThemeProvider theme={theme}>
             <NavBar />
             <Box height={60} />
             <Box sx={{ display: "flex" }}>
@@ -49,7 +70,9 @@ const MyEvents = () => {
                     {/* Thanh tìm kiếm */}
                     <Box sx={{ display: "flex", gap: 2, marginBottom: 3 }}>
                         <TextField
-                            sx={{ flex: 1 }}
+                            sx={{
+                                flex: 1,
+                            }}
                             //label="Tìm kiếm sự kiện"
                             variant="outlined"
                             value={searchTerm}
@@ -58,7 +81,7 @@ const MyEvents = () => {
                         />
                         <FormControl
                             sx={{
-                                minWidth: 180
+                                minWidth: 180,
                             }}>
                             <InputLabel>Trạng thái</InputLabel>
                             <Select
@@ -68,7 +91,6 @@ const MyEvents = () => {
                                 MenuProps={{
                                     disableScrollLock: true, // Ngăn việc khóa cuộn khi menu mở
                                 }}
-
                             >
                                 <MenuItem value="">Tất cả</MenuItem>
                                 <MenuItem value="approved">Đã phê duyệt</MenuItem>
@@ -86,8 +108,12 @@ const MyEvents = () => {
                                             flexDirection: "column",
                                             height: "100%",
                                             width: "100%",
-                                            cursor: "pointer"
-
+                                            cursor: "pointer",
+                                            '&:hover': {
+                                                boxShadow: 6,
+                                                transform: 'scale(1.05)',
+                                                transition: 'transform 0.3s ease-in-out',
+                                            }
                                         }}
                                         onClick={() => navigate(`/organizer/events/${event._id}`)}
                                     >
@@ -129,7 +155,7 @@ const MyEvents = () => {
                     </Grid>
                 </Box>
             </Box >
-        </>
+        </ThemeProvider>
     )
 }
 

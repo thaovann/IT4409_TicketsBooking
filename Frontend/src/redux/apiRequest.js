@@ -123,6 +123,15 @@ export const getUserById = async (UserId) => {
     }
 };
 
+export const updateUser = async (UserId, updatedData) => {
+    try {
+        const response = await api.patch(`/user/id/${UserId}`, updatedData);
+        return response.data;
+    } catch (error) {
+        return { error: true, message: error.response?.data?.message || "update user failed" };
+    }
+};
+
 export const deleteUserById = async (UserId) => {
     try {
         const response = await api.delete(`/user/id/${UserId}`);

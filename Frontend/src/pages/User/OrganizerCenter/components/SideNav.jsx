@@ -43,7 +43,7 @@ export default function SideNav() {
       >
         <Toolbar />
         <Box sx={{ overflow: "auto" }}>
-          <List>
+          <List sx={{ p: 0 }}>
             <ListItem
               disablePadding
               sx={{
@@ -55,7 +55,8 @@ export default function SideNav() {
                 selected={isActive("/organizer/events")}
                 sx={{
                   "&.Mui-selected": {
-                    backgroundColor: "rgba(0, 0, 0, 0.08)",
+                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    borderLeft: "4px solid #FFB200",
                   },
                   "&.Mui-selected:hover": {
                     backgroundColor: "rgba(0, 0, 0, 0.12)",
@@ -79,7 +80,8 @@ export default function SideNav() {
                 selected={isActive("/organizer/create-event")}
                 sx={{
                   "&.Mui-selected": {
-                    backgroundColor: "rgba(0, 0, 0, 0.08)",
+                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    borderLeft: "4px solid #FFB200",
                   },
                   "&.Mui-selected:hover": {
                     backgroundColor: "rgba(0, 0, 0, 0.12)",
@@ -102,9 +104,6 @@ export default function SideNav() {
             >
               <ListItemButton
                 sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "rgba(0, 0, 0, 0.08)",
-                  },
                   "&.Mui-selected:hover": {
                     backgroundColor: "rgba(0, 0, 0, 0.12)",
                   },
@@ -113,7 +112,7 @@ export default function SideNav() {
                 <ListItemIcon sx={{ minWidth: 40 }}>
                   <HomeIcon />
                 </ListItemIcon>
-                <ListItemText primary="Quay lại Trang Chủ" />
+                <ListItemText primary="Về Trang Chủ" />
               </ListItemButton>
             </ListItem>
           </List>
