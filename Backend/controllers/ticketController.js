@@ -241,7 +241,8 @@ exports.getAvailableTicket = [
   async (req, res) => {
     try {
       const { ticketCategoryId } = req.params;
-
+      const number = parseInt(req.query.number) || 1; 
+     
       if (!ticketCategoryId) {
         return res.status(400).json({ message: "Thiếu ticketCategoryId" });
       }
@@ -253,28 +254,38 @@ exports.getAvailableTicket = [
           .json({ message: "Không tìm thấy Ticket Category" });
       }
 
-      const availableTickets = await Ticket.find({
-        categoryId: ticketCategoryId,
-        state: "available",
-      });
+      const availableTickets = await Ticket.find(
+        {
+          categoryId: ticketCategoryId,
+          state: "available",
+        },
+        { _id: 1 } 
+      );
+
+     
       if (availableTickets.length === 0) {
         return res
           .status(404)
           .json({ message: "Không còn ticket nào có trạng thái 'available'" });
       }
+  
+      const limit = Math.min(number, availableTickets.length);
 
+    
+      const randomTicketIds = availableTickets
+        .sort(() => Math.random() - 0.5)
+        .slice(0, limit) 
+        .map((ticket) => ticket._id); 
 
-      const randomIndex = Math.floor(Math.random() * availableTickets.length);
-      const randomTicket = availableTickets[randomIndex];
-
+ 
       return res.status(200).json({
-        message: "Ticket được lấy thành công",
-        ticket: randomTicket,
+        message: "Tickets ID được lấy ngẫu nhiên thành công",
+        ticketIds: randomTicketIds,
       });
     } catch (error) {
-      console.error("Lỗi khi lấy ticket:", error);
+      console.error("Lỗi khi lấy tickets ID ngẫu nhiên:", error);
       res.status(500).json({
-        message: "Lỗi khi lấy ticket",
+        message: "Lỗi khi lấy tickets ID ngẫu nhiên",
         error: error.message,
       });
     }
