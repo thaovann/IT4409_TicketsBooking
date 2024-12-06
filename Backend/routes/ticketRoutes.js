@@ -10,5 +10,11 @@ router.delete(
   "/deleteTicketCategory/:categoryId",
   ticketController.deleteTicketCategory
 );
+router.get(
+  "/getAllTicketsByCategory/:ticketCategoryId",
+  ticketController.getAllTicketsByCategory
+);
+
+router.get("/getAvailableTicket/:ticketCategoryId",ticketController.getAvailableTicket)
 
 module.exports = router;
