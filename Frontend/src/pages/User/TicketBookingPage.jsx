@@ -57,7 +57,7 @@ const TicketBookingPage = () => {
   const handleCheckout = () => {
     const selectedTicketDetails = tickets
       .map((ticket) => ({
-        ticketId: ticket._id,
+        // ticketId: ticket._id,
         name: ticket.name,
         price: ticket.price,
         quantity: selectedTickets[ticket._id],
