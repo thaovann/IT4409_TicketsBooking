@@ -17,17 +17,14 @@ const PaymentPage = () => {
   };
   console.log('selectedTicketDetails: ',selectedTicketDetails)
 
-  const [voucher, setVoucher] = useState("");
-  const [discount, setDiscount] = useState(0);
+  const [voucher, setVoucher] = useState("");//mã voucher được chọn
+  const [discount, setDiscount] = useState(0);// số tiền giảm giá
   const [paymentMethod, setPaymentMethod] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [userVouchers, setUserVouchers] = useState([]); // Danh sách voucher của người dùng
+  const [error, setError] = useState(""); //lưu lỗi nếu có
   const token = localStorage.getItem("token");
 
-  const [userVouchers, setUserVouchers] = useState([]); // Danh sách voucher của người dùng
-
-  // Lấy token từ Redux store
-  const currentUser = useSelector((state) => state.auth.login.currentUser); // ID người dùng
   const userId = eventDetails?.userId; // Lấy userId từ eventDetails
   console.log('User ID from eventDetails:', userId);
 
@@ -49,23 +46,53 @@ const PaymentPage = () => {
   }, [userId, token]);
 
   const handleApplyVoucher = () => {
-    // Kiểm tra xem voucher người dùng nhập vào có hợp lệ không
-    const voucherExists = userVouchers.some(v => v.code === voucher); // So sánh với voucher của người dùng
-    if (voucherExists) {
-      setDiscount(totalPrice * 0.1); // Giảm giá 10% nếu voucher hợp lệ
-      alert("Voucher áp dụng thành công!");
-    } else {
+    const selectedVoucher = userVouchers.find((v) => v.code === voucher);
+
+    if (!selectedVoucher) {
+      setError("Voucher không hợp lệ!");
       setDiscount(0);
-      alert("Voucher không hợp lệ!");
+      return;
     }
+
+    // Kiểm tra điều kiện áp dụng
+    if (!selectedVoucher.isActive) {
+      setError("Voucher này hiện không còn hiệu lực.");
+      setDiscount(0);
+      return;
+    }
+
+    const now = new Date();
+    if (now < new Date(selectedVoucher.startDate) || now > new Date(selectedVoucher.endDate)) {
+      setError("Voucher đã hết hạn hoặc chưa được kích hoạt.");
+      setDiscount(0);
+      return;
+    }
+
+    if (totalPrice < selectedVoucher.minOrderValue) {
+      setError(`Đơn hàng tối thiểu phải đạt ${selectedVoucher.minOrderValue.toLocaleString()} VND để áp dụng voucher này.`);
+      setDiscount(0);
+      return;
+    }
+
+    // Tính giá trị giảm giá
+    let calculatedDiscount = 0;
+
+    if (selectedVoucher.discountType === "percentage") {
+      calculatedDiscount = (selectedVoucher.discountValue / 100) * totalPrice;
+      if (selectedVoucher.maxDiscountAmount) {
+        calculatedDiscount = Math.min(calculatedDiscount, selectedVoucher.maxDiscountAmount);
+      }
+    } else if (selectedVoucher.discountType === "fixed") {
+      calculatedDiscount = selectedVoucher.discountValue;
+    }
+
+    setDiscount(calculatedDiscount);
+    setError("");
+    alert(`Voucher áp dụng thành công! Giảm ${calculatedDiscount.toLocaleString()} VND`);
   };
 
-  const eventId = eventDetails?._id;
-  console.log('eventId: ',eventId);
-  const appliedVoucher = userVouchers.find(v => v.code === voucher);
-  console.log('apppliedvoucher: ',appliedVoucher);
-  const finalPrice = totalPrice - discount;
-  console.log('finalPrice: ',finalPrice);
+  const finalPrice = totalPrice - discount; // Tính giá trị cuối cùng
+
 
   const handleConfirmPayment = async () => {
     if (!paymentMethod) {
@@ -81,25 +108,24 @@ const PaymentPage = () => {
     setLoading(true); // Bật trạng thái loading
 
     try {
-      // Chuẩn bị thông tin để tạo order
-      const orderData = {
-        userId, // Lấy userId từ eventDetails
-        eventId, // ID của sự kiện
-        tickets: selectedTicketDetails.map((ticketCategory) => ({
-          ticketCategoryId: ticketCategory.categoryId, // ID loại vé
-          totalQuantity: ticketCategory.quantity, // Tổng số vé đã đặt
-          ticketDetails: ticketCategory.tickets.map((ticket) => ({
-            ticketId: ticket.id, // ID của từng vé
-          })),
-        })),
-        orderDate: new Date().toISOString().split("T")[0], // Ngày đặt
-        totalPrice, // Tổng giá vé trước khi áp dụng voucher
-        voucherId: appliedVoucher?.id || null, // ID của voucher nếu có
-        finalPrice, // Giá cuối cùng sau khi áp dụng voucher
-        state: "processing", // Trạng thái mặc định ban đầu
-      };
-
-      console.log("Order Data:", orderData); // Debug: kiểm tra dữ liệu gửi lên
+          // Chuẩn bị thông tin để tạo order
+          const orderData = {
+            userId, // Lấy userId từ eventDetails
+            eventId: eventDetails.eventId, // ID của sự kiện
+            tickets: selectedTicketDetails.map((ticketCategory) => ({
+              ticketCategoryId: ticketCategory.ticketCategoryId, // ID loại vé
+              quantity: ticketCategory.quantity, // Tổng số vé đã đặt
+              // ticketDetails: ticketCategory.tickets.map((ticket) => ({
+              //   ticketId: ticket.ticketId, // ID của từng vé
+              // })),
+            })),
+            orderDate: new Date().toISOString().split("T")[0], // Ngày đặt
+            totalPrice, // Tổng giá vé trước khi áp dụng voucher
+            finalPrice, // Giá cuối cùng sau khi áp dụng voucher
+            state: "processing", // Trạng thái mặc định ban đầu
+          };
+    
+          console.log('Order Data:', orderData); // Debug: kiểm tra dữ liệu gửi lên
 
       // 1. Gửi yêu cầu tạo order
       const createOrderResponse = await axios.post(
@@ -209,19 +235,31 @@ const PaymentPage = () => {
           <div className="payment-infos-right">
             {/* Phần 4: Nhập voucher */}
             <div className="voucher-section">
-              <h2 className="voucher-title">Nhập voucher</h2>
-              <div className="voucher-input">
-                <input
-                  type="text"
-                  value={voucher}
-                  onChange={(e) => setVoucher(e.target.value)}
-                  placeholder="Nhập mã voucher"
-                />
-                <button className="voucher-button" onClick={handleApplyVoucher}>
-                  Áp dụng
-                </button>
-              </div>
-            </div>
+      <h2 className="voucher-title">Chọn voucher</h2>
+      <div className="voucher-input">
+        {/* Hiển thị danh sách voucher để người dùng chọn */}
+        <select
+          value={voucher}
+          onChange={(e) => setVoucher(e.target.value)}
+          className="voucher-select"
+        >
+          <option value="">-- Chọn voucher --</option>
+          {userVouchers.map((v) => (
+            <option key={v._id} value={v.code}>
+              {v.code} - {v.discountType === "percentage" ? `${v.discountValue}%` : `${v.discountValue.toLocaleString()} VND`}
+            </option>
+          ))}
+        </select>
+        <button className="voucher-button" onClick={handleApplyVoucher}>
+          Áp dụng
+        </button>
+      </div>
+      {error && <div className="voucher-error">{error}</div>}
+      {/* Hiển thị giá trị cuối cùng sau khi áp dụng voucher */}
+      <div className="final-price">
+        {/* <h3>Tổng giá trị đơn hàng: {finalPrice.toLocaleString()} VND</h3> */}
+      </div>
+    </div>
 
             {/* Phần 3: Thông tin thanh toán */}
             <div className="payment-info">
