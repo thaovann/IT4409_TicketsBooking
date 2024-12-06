@@ -13,7 +13,8 @@ const {
     TokenVerificationException,
     OTPExpiredException,
     OTPGenerationException,
-    OTPVerificationException
+    OTPVerificationException,
+    ValidationException
 } = require('../utils/exceptions/auth');
 
 const {
@@ -22,7 +23,7 @@ const {
     UnexpectedException
 } = require('../utils/exceptions/database');
 
-exports.registerUser = async(body) => {
+exports.registerUser = async (body) => {
     const pass = body.Password;
 
     await hashPassword(body);
@@ -36,7 +37,7 @@ exports.registerUser = async(body) => {
     return this.userLogin(body.Email, pass, true);
 };
 
-exports.userLogin = async(Email, Password, is_register = false) => {
+exports.userLogin = async (Email, Password, is_register = false) => {
     const user = await UserModel.findOne({ Email });
 
     if (!user) {
@@ -64,12 +65,12 @@ exports.userLogin = async(Email, Password, is_register = false) => {
     } else {
         user.Password = undefined;
         message = "Authenticated";
-        responseBody = {...user, token };
+        responseBody = { ...user, token };
     }
     return structureResponse(responseBody, 1, message);
 };
 
-exports.refreshToken = async(body) => {
+exports.refreshToken = async (body) => {
     const { Email, Password, oldToken } = body;
     const user = await UserModel.findOne({ Email });
     if (!user) {
@@ -97,7 +98,7 @@ exports.refreshToken = async(body) => {
     return structureResponse({ token }, 1, "Refreshed");
 };
 
-exports.forgotPassword = async(body) => {
+exports.forgotPassword = async (body) => {
     let user = await UserModel.findOne(body); // body contains "Email" : ...
 
     if (!user) {
@@ -113,7 +114,7 @@ exports.forgotPassword = async(body) => {
     return structureResponse({}, 1, 'OTP generated and sent via Email');
 }
 
-generateOTP = async(UserId, Email) => {
+generateOTP = async (UserId, Email) => {
     const OTP = `${Math.floor(1000 + Math.random() * 9000)}`;
 
     const OTPHash = await bcrypt.hash(OTP, 8);
@@ -130,7 +131,7 @@ generateOTP = async(UserId, Email) => {
     return OTP;
 }
 
-removeExpiredOTP = async(UserId) => {
+removeExpiredOTP = async (UserId) => {
     const result = await OTPModel.findOne({ UserId });
 
     if (result) { // if found, delete
@@ -142,7 +143,7 @@ removeExpiredOTP = async(UserId) => {
     }
 }
 
-exports.verifyOTP = async(body) => {
+exports.verifyOTP = async (body) => {
     const { OTP, Email } = body;
     let result = await OTPModel.findOne({ Email });
 
@@ -171,8 +172,19 @@ exports.verifyOTP = async(body) => {
     return structureResponse({}, 1, 'OTP verified succesfully');
 }
 
-exports.changePassword = async(body) => {
+exports.changePassword = async (body) => {
     const { Email, Password, NewPassword } = body;
+
+    const newPasswordValidation = NewPassword?.trim()
+        .length >= 8 &&
+        /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])/.test(NewPassword);
+
+    if (!newPasswordValidation) {
+        throw new ValidationException(
+            'Password phải có ít nhất 8 ký tự, chứa ít nhất một chữ số, một chữ cái viết thường, một chữ cái viết hoa và một ký tự đặc biệt'
+        );
+    }
+
     const user = await UserModel.findOne({ Email: Email });
 
     if (!user) {
@@ -190,7 +202,7 @@ exports.changePassword = async(body) => {
     return this.resetPassword(responseBody);
 };
 
-exports.resetPassword = async(body) => {
+exports.resetPassword = async (body) => {
     await hashPassword(body);
 
     const { Password, Email } = body;

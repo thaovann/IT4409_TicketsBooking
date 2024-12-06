@@ -63,6 +63,12 @@ class InvalidCredentialsException extends AuthException {
     }
 }
 
+class ValidationException extends AuthException {
+    constructor(message, data) {
+        super(ErrorCodes.ValidationException, message, data);
+    }
+}
+
 class RegistrationFailedException extends AuthException {
     constructor(message = "Người dùng đăng ký thất bại", data) {
         super(ErrorCodes.RegistrationFailedException, message, data, ErrorStatusCodes.RegistrationFailedException);
@@ -78,5 +84,6 @@ module.exports = {
     RegistrationFailedException,
     OTPExpiredException,
     OTPGenerationException,
-    OTPVerificationException
+    OTPVerificationException,
+    ValidationException
 };
