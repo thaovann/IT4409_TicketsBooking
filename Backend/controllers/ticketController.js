@@ -205,3 +205,89 @@ exports.deleteTicketCategory = [
         }
     },
 ];
+
+exports.getAllTicketsByCategory = [
+  async (req, res) => {
+    try {
+      const { ticketCategoryId } = req.params;
+      if (!ticketCategoryId) {
+        return res.status(400).json({ message: "Thiếu ticketCategoryId" });
+      }
+
+      const ticketCategory = await TicketCategory.findById(ticketCategoryId);
+      if (!ticketCategory) {
+        return res
+          .status(404)
+          .json({ message: "Không tìm thấy Ticket Category" });
+      }
+
+      const tickets = await Ticket.find({ categoryId: ticketCategoryId });
+
+      return res.status(200).json({
+        message: "Danh sách tickets được lấy thành công",
+        tickets,
+      });
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách tickets:", error);
+      res.status(500).json({
+        message: "Lỗi khi lấy danh sách tickets",
+        error: error.message,
+      });
+    }
+  },
+];
+
+exports.getAvailableTicket = [
+  async (req, res) => {
+    try {
+      const { ticketCategoryId } = req.params;
+      const number = parseInt(req.query.number) || 1; 
+     
+      if (!ticketCategoryId) {
+        return res.status(400).json({ message: "Thiếu ticketCategoryId" });
+      }
+
+      const ticketCategory = await TicketCategory.findById(ticketCategoryId);
+      if (!ticketCategory) {
+        return res
+          .status(404)
+          .json({ message: "Không tìm thấy Ticket Category" });
+      }
+
+      const availableTickets = await Ticket.find(
+        {
+          categoryId: ticketCategoryId,
+          state: "available",
+        },
+        { _id: 1 } 
+      );
+
+     
+      if (availableTickets.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "Không còn ticket nào có trạng thái 'available'" });
+      }
+  
+      const limit = Math.min(number, availableTickets.length);
+
+    
+      const randomTicketIds = availableTickets
+        .sort(() => Math.random() - 0.5)
+        .slice(0, limit) 
+        .map((ticket) => ticket._id); 
+
+ 
+      return res.status(200).json({
+        message: "Tickets ID được lấy ngẫu nhiên thành công",
+        ticketIds: randomTicketIds,
+      });
+    } catch (error) {
+      console.error("Lỗi khi lấy tickets ID ngẫu nhiên:", error);
+      res.status(500).json({
+        message: "Lỗi khi lấy tickets ID ngẫu nhiên",
+        error: error.message,
+      });
+    }
+  },
+];
