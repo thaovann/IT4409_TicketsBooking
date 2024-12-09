@@ -10,7 +10,7 @@
 
 .body-container {
   margin: 0 auto;
-  max-width: 80%;
+  max-width: 75%;
 }
 
 /* Banner Section */
@@ -19,8 +19,10 @@
 }
 
 .banner-container {
+  margin-bottom: 10px;
+  padding-bottom: 20px;
   width: 100%;
-  height: 400px;
+  /* height: 400px; */
   position: relative;
   overflow: hidden; /* Ẩn phần cuộn ngang khi dịch chuyển banner */
 }
@@ -28,13 +30,15 @@
 .banner-slide-group {
   display: flex;
   transition: transform 0.5s ease;
-  transform: translateX(calc(-100% * var(--currentBannerIndex, 0) / 2)); /* Dịch chuyển nhóm 2 sự kiện */
+  transform: translateX(
+    calc(-100% * var(--currentBannerIndex, 0) / 2)
+  ); /* Dịch chuyển nhóm 2 sự kiện */
 }
 
 .banner-slide {
   flex: 1 0 50%; /* Chiếm 50% chiều rộng của banner để hiển thị 2 sự kiện */
   box-sizing: border-box;
-  padding: 0 10px; /* Khoảng cách giữa các banner */
+  padding: 0 5px; /* Khoảng cách giữa các banner */
   position: relative;
   display: flex;
   align-items: center;
@@ -45,61 +49,65 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 20px;
+  border-radius: 15px;
   filter: brightness(60%);
 }
 
 /* Thông tin sự kiện trên banner */
 .banner-info {
   position: absolute;
-  bottom: 30px;
+  bottom: 20px;
   left: 30px;
   color: #ffffff;
 }
 
 .banner-info .event-price {
-  font-size: 1.2rem;
+  font-size: 1.1em;
   font-weight: 300;
   color: var(--primary-color);
   margin-bottom: 8px;
 }
 
 .event-date {
-  font-size: 1rem;
+  font-size: 1em;
   color: #d3d3d3;
   margin-bottom: 15px;
 }
 
 .event-button {
-  padding: 8px 16px;
-  background-color: #ffffff;
-  color: var(--primary-color);
+  padding: 5px 12px;
+  background-color: var(--primary-color);
+  color: white;
+  font-size: 0.9em;
   font-weight: bold;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   text-transform: uppercase;
+  transition: 0.5s;
+  opacity: 70%;
 }
 
 .event-button:hover {
-  background-color: var(--primary-color);
-  color: #ffffff;
-  transition: background-color 0.3s ease;
+  opacity: 100%;
+  /* background-color: white;
+  color: var(--primary-color);
+  transition: background-color 0.3s ease; */
 }
 
 /* Điểm điều hướng banner (dots) */
 .banner-dots {
   position: absolute;
-  bottom: -35px;
+  bottom: 0%;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .banner-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   background-color: #888;
   border-radius: 50%;
   cursor: pointer;
@@ -115,13 +123,13 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(56, 55, 55, 0.5);
   color: #ffffff;
   border: none;
-  border-radius: 50%;
-  width: 40px;
+  width: 30px;
   height: 40px;
-  font-size: 20px;
+  font-size: 15px;
+  font-weight: 200;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -130,51 +138,69 @@
 }
 
 .banner-arrow-left {
-  left: 20px;
+  left: 5px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .banner-arrow-right {
-  right: 20px;
+  right: 5px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 
 .banner-arrow:hover {
   background-color: var(--primary-color);
 }
 
-/* phần sự kiện nổi bật */
+/*========phần sự kiện nổi bật==============*/
 .featured-events {
+  /* margin-top: 40px; */
   position: relative;
   overflow: hidden;
   width: 100%;
 }
 
+.featured-events-title {
+  font-family: var(--primary-font);
+  font-size: 1.2em;
+}
 .event-list {
+  margin-top: 15px;
   display: flex;
   transition: transform 0.5s ease-in-out;
+  flex-wrap: nowrap;
+  width: calc(100% * 4); /* Đảm bảo đủ không gian cho 4 sự kiện */
 }
 
-.event-card { /* Điều chỉnh kích thước của từng EventCard */
+.event-card {
+  /* Điều chỉnh kích thước của từng EventCard */
   min-width: 100%; /* hoặc điều chỉnh theo số lượng card muốn hiển thị cùng lúc, ví dụ: 50% cho 2 card */
   flex: 0 0 100%;
 }
 
 .slider-arrow {
   position: absolute;
-  top: 50%;
+  width: 25px;
+  top: 40%;
   transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(58, 57, 57, 0.5);
   color: #fff;
   border: none;
   padding: 10px;
   cursor: pointer;
   z-index: 10;
-  font-size: 1.5rem;
+  font-size: 1rem;
+  transition: 0.5s;
+}
+.slider-arrow:hover {
+  background-color: rgba(32, 32, 32, 0.5);
 }
 
 .slider-arrow-left {
-  left: 10px;
+  left: 0px;
 }
 
 .slider-arrow-right {
-  right: 10px;
+  right: 15px;
 }
