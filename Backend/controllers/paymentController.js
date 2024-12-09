@@ -194,7 +194,7 @@ exports.createPaymentVnpay = async (req, res, next) => {
         vnp_Params['vnp_TxnRef'] = orderId;
         vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
         vnp_Params['vnp_OrderType'] = 'other';
-        vnp_Params['vnp_Amount'] = amount;
+        vnp_Params['vnp_Amount'] = amount * 100;
         vnp_Params['vnp_ReturnUrl'] = returnUrl;
         vnp_Params['vnp_IpAddr'] = ipAddr;
         vnp_Params['vnp_CreateDate'] = createDate;
@@ -220,11 +220,10 @@ exports.createPaymentVnpay = async (req, res, next) => {
 
 exports.vnpayReturn = async (req, res, next) => {
     let vnp_Params = req.query;
-
     let secureHash = vnp_Params['vnp_SecureHash'];
 
     delete vnp_Params['vnp_SecureHash'];
-    // delete vnp_Params['vnp_SecureHashType'];
+    delete vnp_Params['vnp_SecureHashType'];
 
     vnp_Params = sortObject(vnp_Params);
 
@@ -236,40 +235,47 @@ exports.vnpayReturn = async (req, res, next) => {
     let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
 
     if (secureHash === signed) {
-        //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
+        // Gọi IPN endpoint với form-urlencoded và tạo lại SecureHash
+        try {
+            const ipnResponse = await axios.post(
+                configVnpay.vnp_IpnUrl,
+                querystring.stringify(vnp_Params), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+            );
+            console.log('IPN Response:', ipnResponse.data);
 
-        res.json({ code: vnp_Params['vnp_ResponseCode'] })
+            // Trả về kết quả cho client
+            res.json({
+                code: vnp_Params['vnp_ResponseCode'],
+                ipnResult: ipnResponse.data
+            });
+        } catch (error) {
+            console.error('Error calling IPN:', error);
+            res.json({
+                code: vnp_Params['vnp_ResponseCode'],
+                ipnError: 'Failed to process IPN notification'
+            });
+        }
     } else {
-        res.json({ code: '97' })
+        res.json({ code: '97' });
     }
 };
 
-// router.get('/vnpay_ipn', function (req, res, next) 
+// Cập nhật lại hàm vnpayIPN để xử lý cả form-urlencoded
 exports.vnpayIPN = async (req, res, next) => {
     try {
-        let vnp_Params = req.query;
-        const secureHash = vnp_Params["vnp_SecureHash"];
+        console.log("VNPay IPN Called:", {
+            query: req.query,
+            body: req.body,
+            method: req.method
+        });
+
+        let vnp_Params = req.body;
         const orderId = vnp_Params["vnp_TxnRef"];
         const rspCode = vnp_Params["vnp_ResponseCode"];
-
-        // Remove secure hash for validation
-        delete vnp_Params["vnp_SecureHash"];
-
-        // Sort the remaining parameters
-        vnp_Params = sortObject(vnp_Params);
-
-        // Generate hash from sorted parameters
-        const secretKey = configVnpay.vnp_HashSecret;
-        const signData = querystring.stringify(vnp_Params, { encode: false });
-        const hmac = crypto.createHmac("sha512", secretKey);
-        const signedHash = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
-
-        // Validate secure hash
-        if (secureHash !== signedHash) {
-            return res.status(400).json({
-                message: "Checksum mismatch. Invalid transaction.",
-            });
-        }
 
         // Find the order in the database
         const order = await OrderModel.findById(orderId);
@@ -325,8 +331,9 @@ exports.vnpayIPN = async (req, res, next) => {
         });
     } catch (error) {
         console.error("VNPay IPN Error:", error);
-        res.status(500).json({
-            message: "Internal server error. Please try again later.",
+        res.status(200).json({
+            RspCode: "99",
+            Message: "Unknown error"
         });
     }
 };

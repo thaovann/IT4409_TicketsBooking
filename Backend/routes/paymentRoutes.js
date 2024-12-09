@@ -17,7 +17,7 @@ router.post('/create-payment', auth(), awaitHandlerFactory(createPayment));
 router.post('/callback', auth(), awaitHandlerFactory(callback));
 router.post('/check-status-transaction', auth(), awaitHandlerFactory(checkStatusTransaction));
 router.post('/create-payment-vnpay', auth(), awaitHandlerFactory(createPaymentVnpay));
-router.get('/vnpay_return', auth(), awaitHandlerFactory(vnpayReturn));
-router.get('/vnpay_ipn', auth(), awaitHandlerFactory(vnpayIPN));
+router.get('/vnpay_return', awaitHandlerFactory(vnpayReturn));
+router.post('/vnpay_ipn', awaitHandlerFactory(vnpayIPN));
 
 module.exports = router;
