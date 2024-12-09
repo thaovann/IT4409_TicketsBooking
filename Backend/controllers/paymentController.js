@@ -7,7 +7,7 @@ const OrderModel = require("../models/Order");
 const moment = require('moment');
 const querystring = require("qs");
 
-exports.createPayment = async (req, res) => {
+exports.createPayment = async(req, res) => {
     const { orderId } = req.body;
 
     try {
@@ -61,8 +61,8 @@ exports.createPayment = async (req, res) => {
         const response = await axios.post(
             "https://test-payment.momo.vn/v2/gateway/api/create",
             requestBody, {
-            headers: { "Content-Type": "application/json" },
-        }
+                headers: { "Content-Type": "application/json" },
+            }
         );
 
         if (response.data.resultCode === 0) {
@@ -75,7 +75,7 @@ exports.createPayment = async (req, res) => {
     }
 };
 
-exports.callback = async (req, res) => {
+exports.callback = async(req, res) => {
     /**
     resultCode = 0: giao dịch thành công.
     resultCode = 9000: giao dịch được cấp quyền (authorization) thành công .
@@ -87,7 +87,7 @@ exports.callback = async (req, res) => {
     return res.status(200).json(req.body);
 }
 
-exports.checkStatusTransaction = async (req, res) => {
+exports.checkStatusTransaction = async(req, res) => {
     const { orderId } = req.body;
 
     try {
@@ -152,7 +152,7 @@ exports.checkStatusTransaction = async (req, res) => {
     }
 }
 
-exports.createPaymentVnpay = async (req, res, next) => {
+exports.createPaymentVnpay = async(req, res, next) => {
     try {
         // Get current date in the required format
         const date = new Date();
@@ -194,7 +194,7 @@ exports.createPaymentVnpay = async (req, res, next) => {
         vnp_Params['vnp_TxnRef'] = orderId;
         vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
         vnp_Params['vnp_OrderType'] = 'other';
-        vnp_Params['vnp_Amount'] = amount;
+        vnp_Params['vnp_Amount'] = amount * 100;
         vnp_Params['vnp_ReturnUrl'] = returnUrl;
         vnp_Params['vnp_IpAddr'] = ipAddr;
         vnp_Params['vnp_CreateDate'] = createDate;
@@ -218,7 +218,7 @@ exports.createPaymentVnpay = async (req, res, next) => {
     }
 };
 
-exports.vnpayReturn = async (req, res, next) => {
+exports.vnpayReturn = async(req, res, next) => {
     let vnp_Params = req.query;
 
     let secureHash = vnp_Params['vnp_SecureHash'];
@@ -245,7 +245,7 @@ exports.vnpayReturn = async (req, res, next) => {
 };
 
 // router.get('/vnpay_ipn', function (req, res, next) 
-exports.vnpayIPN = async (req, res, next) => {
+exports.vnpayIPN = async(req, res, next) => {
     try {
         let vnp_Params = req.query;
         const secureHash = vnp_Params["vnp_SecureHash"];
