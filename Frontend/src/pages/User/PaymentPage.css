@@ -78,10 +78,6 @@
 .payment-event-desc {
   margin-top: 40px;
   text-align: start;
-
-  .event-time {
-    /* margin-bottom: 10px; */
-  }
 }
 
 .payment-infos {
