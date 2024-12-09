@@ -166,6 +166,6 @@ const updateUserVouchers = async (voucher) => {
 
 
 // Helper function to remove a voucher from all users when it is deleted
-const removeVoucherFromUsers = async (voucherId) => {
-    await UserModel.updateMany({ Vouchers: voucherId }, { $pull: { Vouchers: voucherId } });
+const removeVoucherFromUsers = async (voucherCode) => {
+    await UserModel.updateMany({ Vouchers: voucherCode }, { $pull: { Vouchers: voucherCode } });
 }
