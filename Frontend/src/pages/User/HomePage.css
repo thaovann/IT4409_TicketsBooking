@@ -2,9 +2,9 @@
 
 /* Đặt kiểu nền tối cho trang chủ */
 .home-page {
-  background-color: #2c2c2c;
+  background-color: var(--primary-backgroundColor);
   color: #ffffff;
-  font-family: Arial, sans-serif;
+  font-family: var(--primary-font);
   padding-top: 50px;
 }
 
@@ -170,6 +170,7 @@
   font-family: var(--primary-font);
   font-size: 1.2em;
 }
+
 .event-list {
   margin-top: 15px;
   display: flex;

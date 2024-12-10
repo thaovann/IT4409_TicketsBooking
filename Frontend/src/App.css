@@ -14,6 +14,7 @@ body {
 
 :root {
   --extra-color: #ffea99;
+  --primary-backgroundColor: #2c2c2c;
   --primary-color: #ffb200;
   --primary-font: "Inter", sans-serif;
 }

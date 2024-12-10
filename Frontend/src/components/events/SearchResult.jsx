@@ -4,6 +4,7 @@ import Header from "../common/Header";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate, useLocation } from "react-router-dom";
+import EventCard from "./EventCard";
 import "./SearchResult.css";
 
 const SearchResult = () => {
@@ -57,7 +58,7 @@ const SearchResult = () => {
   };
 
   return (
-    <div>
+    <div className="search-results-bao">
       <Header />
       <div className="search-results-container">
         <div className="search-header">
@@ -95,30 +96,21 @@ const SearchResult = () => {
             </div>
           </div>
         </div>
-        {events.length > 0 ? (
-          <ul className="event-list">
-            {events.map((event) => (
-              <li key={event._id}>
-                <div
-                  className="event-thumbnail"
-                  style={{ backgroundImage: `url(${event.imageBackground})` }}
-                />
-                <div className="event-title">{event.name}</div>
-                <div className="event-price">Từ {event.price || "N/A"}đ</div>
-                <div className="event-date">
-                  <i className="fa-solid fa-calendar-days"></i>{" "}
-                  {new Date(event.startTime).toLocaleDateString()}
-                </div>
-                <div className="event-location">
-                  <i className="fa-solid fa-location-dot"></i>{" "}
-                  {event.location || "N/A"}
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Không tìm thấy sự kiện nào.</p>
-        )}
+        <div
+          className="search-event-list"
+          // style={{
+          //   transform: `translateX(-${currentCardIndex * (100 / 4)}%)`,
+          // }}
+        >
+          {events.length > 0 ? (
+            events
+              .filter((event) => event.state === "approved")
+              // .slice(currentCardIndex, currentCardIndex + 4)
+              .map((event) => <EventCard key={event.id} event={event} />)
+          ) : (
+            <p>Không có sự kiện nào.</p>
+          )}
+        </div>
       </div>
     </div>
   );
