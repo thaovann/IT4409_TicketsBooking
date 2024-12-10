@@ -53,26 +53,29 @@ const TicketBookingPage = () => {
       return total + ticket.price * selectedTickets[ticket._id];
     }, 0);
   };
-  
+  console.log("render ra tickets: ", tickets);
   const handleCheckout = () => {
     const selectedTicketDetails = tickets
       .map((ticket) => ({
-        ticketId: ticket._id,
+        // ticketId: ticket._id,
         name: ticket.name,
         price: ticket.price,
         quantity: selectedTickets[ticket._id],
+        ticketCategoryId: ticket._id, // Thêm ticketCategoryId
       }))
       .filter((ticket) => ticket.quantity > 0); // Lọc vé có số lượng > 0
-  
+
     // Chuyển hướng sang trang thanh toán với thông tin vé và sự kiện
     navigate("/payment", {
-      state: {//truyền dữ liệu sang page sau
+      state: {
         selectedTicketDetails,
         totalPrice: calculateTotalPrice(),
         eventDetails: event, // Thêm thông tin sự kiện
       },
     });
   };
+  
+
   
 
   if (!event) return <p>Loading...</p>;
