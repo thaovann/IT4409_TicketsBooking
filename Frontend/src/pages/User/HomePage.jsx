@@ -6,6 +6,7 @@ import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
 import EventCard from "../../components/events/EventCard";
 import "./HomePage.css";
+import voucherImg from "../../assets/img/voucher-img.webp";
 
 function HomePage() {
   const user = useSelector((state) => state.auth.login.currentUser);
@@ -106,6 +107,7 @@ function HomePage() {
     <div className="home-page">
       <Header user={user} onLoginClick={handleLoginClick} />
       <div className="body-container">
+        {/* ---------------------banner-------------------- */}
         <section className="banner">
           {events.length > 0 && (
             <div className="banner-container">
@@ -174,6 +176,7 @@ function HomePage() {
             </div>
           )}
         </section>
+        {/* -------------------sự kiện nổi bật------------------ */}
         <section className="featured-events">
           <h2 className="featured-events-title">Sự kiện nổi bật</h2>
           <div
@@ -204,6 +207,14 @@ function HomePage() {
           >
             ❯
           </button>
+        </section>
+        {/* -----------------------ảnh voucher--------------------- */}
+        <section className="voucher-banner">
+          <img src={voucherImg} alt="voucher" className="voucher-img" />
+        </section>
+        {/* -----------------------Nhạc sống------------------------- */}
+        <section className="search1">
+          <h2 className="search-events-title">Nhạc sống</h2>
         </section>
       </div>
       <Footer />

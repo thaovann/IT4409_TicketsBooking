@@ -13,6 +13,11 @@
   max-width: 75%;
 }
 
+.search-events-title {
+  font-family: var(--primary-font);
+  font-size: 1.2em;
+}
+
 /* Banner Section */
 .banner {
   margin-top: 130px; /* Đẩy phần banner xuống dưới header */
@@ -79,11 +84,11 @@
   background-color: var(--primary-color);
   color: white;
   font-size: 0.9em;
-  font-weight: bold;
+  /* font-weight: bold; */
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   transition: 0.5s;
   opacity: 70%;
 }
@@ -102,12 +107,12 @@
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 6px;
+  gap: 5px;
 }
 
 .banner-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   background-color: #888;
   border-radius: 50%;
   cursor: pointer;
@@ -203,4 +208,21 @@
 
 .slider-arrow-right {
   right: 15px;
+}
+
+/* ========voucher-banner=========== */
+.voucher-banner {
+  margin-top: 30px;
+}
+
+.voucher-img {
+  object-fit: cover;
+  overflow: hidden;
+  width: 100%;
+  border-radius: 10px;
+}
+
+/* =============nhạc sống============= */
+.search1 {
+  margin-top: 20px;
 }
