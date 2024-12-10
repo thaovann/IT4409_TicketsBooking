@@ -15,7 +15,9 @@ const TicketBookingPage = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/event/getEventById/${id}`);
+        const response = await axios.get(
+          `http://localhost:3001/api/event/getEventById/${id}`
+        );
         setEvent(response.data);
       } catch (error) {
         console.error("Error fetching event:", error);
@@ -24,7 +26,9 @@ const TicketBookingPage = () => {
 
     const fetchTickets = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${id}`);
+        const response = await axios.get(
+          `http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${id}`
+        );
         setTickets(response.data.ticketCategories);
 
         const initialSelectedTickets = {};
@@ -44,7 +48,10 @@ const TicketBookingPage = () => {
   const handleTicketQuantityChange = (ticketId, action) => {
     setSelectedTickets((prev) => ({
       ...prev,
-      [ticketId]: action === "increase" ? prev[ticketId] + 1 : Math.max(prev[ticketId] - 1, 0),
+      [ticketId]:
+        action === "increase"
+          ? prev[ticketId] + 1
+          : Math.max(prev[ticketId] - 1, 0),
     }));
   };
 
@@ -74,25 +81,46 @@ const TicketBookingPage = () => {
       },
     });
   };
-  
-
-  
 
   if (!event) return <p>Loading...</p>;
 
   return (
-    <div>
-      <Header />
-      <div className="ticket-booking-container">
-        <div className="event-header">
+    <div className="ticket-booking-page">
+      <Header hideNav={true} />
+      <div className="step-section">
+        <div className="step1 step">
+          <span>
+            {/* <i class="fa-solid fa-circle-check"></i> */}
+            <i class="fa-regular fa-circle"></i>
+          </span>
+          <span>Chọn vé</span>
+        </div>
+        <div className="hr"></div>
+        <div className="step2 step">
+          <span>
+            <i class="fa-regular fa-circle"></i>
+          </span>
+          <span>Thanh toán</span>
+        </div>
+      </div>
+      {/* event-info */}
+      <div className="event-header">
+        <div className="event-header-container">
           <h1>{event.name}</h1>
           <p>
-            <strong>Thời gian:</strong> {new Date(event.startTime).toLocaleString()} <br />
-            <strong>Địa điểm:</strong> {event.location}
+            <strong>
+              <i className="fa-regular fa-calendar-days"></i> Thời gian:
+            </strong>{" "}
+            {new Date(event.startTime).toLocaleString()} <br />
+            <strong>
+              <i className="fa-solid fa-location-dot"></i> Địa điểm:
+            </strong>{" "}
+            {event.location}
           </p>
         </div>
-
-        <h2>Chọn loại vé</h2>
+      </div>
+      <div className="ticket-booking-container">
+        <h2 className="ticket-booking-title">Chọn loại vé</h2>
         <div className="ticket-grid">
           {tickets.map((ticket) => (
             <div key={ticket._id} className="ticket-card">
@@ -101,14 +129,18 @@ const TicketBookingPage = () => {
               <p>Số lượng còn lại: {ticket.leftQuantity}</p>
               <div className="quantity-control">
                 <button
-                  onClick={() => handleTicketQuantityChange(ticket._id, "decrease")}
+                  onClick={() =>
+                    handleTicketQuantityChange(ticket._id, "decrease")
+                  }
                   disabled={selectedTickets[ticket._id] === 0}
                 >
                   -
                 </button>
                 <span>{selectedTickets[ticket._id]}</span>
                 <button
-                  onClick={() => handleTicketQuantityChange(ticket._id, "increase")}
+                  onClick={() =>
+                    handleTicketQuantityChange(ticket._id, "increase")
+                  }
                   disabled={selectedTickets[ticket._id] >= ticket.leftQuantity}
                 >
                   +
