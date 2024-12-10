@@ -108,6 +108,7 @@ export const resetPassword = async (Email, Password) => {
 export const getAllUsers = async () => {
     try {
         const response = await api.get("/user");
+        console.log(response.data);
         return response;
     } catch (error) {
         console.error("Failed to fetch users:", error);

@@ -11,10 +11,10 @@ import { updateUser } from "../../redux/apiRequest";
 function ProfilePage() {
     const user = useSelector((state) => state.auth.login.currentUser);
     const navigate = useNavigate();
-    const [FullName, setFullName] = useState(user.body?._doc?.FullName || "");
-    const [Phone, setPhone] = useState(user.body?._doc?.Phone || "");
-    const [DoB, setDob] = useState(user.body?._doc?.DoB?.split('T')[0] || ""); // Lấy phần ngày
-    const [Gender, setGender] = useState(user.body?._doc?.Gender || 0);
+    const [FullName, setFullName] = useState(user.body?._doc?.FullName);
+    const [Phone, setPhone] = useState(user.body?._doc?.Phone);
+    const [DoB, setDob] = useState(user.body?._doc?.DoB?.split('T')[0]); // Lấy phần ngày
+    const [Gender, setGender] = useState(user.body?._doc?.Gender);
     const [error, setError] = useState('');
     const [open, setOpen] = useState(false);
 
@@ -29,11 +29,7 @@ function ProfilePage() {
         const res = await updateUser(user.body?._doc?.UserId, updatedData);
         console.log(res);
         const validateErr = res.message;
-        if (FullName !== "" || Phone !== "") {
-            setError("Các ô không được trống");
-            setOpen(true);
-        }
-        else if (validateErr === "Lỗi xác thực: Thiếu hoặc thuộc tính không hợp lệ: Người dùng phải ít nhất 12 tuổi") {
+        if (validateErr === "Lỗi xác thực: Thiếu hoặc thuộc tính không hợp lệ: Người dùng phải ít nhất 12 tuổi") {
             setError("Bạn phải ít nhất 12 tuổi");
             setOpen(true);
         } else {

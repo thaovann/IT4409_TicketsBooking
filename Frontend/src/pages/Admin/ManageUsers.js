@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Box, Table, TableBody, TableCell, TableHead, TableRow, Container, Grid, Pagination, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Button, Box, Table, TableBody, TableCell, TableHead, TableRow, Container, Grid, Pagination } from '@mui/material';
 import Swal from 'sweetalert2';
 import { getAllUsers, deleteUserById } from '../../redux/apiRequest';
 import SideNav from './components/SideNav';
@@ -8,15 +8,16 @@ import AdminNavbar from './components/AdminNavbar';
 function ManageUsers() {
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
-    const [roleFilter, setRoleFilter] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
-    const usersPerPage = 5;
+    const usersPerPage = 7;
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await getAllUsers();
             if (response) {
-                const userDocs = response.data.body.map(user => user._doc);
+                const userDocs = response.data.body
+                    .map(user => user._doc)
+                    .filter(user => user.Role === 0);
                 setUsers(userDocs);
                 setFilteredUsers(userDocs);
             }
@@ -36,27 +37,19 @@ function ManageUsers() {
         });
 
         if (confirm.isConfirmed) {
-            await deleteUserById(UserId);
-            const updatedUsers = users.filter(user => user.UserId !== UserId);
-            setUsers(updatedUsers);
-            applyFilter(roleFilter, updatedUsers);
-            Swal.fire('Deleted!', 'The user has been deleted.', 'success');
-        }
-    };
+            try {
+                await deleteUserById(UserId);
+                const updatedUsers = users.filter(user => user.UserId !== UserId);
+                const updatedFilteredUsers = filteredUsers.filter(user => user.UserId !== UserId);
 
-    const applyFilter = (role, userList = users) => {
-        if (role === 'all') {
-            setFilteredUsers(userList);
-        } else {
-            setFilteredUsers(userList.filter(user => user.Role === (role === 'user' ? 0 : 1)));
-        }
-    };
+                setUsers(updatedUsers); // Cập nhật danh sách users
+                setFilteredUsers(updatedFilteredUsers); // Cập nhật danh sách đang hiển thị
 
-    const handleRoleFilterChange = (event) => {
-        const selectedRole = event.target.value;
-        setRoleFilter(selectedRole);
-        applyFilter(selectedRole);
-        setCurrentPage(1);
+                Swal.fire('Deleted!', 'The user has been deleted.', 'success');
+            } catch (error) {
+                Swal.fire('Error!', 'Failed to delete the user.', 'error');
+            }
+        }
     };
 
     const handlePageChange = (event, value) => {
@@ -74,19 +67,6 @@ function ManageUsers() {
                 <Container sx={{ padding: '2rem', height: '100vh' }}>
                     {/* <Grid container spacing={2}> */}
                     <Grid item xs={9}>
-                        <FormControl fullWidth margin="normal">
-                            <InputLabel>Filter by Role</InputLabel>
-                            <Select
-                                value={roleFilter}
-                                label="Filter by Role"
-                                onChange={handleRoleFilterChange}
-                            >
-                                <MenuItem value="all">All</MenuItem>
-                                <MenuItem value="user">User</MenuItem>
-                                <MenuItem value="admin">Admin</MenuItem>
-                            </Select>
-                        </FormControl>
-
                         <Table>
                             <TableHead>
                                 <TableRow>
