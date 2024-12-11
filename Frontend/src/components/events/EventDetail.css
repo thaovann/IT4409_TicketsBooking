@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-family: var(--primary-font);
 }
 
 /* Phần nội dung sự kiện */
@@ -73,10 +74,10 @@
   right: -33px;
 }
 
-.event-title {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 2.2em;
-  font-weight: bold;
+.event-detail-ticket .event-detail-title {
+  font-family: var(--primary-font);
+  font-size: 18px;
+  font-weight: 800;
   color: #fff;
 }
 
@@ -89,6 +90,7 @@
 .event-date,
 .event-location {
   display: block;
+  font-size: 14px;
 }
 
 .event-location {
@@ -134,6 +136,7 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 1.2em;
+  font-weight: 600;
   transition: 0.3s;
 }
 
@@ -228,7 +231,7 @@
 }
 
 .state-ticket {
-  color: green;
+  color: rgb(3, 151, 3);
   font-weight: 500;
 }
 

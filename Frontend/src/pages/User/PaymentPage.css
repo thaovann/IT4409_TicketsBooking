@@ -6,7 +6,7 @@
 .payment-container {
   max-width: 70%;
   margin: 0 auto;
-  padding: 10px;
+  padding: 0px 20px 0 20px;
   text-align: center;
   color: white;
 }
@@ -90,6 +90,7 @@
 }
 /* =========phần 3: thông tin thanh toán========== */
 .payment-info {
+  min-width: 40%;
   background: #6b6868;
   margin-bottom: 30px;
   border-radius: 15px;
@@ -133,11 +134,11 @@
 /* ==========phần 4: voucher============ */
 
 .voucher-section {
-  min-width: 35%;
+  min-width: 40%;
   margin-bottom: 20px;
   background: #6b6868;
   border-radius: 15px;
-  padding: 10px;
+  padding: 10px 20px;
 }
 
 .voucher-title {
@@ -152,6 +153,7 @@
 }
 .voucher-select {
   border-radius: 10px;
+  min-width: 160px;
 }
 .voucher-input input {
   padding: 10px;
@@ -178,7 +180,7 @@
 .payment-method-section {
   margin-bottom: 30px;
   padding: 10px;
-  min-width: 66%;
+  min-width: 67%;
   background: #6b6868;
   border-radius: 15px;
 }
