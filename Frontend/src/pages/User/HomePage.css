@@ -166,7 +166,10 @@
   width: 100%;
 }
 
-.featured-events-title {
+.featured-events-title,
+.music-events-title,
+.art-events-title,
+.others-events-title {
   font-family: var(--primary-font);
   font-size: 1.2em;
 }
@@ -224,6 +227,91 @@
 }
 
 /* =============nhạc sống============= */
-.search1 {
+.music-events,
+.art-events,
+.others-events {
   margin-top: 20px;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.music-events-header,
+.art-events-header,
+.others-events-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.see-more {
+  text-decoration: none;
+  color: #888;
+  font-size: 14px;
+  margin-right: 15px;
+}
+
+/* =============Điểm đến thú vị============= */
+.interest-location {
+  margin-top: 20px;
+}
+
+.interest-location-title {
+  font-family: var(--primary-font);
+  font-size: 1.2em;
+}
+.location-list {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.location-item img {
+  width: 267px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.location-item {
+  position: relative;
+}
+.hochiminh-img::after {
+  content: "Tp. Hồ Chí Minh";
+  font-size: 1.8em;
+  color: white;
+  font-weight: 700;
+  position: absolute;
+  bottom: 10%;
+  left: 10%;
+  z-index: 1;
+}
+.hanoi-img::after {
+  content: "Hà Nội";
+  font-size: 1.8em;
+  color: white;
+  font-weight: 700;
+  position: absolute;
+  bottom: 10%;
+  left: 10%;
+  z-index: 1;
+}
+.dalat-img::after {
+  content: "Đà Lạt";
+  font-size: 1.8em;
+  color: white;
+  font-weight: 700;
+  position: absolute;
+  bottom: 10%;
+  left: 10%;
+  z-index: 1;
+}
+.vitrikhac-img::after {
+  content: "Vị trí khác";
+  font-size: 1.8em;
+  color: white;
+  font-weight: 700;
+  position: absolute;
+  bottom: 10%;
+  left: 10%;
+  z-index: 1;
 }
