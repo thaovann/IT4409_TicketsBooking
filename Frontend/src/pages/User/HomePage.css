@@ -268,12 +268,29 @@
 
 .location-item img {
   width: 267px;
+  height: 267px;
   object-fit: cover;
   border-radius: 20px;
 }
 
 .location-item {
   position: relative;
+}
+.hochiminh-img::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background: linear-gradient(
+    to top,
+    var(--primary-color),
+    rgba(0, 255, 0, 0)
+  ); /* Màu xanh lá giảm dần từ dưới lên trên */ /* Màu xanh lá với độ mờ 50% */
+  pointer-events: none; /* Đảm bảo lớp phủ không cản trở các tương tác */
 }
 .hochiminh-img::after {
   content: "Tp. Hồ Chí Minh";
@@ -285,6 +302,23 @@
   left: 10%;
   z-index: 1;
 }
+
+.hanoi-img::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background: linear-gradient(
+    to top,
+    var(--primary-color),
+    rgba(0, 255, 0, 0)
+  ); /* Màu xanh lá giảm dần từ dưới lên trên */ /* Màu xanh lá với độ mờ 50% */
+  pointer-events: none; /* Đảm bảo lớp phủ không cản trở các tương tác */
+}
 .hanoi-img::after {
   content: "Hà Nội";
   font-size: 1.8em;
@@ -294,6 +328,23 @@
   bottom: 10%;
   left: 10%;
   z-index: 1;
+}
+
+.dalat-img::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background: linear-gradient(
+    to top,
+    var(--primary-color),
+    rgba(0, 255, 0, 0)
+  ); /* Màu xanh lá giảm dần từ dưới lên trên */ /* Màu xanh lá với độ mờ 50% */
+  pointer-events: none; /* Đảm bảo lớp phủ không cản trở các tương tác */
 }
 .dalat-img::after {
   content: "Đà Lạt";
@@ -305,8 +356,25 @@
   left: 10%;
   z-index: 1;
 }
-.vitrikhac-img::after {
-  content: "Vị trí khác";
+
+.danang-img::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background: linear-gradient(
+    to top,
+    var(--primary-color),
+    rgba(0, 255, 0, 0)
+  ); /* Màu xanh lá giảm dần từ dưới lên trên */ /* Màu xanh lá với độ mờ 50% */
+  pointer-events: none; /* Đảm bảo lớp phủ không cản trở các tương tác */
+}
+.danang-img::after {
+  content: "Đà Nẵng";
   font-size: 1.8em;
   color: white;
   font-weight: 700;

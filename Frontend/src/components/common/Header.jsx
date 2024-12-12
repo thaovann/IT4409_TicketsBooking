@@ -113,18 +113,16 @@ function Header({ hideCreateEvent, hideNav, onLoginClick }) {
         <nav className="navigation">
           <ul>
             <li>
-              <Link to="/search?query=Nhạc sống">Nhạc sống</Link>
+              <Link to="/search?q=music">Nhạc sống</Link>
             </li>
             <li>
-              <Link to="/search?query=Sân khấu & Nghệ thuật">
-                Sân khấu & Nghệ thuật
-              </Link>
+              <Link to="/search?q=art">Sân khấu & Nghệ thuật</Link>
             </li>
             <li>
-              <Link to="/search?query=Thể Thao">Thể Thao</Link>
+              <Link to="/search?q=sport">Thể Thao</Link>
             </li>
             <li>
-              <Link to="/search?query=Khác">Khác</Link>
+              <Link to="/search?q=h">Khác</Link>
             </li>
           </ul>
         </nav>

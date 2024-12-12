@@ -7,10 +7,10 @@ import Footer from "../../components/common/Footer";
 import EventCard from "../../components/events/EventCard";
 import "./HomePage.css";
 import voucherImg from "../../assets/img/voucher-img.webp";
-import hochiminh from "../../assets/img/hochiminh.webp";
-import hanoi from "../../assets/img/hanoi.webp";
-import dalat from "../../assets/img/dalat.webp";
-import vitrikhac from "../../assets/img/vitrikhac.webp";
+import hochiminh from "../../assets/img/tphochiminh-origin.jpg";
+import hanoi from "../../assets/img/hanoi-origin.jpg";
+import dalat from "../../assets/img/dalat-origin.jpg";
+import danang from "../../assets/img/danang-origin.jpg";
 
 function HomePage() {
   const user = useSelector((state) => state.auth.login.currentUser);
@@ -253,7 +253,7 @@ function HomePage() {
         <section className="music-events">
           <div className="music-events-header">
             <h2 className="music-events-title">Nhạc sống</h2>
-            <Link to={`/search?query=Nhạc%20sống`} className="see-more">
+            <Link to={`/search?q=music`} className="see-more">
               Xem thêm ❯
             </Link>
           </div>
@@ -381,28 +381,19 @@ function HomePage() {
           <h2 className="interest-location-title">Điểm đến thú vị</h2>
           <div className="location-list">
             <Link
-              to={`/search?location=TP+HCM`}
+              to={`/search?q=Hồ Chí Minh`}
               className="location-item hochiminh-img"
             >
               <img src={hochiminh} alt="Tp. Hồ Chí Minh" className="img " />
             </Link>
-            <Link
-              to={`/search?location=Hà+Nội`}
-              className="location-item hanoi-img"
-            >
+            <Link to={`/search?q=Hà Nội`} className="location-item hanoi-img">
               <img src={hanoi} alt="Hà Nội" className="img " />
             </Link>
-            <Link
-              to={`/search?location=Đà+Lạt`}
-              className="location-item dalat-img"
-            >
+            <Link to={`/search?q=Đà+Lạt`} className="location-item dalat-img">
               <img src={dalat} alt="Đà Lạt" className="img " />
             </Link>
-            <Link
-              to={`/search?location=khác`}
-              className="location-item vitrikhac-img"
-            >
-              <img src={vitrikhac} alt="vị trí khác" className="img " />
+            <Link to={`/search?q=đà+nẵng`} className="location-item danang-img">
+              <img src={danang} alt="Đà Nẵng" className="img " />
             </Link>
           </div>
         </section>
