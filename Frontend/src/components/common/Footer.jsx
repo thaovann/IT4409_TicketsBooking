@@ -5,16 +5,25 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer-container">
-        <div className="footer-section">
-          <h4>Liên hệ</h4>
-          <p>Email: support@ticketbox.vn</p>
-          <p>Hotline: 1900 123 456</p>
+        <div className="footer-contact">
+          <h4 className="footer-contact-title">Liên hệ</h4>
+          <p className="contact-desc">
+            <i class="fa-regular fa-envelope"></i> Email: support@ticketSup.vn
+          </p>
+          <p className="contact-desc">
+            <i class="fa-solid fa-phone"></i> Hotline:{" "}
+            <span className="hotline">1900 123 456</span>
+          </p>
+          <p className="contact-desc">
+            <i class="fa-solid fa-location-dot"></i> Văn phòng: 201 D5, Đại học
+            Bách Khoa Hà Nội
+          </p>
         </div>
-        <div className="footer-section">
-          <h4>Chính sách</h4>
+        <div className="footer-policy">
+          <h4 className="footer-policy-title">Chính sách</h4>
           <ul>
             <li>
-              <a href="/terms">Điều khoản sử dụng</a>
+              <a href="/terms">Điều khoản sử dụng cho khách hàng</a>
             </li>
             <li>
               <a href="/privacy">Chính sách bảo mật</a>
@@ -24,23 +33,26 @@ function Footer() {
             </li>
           </ul>
         </div>
-        <div className="footer-section">
-          <h4>Kết nối với chúng tôi</h4>
-          <div className="social-media">
-            <a href="https://facebook.com">
-              <img src="path/to/facebook-icon.png" alt="Facebook" />
+        <div className="footer-connect">
+          <h4 className="footer-connect-title">Kết nối với chúng tôi</h4>
+          <div className="footer-social-media">
+            <a href="https://facebook.com" className="footer-facebook">
+              <i class="fa-brands fa-facebook-f"></i>
             </a>
-            <a href="https://instagram.com">
-              <img src="path/to/instagram-icon.png" alt="Instagram" />
+            <a href="https://instagram.com" className="footer-instagram">
+              <i class="fa-brands fa-instagram"></i>
             </a>
-            <a href="https://twitter.com">
-              <img src="path/to/twitter-icon.png" alt="Twitter" />
+            <a href="https://twitter.com" className="footer-twitter">
+              <i class="fa-brands fa-twitter"></i>
+            </a>
+            <a href="https://tiktok.com" className="footer-tiktok">
+              <i class="fa-brands fa-tiktok"></i>
             </a>
           </div>
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; 2024 TicketBox. All rights reserved.</p>
+        <p>&copy; 2024 TicketSup. All rights reserved.</p>
       </div>
     </footer>
   );

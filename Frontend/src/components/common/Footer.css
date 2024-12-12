@@ -1,55 +1,86 @@
 .footer {
   background-color: #333;
-  color: #fff;
+  color: #c0bfbf;
   padding: 20px 0;
   margin-top: 20px;
+  font-family: var(--primary-font);
 }
 
 .footer-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: start;
   flex-wrap: wrap;
-  padding: 0 20px;
+  padding-left: 50px;
+  gap: 300px;
 }
 
-.footer-links {
-  flex: 1;
-  min-width: 200px;
-  margin-bottom: 20px;
+.footer-contact-title,
+.footer-policy-title,
+.footer-connect-title {
+  font-weight: 800;
+  font-size: 1.1em;
 }
-
-.footer-links h3 {
-  margin-bottom: 10px;
+.contact-desc {
+  font-size: 0.9em;
 }
-
-.footer-links ul {
+.contact-desc .hotline {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+.footer-policy ul {
   list-style: none;
   padding: 0;
+  gap: 10px;
 }
 
-.footer-links li a {
-  color: #fff;
+.footer-policy li a {
+  font-size: 0.9em;
+  color: #c0bfbf;
   text-decoration: none;
 }
 
-.footer-links li a:hover {
-  text-decoration: underline;
+.footer-social-media {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 15px;
+}
+.footer-connect a {
+  font-size: 2em;
 }
 
-.social-media ul {
-  list-style: none;
-  padding: 0;
+.footer-facebook {
+  display: flex;
+  align-items: center;
 }
-
-.social-media li a {
-  color: #fff;
-  text-decoration: none;
+.footer-facebook i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6em;
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  color: white;
+  background: rgb(51, 77, 241);
 }
-
-.social-media li a:hover {
-  text-decoration: underline;
+.footer-instagram i {
+  color: rgb(236, 49, 164);
 }
-
+.footer-tiktok {
+  display: flex;
+  align-items: center;
+}
+.footer-tiktok i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7em;
+  color: black;
+  background: white;
+  border-radius: 50%;
+  width: 31px;
+  height: 31px;
+}
 .footer-bottom {
   text-align: center;
   padding: 10px 0;
