@@ -30,13 +30,18 @@
 .footer-policy ul {
   list-style: none;
   padding: 0;
-  gap: 10px;
+}
+.footer-policy li {
+  margin-bottom: 10px;
 }
 
 .footer-policy li a {
   font-size: 0.9em;
   color: #c0bfbf;
   text-decoration: none;
+}
+.footer-policy li a:hover {
+  color: white;
 }
 
 .footer-social-media {

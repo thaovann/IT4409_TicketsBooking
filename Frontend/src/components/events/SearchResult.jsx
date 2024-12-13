@@ -11,6 +11,7 @@ import Footer from "../common/Footer";
 const SearchResult = () => {
   const [events, setEvents] = useState([]); // Dữ liệu sự kiện
   const [filteredEvents, setFilteredEvents] = useState([]); // Sự kiện đã lọc
+  const [remainingEvents, setRemainingEvents] = useState([]); // sự kiện còn lại
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams(); // Lấy query từ URL
   const query = searchParams.get("q") || ""; // Nếu không có query thì mặc định là ""
@@ -39,8 +40,9 @@ const SearchResult = () => {
         .normalize("NFD") // Chuẩn hóa thành dạng phân tách dấu
         .replace(/[\u0300-\u036f]/g, ""); // Loại bỏ các dấu tiếng Việt
     };
+
     if (query) {
-      // Lọc sự kiện theo tên chứa query
+      // Lọc sự kiện theo query
       const filtered = events.filter(
         (event) =>
           removeVietnameseTones(event.name?.toLowerCase()).includes(
@@ -57,11 +59,13 @@ const SearchResult = () => {
               )
             ))
       );
-      setFilteredEvents(filtered); // Cập nhật danh sách sự kiện sau khi lọc
+      setFilteredEvents(filtered); // Cập nhật sự kiện khớp query
+      setRemainingEvents(events.filter((event) => !filtered.includes(event))); // Lấy các sự kiện còn lại
+    } else {
+      // Nếu không có query
+      setFilteredEvents(events);
+      setRemainingEvents([]); // Không còn sự kiện nào khác
     }
-    // else {
-    //   setFilteredEvents(events); // Nếu không có query, hiển thị tất cả sự kiện
-    // }
   }, [events, query]); // Chạy lại khi có sự kiện mới hoặc query thay đổi
 
   // if (loading) return <div className="loading">Đang tải dữ liệu...</div>;
@@ -71,7 +75,7 @@ const SearchResult = () => {
       <Header />
       <div className="search-results-container">
         <div className="search-header">
-          <h2>Kết quả tìm kiếm:</h2>
+          <h2 className="search-event-title">Kết quả tìm kiếm:</h2>
           {/* Bộ lọc ngày tháng và địa điểm */}
           {/* <div className="filters">
             <div className="date-filter-container">
@@ -112,6 +116,18 @@ const SearchResult = () => {
               .map((event) => <EventCard key={event.id} event={event} />)
           ) : (
             <p>Không có sự kiện nào.</p>
+          )}
+        </div>
+        <div className="search-extra-event">
+          <h2 className="search-event-title">Có thể bạn thích:</h2>
+        </div>
+        <div className="search-event-list extra-event-list">
+          {remainingEvents.length > 0 ? (
+            remainingEvents
+              .filter((event) => event.state === "approved")
+              .map((event) => <EventCard key={event.id} event={event} />)
+          ) : (
+            <p>Không có sự kiện nào khác.</p>
           )}
         </div>
       </div>

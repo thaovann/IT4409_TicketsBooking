@@ -17,8 +17,9 @@
   align-items: center;
 }
 
-.search-title {
+.search-event-title {
   color: var(--primary-color);
+  font-size: 1.1em;
 }
 
 .filters {
@@ -90,3 +91,11 @@
     display: flex;
     gap: 20px;
   } */
+
+.search-extra-event {
+  margin-top: 30px;
+}
+
+.extra-event-list {
+  margin-top: 10px;
+}
