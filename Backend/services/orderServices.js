@@ -76,7 +76,7 @@ const orderFindAllByUser = async (userId, params = {}) => {
                 select: 'seat serialNumber',
             })
             .populate({
-                path: 'voucherId',
+                path: 'voucherCode',
                 select: 'name discount',
             });
 
@@ -89,8 +89,8 @@ const orderFindAllByUser = async (userId, params = {}) => {
             eventTypeId: order.eventId ? order.eventId.eventTypeId : null,
             startTime: order.eventId ? order.eventId.startTime : null,
             endTime: order.eventId ? order.eventId.endTime : null,
-            voucherName: order.voucherId ? order.voucherId.name : null,
-            voucherDiscount: order.voucherId ? order.voucherId.discount : null,
+            voucherName: order.voucherCode ? order.voucherCode.name : null,
+            voucherDiscount: order.voucherCode ? order.voucherCode.discount : null,
             tickets: order.tickets.map(ticket => ({
                 ticketCategories: ticket.ticketCategories.map(category => ({
                     ticketCategoryId: category.ticketCategoryId ? category.ticketCategoryId._id : null,

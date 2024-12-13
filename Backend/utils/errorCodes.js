@@ -18,5 +18,6 @@ module.exports.ErrorCodes = {
     InvalidEndpointException: 16,
     UnexpectedException: 17,
     UnimplementedException: 18,
-    HealthCheckFailedException: 19
+    HealthCheckFailedException: 19,
+    ValidationException: 20
 };
