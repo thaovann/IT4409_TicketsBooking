@@ -11,6 +11,7 @@ const TicketBookingPage = () => {
   const [event, setEvent] = useState(null);
   const [tickets, setTickets] = useState([]);
   const [selectedTickets, setSelectedTickets] = useState({});
+  const [availableQuantities, setAvailableQuantities] = useState({}); // Lưu số lượng vé "available"
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -29,6 +30,7 @@ const TicketBookingPage = () => {
         const response = await axios.get(
           `http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${id}`
         );
+        const ticketCategories = response.data.ticketCategories;
         setTickets(response.data.ticketCategories);
 
         const initialSelectedTickets = {};
@@ -36,6 +38,36 @@ const TicketBookingPage = () => {
           initialSelectedTickets[ticket._id] = 0;
         });
         setSelectedTickets(initialSelectedTickets);
+        //  // Khởi tạo trạng thái vé ban đầu
+        //  const initialSelectedTickets = {};
+        //  ticketCategories.forEach((ticket) => {
+        //    initialSelectedTickets[ticket._id] = 0;
+        //  });
+        //  setSelectedTickets(initialSelectedTickets);
+
+        // Gọi API lấy số lượng vé "available" cho từng loại vé
+        const quantities = {};
+        await Promise.all(
+          ticketCategories.map(async (ticket) => {
+            try {
+              const ticketResponse = await axios.get(
+                `http://localhost:3001/api/ticket/getAllTicketsByCategory/${ticket._id}`
+              );
+              // Đếm số vé có state: "available"
+              const availableTickets = ticketResponse.data.tickets.filter(
+                (ticket) => ticket.state === "available"
+              );
+              quantities[ticket._id] = availableTickets.length;
+            } catch (error) {
+              console.error(
+                `Error fetching available tickets for category ${ticket._id}:`,
+                error
+              );
+              quantities[ticket._id] = 0; // Gán giá trị mặc định nếu lỗi
+            }
+          })
+        );
+        setAvailableQuantities(quantities); // Lưu số lượng vé vào state
       } catch (error) {
         console.error("Error fetching tickets:", error);
       }
@@ -126,26 +158,33 @@ const TicketBookingPage = () => {
             <div key={ticket._id} className="ticket-card">
               <h3>{ticket.name}</h3>
               <p className="price">{ticket.price.toLocaleString()} đ</p>
-              <p>Số lượng còn lại: {ticket.leftQuantity}</p>
-              <div className="quantity-control">
-                <button
-                  onClick={() =>
-                    handleTicketQuantityChange(ticket._id, "decrease")
-                  }
-                  disabled={selectedTickets[ticket._id] === 0}
-                >
-                  -
-                </button>
-                <span>{selectedTickets[ticket._id]}</span>
-                <button
-                  onClick={() =>
-                    handleTicketQuantityChange(ticket._id, "increase")
-                  }
-                  disabled={selectedTickets[ticket._id] >= ticket.leftQuantity}
-                >
-                  +
-                </button>
-              </div>
+              <p>Số lượng còn lại: {availableQuantities[ticket._id] || 0}</p>
+              {availableQuantities[ticket._id] === 0 ? (
+                <p className="sold-out">Hết vé</p> // Hiển thị "Hết vé" nếu không còn vé
+              ) : (
+                <div className="quantity-control">
+                  <button
+                    onClick={() =>
+                      handleTicketQuantityChange(ticket._id, "decrease")
+                    }
+                    disabled={selectedTickets[ticket._id] === 0}
+                  >
+                    -
+                  </button>
+                  <span>{selectedTickets[ticket._id]}</span>
+                  <button
+                    onClick={() =>
+                      handleTicketQuantityChange(ticket._id, "increase")
+                    }
+                    disabled={
+                      selectedTickets[ticket._id] >=
+                      availableQuantities[ticket._id]
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>

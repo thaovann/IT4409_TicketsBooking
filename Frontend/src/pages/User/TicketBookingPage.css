@@ -119,6 +119,12 @@
   color: var(--primary-color);
 }
 
+.sold-out {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
 .quantity-control {
   display: flex;
   justify-content: center;

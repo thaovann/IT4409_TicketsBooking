@@ -235,6 +235,10 @@
   color: rgb(3, 151, 3);
   font-weight: 500;
 }
+.state-ticket-sold-out {
+  color: red;
+  font-weight: 400;
+}
 
 .buy-ticket-button {
   height: 30%;
