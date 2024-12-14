@@ -233,7 +233,7 @@ export default function SideNav() {
                             />
                         </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding sx={{ display: 'block' }}>
+                    <ListItem disablePadding sx={{ display: 'block' }} onClick={() => navigate("/admin/manage-orders")}>
                         <ListItemButton
                             sx={[
                                 {

@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Box, Table, TableBody, TableCell, TableHead, TableRow, Container, Grid, Pagination } from '@mui/material';
+import { Button, Box, InputAdornment, Table, TableBody, TableCell, TableHead, TableRow, Container, Grid, Pagination, TextField } from '@mui/material';
 import Swal from 'sweetalert2';
 import { getAllUsers, deleteUserById } from '../../redux/apiRequest';
 import SideNav from './components/SideNav';
 import AdminNavbar from './components/AdminNavbar';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 
 function ManageUsers() {
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 7;
 
@@ -56,6 +59,16 @@ function ManageUsers() {
         setCurrentPage(value);
     };
 
+    const handleSearch = (event) => {
+        const value = event.target.value.toLowerCase();
+        setSearchTerm(value);
+        const filtered = users.filter(user =>
+            user.UserId.toString().includes(value) ||
+            user.Email.toLowerCase().includes(value)
+        );
+        setFilteredUsers(filtered);
+    };
+
     const displayedUsers = filteredUsers.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage);
 
     return (
@@ -66,36 +79,52 @@ function ManageUsers() {
                 <SideNav />
                 <Container sx={{ padding: '2rem', height: '100vh' }}>
                     {/* <Grid container spacing={2}> */}
+                    <TextField
+                        //label="Tìm kiếm theo ID hoặc Email"
+                        placeholder="Tìm kiếm theo ID hoặc Email"
+                        variant="outlined"
+                        fullWidth
+                        value={searchTerm}
+                        onChange={handleSearch}
+                        size='small'
+                        sx={{ marginBottom: '1rem' }}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
                     <Grid item xs={9}>
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Full Name</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>ID Card</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Họ tên</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>CCCD/CMND</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Phone</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Role</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Gender</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Date of Birth</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Điện thoại</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Giới tính</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Ngày sinh</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Hành động</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {displayedUsers.map((user) => (
                                     <TableRow key={user._id}>
+                                        <TableCell>{user.UserId}</TableCell>
                                         <TableCell>{user.FullName}</TableCell>
                                         <TableCell>{user.IdCard}</TableCell>
                                         <TableCell>{user.Email}</TableCell>
                                         <TableCell>{user.Phone}</TableCell>
-                                        <TableCell>{user.Role === 0 ? "User" : "Admin"}</TableCell>
                                         <TableCell>{user.Gender === 0 ? "Male" : "Female"}</TableCell>
                                         <TableCell>{new Date(user.DoB).toLocaleDateString()}</TableCell>
                                         <TableCell>
                                             <Button
                                                 color="error"
-                                                onClick={() => handleDelete(user.UserId)}
-                                                sx={{ backgroundColor: '#ffea99', borderRadius: '8px' }}>
-                                                Delete
+                                                onClick={() => handleDelete(user.UserId)}>
+                                                <DeleteIcon />
                                             </Button>
                                         </TableCell>
                                     </TableRow>

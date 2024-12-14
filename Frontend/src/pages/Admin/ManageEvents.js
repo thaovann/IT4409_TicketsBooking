@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Grid, Typography, Card, CardContent, CardMedia, Chip, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { Box, Button, Grid, Typography, Card, CardContent, CardMedia, Chip, InputAdornment, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
 import { getAllEvents, updateEvent } from '../../redux/apiRequest';
 import SideNav from './components/SideNav';
 import AdminNavbar from './components/AdminNavbar';
+import SearchIcon from '@mui/icons-material/Search';
 
 const ManageEvents = () => {
     const [events, setEvents] = useState([]);   // tất cả event
@@ -63,13 +64,22 @@ const ManageEvents = () => {
                             //label="Tìm kiếm sự kiện"
                             variant="outlined"
                             value={searchTerm}
+                            size='small'
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Nhập tên sự kiện..."
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <FormControl
                             sx={{
                                 minWidth: 180,
-                            }}>
+                            }}
+                            size='small'>
                             <InputLabel>Trạng thái</InputLabel>
                             <Select
                                 value={filterState}

@@ -1,134 +1,172 @@
-import React, { useState } from "react";
-import { Box, Tab, Tabs, Button, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+    Box,
+    Typography,
+    Card,
+    CardContent,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    Grid,
+    Divider,
+} from "@mui/material";
+import { useSelector } from "react-redux";
+import { getUserOrders } from "../../../redux/apiRequest";
 import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
 
 const PurchasedTickets = () => {
-    const [selectedMainTab, setSelectedMainTab] = useState(0); // Tab chính
-    const [selectedSubTab, setSelectedSubTab] = useState(0); // Tab phụ
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedOrder, setSelectedOrder] = useState(null); // Lưu order được chọn để hiển thị trong modal
+    const user = useSelector((state) => state.auth.login.currentUser);
+    const userId = user.body?._doc?.UserId;
 
-    // Dữ liệu giả lập
-    const ticketsData = [
-        { id: 1, status: "success", name: "Vé 1", subStatus: "upcoming" },
-        { id: 2, status: "success", name: "Vé 2", subStatus: "ended" },
-        { id: 3, status: "processing", name: "Vé 3" },
-        { id: 4, status: "canceled", name: "Vé 4" },
-    ];
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await getUserOrders(userId);
+                setOrders(response.body || []);
+            } catch (error) {
+                console.error("Failed to fetch orders:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    // Trạng thái tab chính
-    const mainTabs = ["all", "success", "processing", "canceled"];
-    const subTabs = ["upcoming", "ended"]; // Tabs phụ
+        fetchOrders();
+    }, [userId]);
 
-    // Lọc dữ liệu cho tab chính
-    const filteredTickets =
-        selectedMainTab === 0
-            ? ticketsData
-            : ticketsData.filter((ticket) => ticket.status === mainTabs[selectedMainTab]);
-
-    // Lọc dữ liệu cho tab phụ (chỉ khi có tabs phụ)
-    const subFilteredTickets =
-        selectedSubTab === 0
-            ? filteredTickets.filter((ticket) => ticket.subStatus === "upcoming")
-            : filteredTickets.filter((ticket) => ticket.subStatus === "ended");
-
-    // Hàm thay đổi tab chính
-    const handleMainTabChange = (event, newValue) => {
-        setSelectedMainTab(newValue);
-        setSelectedSubTab(0); // Reset tab phụ
+    const handleOpenModal = (order) => {
+        setSelectedOrder(order); // Lưu thông tin order được chọn
     };
 
-    // Hàm thay đổi tab phụ
-    const handleSubTabChange = (event, newValue) => {
-        setSelectedSubTab(newValue);
+    const handleCloseModal = () => {
+        setSelectedOrder(null); // Đóng modal
     };
+
+    if (loading) {
+        return <Typography>Loading...</Typography>;
+    }
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                minHeight: "100vh", // Đảm bảo toàn bộ chiều cao viewport
+                backgroundColor: "#2c2c2c", // Màu nền tối
+                color: "#f5f5f5", // Màu văn bản sáng
+            }}
+        >
             <Header hideNav={true} />
-            <Box sx={{
-                minHeight: "calc(100vh - 80px - 80px)", // Tổng chiều cao trừ Header (60px) và Footer (80px)
-                marginTop: "80px", // Offset chiều cao của Header
-                paddingBottom: "80px", // Offset chiều cao của Footer
-                backgroundColor: "#f9f9f9", // Tùy chọn màu nền 
-                textAlign: "center"
-            }}>
-                {/* Tabs chính */}
-                <Tabs
-                    value={selectedMainTab}
-                    onChange={handleMainTabChange}
-                    centered
-                    indicatorColor="primary"
-                    textColor="inherit"
-                >
-                    <Tab label="Tất cả" />
-                    <Tab label="Thành công" />
-                    <Tab label="Đang xử lý" />
-                    <Tab label="Đã hủy" />
-                </Tabs>
-
-                {/* Tabs phụ chỉ hiển thị khi ở tab "Tất cả" hoặc "Thành công" */}
-                {(selectedMainTab === 0 || selectedMainTab === 1) && (
-                    <Tabs
-                        value={selectedSubTab}
-                        onChange={handleSubTabChange}
-                        centered
-                        sx={{ mt: 2 }}
-                        indicatorColor="secondary"
-                        textColor="inherit"
-                    >
-                        <Tab label="Sắp diễn ra" />
-                        <Tab label="Đã kết thúc" />
-                    </Tabs>
-                )}
-
-                {/* Nội dung vé */}
-                <Box sx={{ mt: 5 }}>
-                    {filteredTickets.length === 0 || (selectedMainTab !== 0 && selectedMainTab !== 1 && filteredTickets.length === 0) ? (
-                        <Box>
-                            <img
-                                src="https://via.placeholder.com/200" // Thay bằng hình ảnh của bạn
-                                alt="No Tickets"
-                                style={{ marginBottom: "20px" }}
-                            />
-                            <Typography variant="h6" color="textSecondary">
-                                Bạn chưa có vé nào
+            <Box
+                sx={{
+                    p: 3,
+                    mt: "95px",
+                    mx: "164px",
+                    flex: 1,
+                }}
+            >
+                <Typography variant="h4" gutterBottom sx={{ color: "#e0e0e0" }}>
+                    Vé đã mua
+                </Typography>
+                {orders.map((orderGroup, index) => (
+                    <Card key={index} sx={{ mb: 3, backgroundColor: "#3a3a3a", color: "#f5f5f5", borderRadius: 3 }}>
+                        <CardContent>
+                            <Typography variant="h5" gutterBottom sx={{ color: "#ffffff" }}>
+                                {orderGroup.eventName}
                             </Typography>
-                            <Button
-                                variant="contained"
-                                color="success"
-                                sx={{ mt: 2 }}
-                                onClick={() => alert("Mua vé ngay")}
-                            >
-                                Mua vé ngay
-                            </Button>
-                        </Box>
-                    ) : (
-                        // Hiển thị danh sách vé khi có dữ liệu
-                        (selectedMainTab === 0 || selectedMainTab === 1
-                            ? subFilteredTickets
-                            : filteredTickets
-                        ).map((ticket) => (
-                            <Box
-                                key={ticket.id}
-                                sx={{
-                                    p: 2,
-                                    border: "1px solid #ddd",
-                                    borderRadius: "8px",
-                                    mb: 2,
-                                    textAlign: "left",
-                                }}
-                            >
-                                <Typography variant="h6">{ticket.name}</Typography>
-                                <Typography variant="body2">Trạng thái: {ticket.status}</Typography>
-                                {ticket.subStatus && (
-                                    <Typography variant="body2">
-                                        Trạng thái phụ: {ticket.subStatus}
+                            <Typography variant="body1" sx={{ color: "#bdbdbd" }}>
+                                Thời gian: {new Date(orderGroup.event.event_startTime).toLocaleString()} -{" "}
+                                {new Date(orderGroup.event.event_endTime).toLocaleString()}
+                            </Typography>
+                            <Divider sx={{ my: 2, borderColor: "#4a4a4a" }} />
+                            {orderGroup.orders.map((order) => (
+                                <Box key={order.orderId} sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                                    <Typography variant="body1" sx={{ color: "#e0e0e0" }}>
+                                        Mã đơn hàng: {order.orderId} | Thành tiền: {order.finalPrice.toLocaleString()} VND
                                     </Typography>
-                                )}
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            ml: "auto",
+                                            backgroundColor: "#ff9800",
+                                            color: "#2c2c2c",
+                                            "&:hover": { backgroundColor: "#e68900" },
+                                        }}
+                                        onClick={() => handleOpenModal(order)}
+                                    >
+                                        Xem vé
+                                    </Button>
+                                </Box>
+                            ))}
+                        </CardContent>
+                    </Card>
+                ))}
+
+                {/* Dialog for ticket details */}
+                <Dialog
+                    open={!!selectedOrder}
+                    onClose={handleCloseModal}
+                    maxWidth="md"
+                    fullWidth
+                    PaperProps={{
+                        sx: { backgroundColor: "#3a3a3a", color: "#f5f5f5" },
+                    }}
+                >
+                    <DialogTitle>Chi tiết đơn hàng</DialogTitle>
+                    <DialogContent>
+                        {selectedOrder && (
+                            <Box>
+                                <Typography variant="h6">Mã đơn hàng: {selectedOrder.orderId}</Typography>
+                                <Typography variant="body1">
+                                    Ngày đặt vé: {new Date(selectedOrder.orderDate).toLocaleString()}
+                                </Typography>
+                                <Typography variant="body1">
+                                    Thành tiền: {selectedOrder.finalPrice.toLocaleString()} VND
+                                </Typography>
+                                <Divider sx={{ my: 2, borderColor: "#4a4a4a" }} />
+                                {selectedOrder.tickets.map((ticket, ticketIndex) => (
+                                    <Box key={ticketIndex} sx={{ mb: 3 }}>
+                                        <Typography variant="h6">Vé #{ticketIndex + 1}</Typography>
+                                        <Grid container spacing={2}>
+                                            {ticket.ticketCategories.map((category) => (
+                                                <Grid item xs={12} sm={6} key={category.ticketCategoryId}>
+                                                    <Box>
+                                                        <Typography variant="body1">Hạng vé: {category.ticketCategoryName}</Typography>
+                                                        <Typography variant="body2" sx={{ color: "#bdbdbd" }}>
+                                                            Giá: {category.ticketCategoryPrice.toLocaleString()} VND
+                                                        </Typography>
+                                                        <Typography variant="body2" sx={{ color: "#bdbdbd" }}>
+                                                            Số serial: {category.ticketDetails[0]?.serialNumber}
+                                                        </Typography>
+                                                    </Box>
+                                                </Grid>
+                                            ))}
+                                        </Grid>
+                                        <Divider sx={{ my: 1, borderColor: "#4a4a4a" }} />
+                                    </Box>
+                                ))}
                             </Box>
-                        ))
-                    )}
-                </Box>
+                        )}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            onClick={handleCloseModal}
+                            variant="contained"
+                            sx={{
+                                backgroundColor: "#ff5252",
+                                color: "#f5f5f5",
+                                "&:hover": { backgroundColor: "#e53935" },
+                            }}
+                        >
+                            Đóng
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Box>
             <Footer />
         </Box>

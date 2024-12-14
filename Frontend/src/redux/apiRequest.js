@@ -212,3 +212,34 @@ export const createEvent = async (eventData, dispatch) => {
         );
     }
 };
+
+// các hàm order
+export const getAllOrders = async () => {
+    try {
+        const response = await api.get(`/order`);
+        return response.data;
+    } catch (error) {
+        console.error("Error get all orders:", error);
+        throw error;
+    }
+};
+
+export const getUserOrders = async (userId) => {
+    try {
+        const response = await api.get(`/order/users/${userId}?state=successed`);
+        return response.data;
+    } catch (error) {
+        console.error("Error get user orders:", error);
+        throw error;
+    }
+};
+
+export const deleteOrders = async (orderId) => {
+    try {
+        const response = await api.delete(`/order/id/${orderId}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error delete orders:", error);
+        throw error;
+    }
+};
