@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import "./Header.css";
 import SearchBar from "../events/SearchBar";
-import logo from '../../assets/img/ticketsup-black.png';
-import avatarUser from '../../assets/img/avatar-clone-user.jpg';
+import logo from "../../assets/img/Ticketsup-logo.png";
+import avatarUser from "../../assets/img/avatar-clone-user.jpg";
 import { logout } from "../../redux/authSlice"; // Import hành động đăng xuất từ Redux
 
 function Header({ hideCreateEvent, hideNav, onLoginClick }) {
@@ -39,7 +39,6 @@ function Header({ hideCreateEvent, hideNav, onLoginClick }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
   const handleLogout = () => {
     dispatch(logout()); // Thực hiện đăng xuất
     navigate("/login");
@@ -59,14 +58,20 @@ function Header({ hideCreateEvent, hideNav, onLoginClick }) {
 
         {!hideCreateEvent && (
           <div className="create-buttons">
-            <Link to={user ? "/organizer/create-event" : "/login"} className="create-btn btn">
+            <Link
+              to={user ? "/organizer/create-event" : "/login"}
+              className="create-btn btn"
+            >
               Tạo sự kiện
             </Link>
           </div>
         )}
 
         <div className="history-buttons">
-          <Link to={user ? "/purchased-tickets" : "/login"} className="history-btn btn">
+          <Link
+            to={user ? "/purchased-tickets" : "/login"}
+            className="history-btn btn"
+          >
             <i className="fa-solid fa-ticket"></i> Vé đã mua
           </Link>
         </div>
@@ -78,10 +83,22 @@ function Header({ hideCreateEvent, hideNav, onLoginClick }) {
               <p className="username">{user.body?._doc?.FullName}</p>
               {dropdownOpen && (
                 <div className="dropdown-menu active">
-                  <Link to="/profile" className="dropdown-item"><i class="fa-regular fa-user"></i> Trang cá nhân</Link>
-                  <Link to="/purchased-tickets" className="dropdown-item"><i class="fa-solid fa-ticket"></i> Vé đã mua</Link>
-                  <Link to="/organizer/events" className="dropdown-item"><i class="fa-regular fa-calendar-days"></i> Sự kiện của tôi</Link>
-                  <button onClick={handleLogout} className="dropdown-item logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</button>
+                  <Link to="/profile" className="dropdown-item">
+                    <i class="fa-regular fa-user"></i> Trang cá nhân
+                  </Link>
+                  <Link to="/purchased-tickets" className="dropdown-item">
+                    <i class="fa-solid fa-ticket"></i> Vé đã mua
+                  </Link>
+                  <Link to="/organizer/events" className="dropdown-item">
+                    <i class="fa-regular fa-calendar-days"></i> Sự kiện của tôi
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="dropdown-item logout-btn"
+                  >
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng
+                    xuất
+                  </button>
                 </div>
               )}
             </div>
@@ -92,22 +109,24 @@ function Header({ hideCreateEvent, hideNav, onLoginClick }) {
           )}
         </div>
       </div>
-      {!hideNav && (<nav className="navigation">
-        <ul>
-          <li>
-            <Link to="/search?query=Nhạc sống">Nhạc sống</Link>
-          </li>
-          <li>
-            <Link to="/search?query=Sân khấu & Nghệ thuật">Sân khấu & Nghệ thuật</Link>
-          </li>
-          <li>
-            <Link to="/search?query=Thể Thao">Thể Thao</Link>
-          </li>
-          <li>
-            <Link to="/search?query=Khác">Khác</Link>
-          </li>
-        </ul>
-      </nav>)}
+      {!hideNav && (
+        <nav className="navigation">
+          <ul>
+            <li>
+              <Link to="/search?q=music">Nhạc sống</Link>
+            </li>
+            <li>
+              <Link to="/search?q=art">Sân khấu & Nghệ thuật</Link>
+            </li>
+            <li>
+              <Link to="/search?q=sport">Thể Thao</Link>
+            </li>
+            <li>
+              <Link to="/search?q=h">Khác</Link>
+            </li>
+          </ul>
+        </nav>
+      )}
     </header>
   );
 }
