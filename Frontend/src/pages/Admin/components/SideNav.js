@@ -12,7 +12,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
+import PersonIcon from '@mui/icons-material/Person';
+import EventIcon from '@mui/icons-material/Event';
+import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import { useNavigate } from 'react-router-dom';
 import { useAdminStore } from '../adminStore';
 
@@ -91,7 +93,7 @@ export default function SideNav() {
                 </DrawerHeader>
                 <Divider />
                 <List>      {/*List các tab*/}
-                    <ListItem disablePadding sx={{ display: 'block' }} onClick={() => navigate("/admin")}>
+                    {/* <ListItem disablePadding sx={{ display: 'block' }} onClick={() => navigate("/admin")}>
                         <ListItemButton
                             sx={[
                                 {
@@ -122,7 +124,7 @@ export default function SideNav() {
                                         },
                                 ]}
                             >
-                                <MailIcon />
+                                <PersonIcon />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Dashboard"
@@ -138,7 +140,7 @@ export default function SideNav() {
                             />
                         </ListItemButton>
                     </ListItem>
-                    <Divider variant='middle' component="li" />
+                    <Divider variant='middle' component="li" /> */}
                     <ListItem disablePadding sx={{ display: 'block' }} onClick={() => navigate("/admin/manage-users")}>
                         <ListItemButton
                             sx={[
@@ -170,7 +172,7 @@ export default function SideNav() {
                                         },
                                 ]}
                             >
-                                <MailIcon />
+                                <PersonIcon />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Users"
@@ -217,7 +219,7 @@ export default function SideNav() {
                                         },
                                 ]}
                             >
-                                <MailIcon />
+                                <EventIcon />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Events"
@@ -264,7 +266,7 @@ export default function SideNav() {
                                         },
                                 ]}
                             >
-                                <MailIcon />
+                                <LocalActivityIcon />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Orders"
@@ -281,53 +283,6 @@ export default function SideNav() {
                         </ListItemButton>
                     </ListItem>
                     <Divider variant='middle' component="li" />
-                    <ListItem disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            sx={[
-                                {
-                                    minHeight: 48,
-                                    px: 2.5,
-                                },
-                                open
-                                    ? {
-                                        justifyContent: 'initial',
-                                    }
-                                    : {
-                                        justifyContent: 'center',
-                                    },
-                            ]}
-                        >
-                            <ListItemIcon
-                                sx={[
-                                    {
-                                        minWidth: 0,
-                                        justifyContent: 'center',
-                                    },
-                                    open
-                                        ? {
-                                            mr: 3,
-                                        }
-                                        : {
-                                            mr: 'auto',
-                                        },
-                                ]}
-                            >
-                                <MailIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary="Settings"
-                                sx={[
-                                    open
-                                        ? {
-                                            opacity: 1,
-                                        }
-                                        : {
-                                            opacity: 0,
-                                        },
-                                ]}
-                            />
-                        </ListItemButton>
-                    </ListItem>
                 </List>
             </Drawer>
         </Box>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Box, InputAdornment, Table, TableBody, TableCell, TableHead, TableRow, Container, Grid, Pagination, TextField } from '@mui/material';
+import { Button, Box, InputAdornment, Table, TableBody, TableCell, TableHead, TableRow, Container, Grid, Pagination, TextField, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 import { getAllUsers, deleteUserById } from '../../redux/apiRequest';
 import SideNav from './components/SideNav';
@@ -12,7 +12,7 @@ function ManageUsers() {
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const usersPerPage = 7;
+    const usersPerPage = 5;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -77,8 +77,9 @@ function ManageUsers() {
             <Box height={60} />
             <Box sx={{ display: "flex" }}>
                 <SideNav />
-                <Container sx={{ padding: '2rem', height: '100vh' }}>
+                <Container sx={{ p: 3, height: '100vh' }}>
                     {/* <Grid container spacing={2}> */}
+                    <Typography variant="h4" gutterBottom>Quản lý người dùng</Typography>
                     <TextField
                         //label="Tìm kiếm theo ID hoặc Email"
                         placeholder="Tìm kiếm theo ID hoặc Email"

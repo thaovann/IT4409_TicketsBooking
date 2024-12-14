@@ -56,6 +56,7 @@ const ManageEvents = () => {
                 <SideNav />
                 <Box sx={{ padding: 3, width: "100%" }}>
                     {/* Thanh tìm kiếm */}
+                    <Typography variant="h4" gutterBottom>Quản lý sự kiện</Typography>
                     <Box sx={{ display: "flex", gap: 2, marginBottom: 3 }}>
                         <TextField
                             sx={{
@@ -129,7 +130,7 @@ const ManageEvents = () => {
                                                 <strong>Đơn vị tổ chức:</strong> {event.organizerName}
                                             </Typography>
                                             <Typography variant="body2" color="text.secondary">
-                                                <strong>Ngày tổ chức:</strong> {event.startTime}
+                                                <strong>Ngày tổ chức:</strong> {new Date(event.startTime).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                                             </Typography>
                                             <Typography variant="body2" color="text.secondary">
                                                 <strong>Địa điểm:</strong> {event.location}

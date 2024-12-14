@@ -1,29 +1,28 @@
-import { Box, Typography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, Typography } from '@mui/material';
 import SideNav from './components/SideNav';
 import AdminNavbar from './components/AdminNavbar';
+import { useSelector } from "react-redux";
 
 const DashBoard = () => {
+    const user = useSelector((state) => state.auth.login.currentUser);
+    const username = user.body?._doc?.FullName;
     return (
         <>
             <AdminNavbar />
             <Box height={60} />
             <Box sx={{ display: "flex" }}>
                 <SideNav />
-                <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                    <Typography sx={{ marginBottom: 2 }}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
-                        enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
-                        imperdiet. Semper risus in hendrerit gravida rutrum quisque non tellus.
-                        Convallis convallis tellus id interdum velit laoreet id donec ultrices.
-                        Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                        adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra
-                        nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum
-                        leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-                        feugiat vivamus at augue. At augue eget arcu dictum varius duis at
-                        consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-                        sapien faucibus et molestie ac.
-                    </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100vh' }}>
+                    <Card sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 4, width: '300px', height: '400px' }}>
+                        <Avatar
+                            alt={username}
+                            src='https://example.com/avatar.jpg'
+                            sx={{ width: 100, height: 100, marginRight: 2 }}
+                        />
+                        <CardContent>
+                            <Typography variant="h4">{username}</Typography>
+                        </CardContent>
+                    </Card>
                 </Box>
             </Box>
         </>

@@ -10,6 +10,9 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { useAdminStore } from '../adminStore';
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../../../redux/authSlice';
 
 const AppBar = styled(MuiAppBar, {
 })(({ theme }) => ({
@@ -20,6 +23,10 @@ export default function AdminNavbar() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const updateOpen = useAdminStore((state) => state.updateOpen);
     const dopen = useAdminStore((state) => state.dopen);
+    const user = useSelector((state) => state.auth.login.currentUser);
+    const username = user.body?._doc?.FullName;
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -27,6 +34,12 @@ export default function AdminNavbar() {
 
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleMenuAction = () => {
+        handleClose(); // Đóng menu trước
+        dispatch(logout());
+        navigate("/login");
     };
 
     return (
@@ -56,12 +69,13 @@ export default function AdminNavbar() {
                             color="inherit"
                         >
                             <AccountCircle />
+                            <Typography variant="body1" sx={{ marginLeft: 1 }}> {username} </Typography>
                         </IconButton>
                         <Menu
                             id="menu-appbar"
                             anchorEl={anchorEl}
                             anchorOrigin={{
-                                vertical: 'top',
+                                vertical: 'bottom',
                                 horizontal: 'right',
                             }}
                             keepMounted
@@ -71,9 +85,9 @@ export default function AdminNavbar() {
                             }}
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
+                            disableScrollLock
                         >
-                            <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={handleMenuAction}>Đăng xuất</MenuItem>
                         </Menu>
                     </div>
                 </Toolbar>

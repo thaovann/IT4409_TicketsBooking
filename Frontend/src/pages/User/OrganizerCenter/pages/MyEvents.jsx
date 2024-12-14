@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Box, Grid, Typography, Card, CardContent, CardMedia, Chip, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { Box, Grid, Typography, Card, CardContent, CardMedia, Chip, TextField, FormControl, InputAdornment, InputLabel, Select, MenuItem } from "@mui/material";
 import { getEventByUserId } from "../../../../redux/apiRequest";
+import SearchIcon from '@mui/icons-material/Search';
 import NavBar from "../components/NavBar";
 import SideNav from "../components/SideNav";
 
@@ -75,14 +76,23 @@ const MyEvents = () => {
                             }}
                             //label="Tìm kiếm sự kiện"
                             variant="outlined"
+                            size="small"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Nhập tên sự kiện..."
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <FormControl
                             sx={{
                                 minWidth: 180,
-                            }}>
+                            }}
+                            size="small">
                             <InputLabel>Trạng thái</InputLabel>
                             <Select
                                 value={filterState}
@@ -94,7 +104,7 @@ const MyEvents = () => {
                             >
                                 <MenuItem value="">Tất cả</MenuItem>
                                 <MenuItem value="approved">Đã phê duyệt</MenuItem>
-                                <MenuItem value="under review">Chưa phê duyệt</MenuItem>
+                                <MenuItem value="under review">Chờ phê duyệt</MenuItem>
                             </Select>
                         </FormControl>
                     </Box>
@@ -128,7 +138,8 @@ const MyEvents = () => {
                                                 {event.name}
                                             </Typography>
                                             <Typography variant="body2" color="text.secondary">
-                                                <strong>Ngày tổ chức:</strong> {event.startTime}
+                                                <strong>Ngày tổ chức:</strong> {new Date(event.startTime).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+
                                             </Typography>
                                             <Typography variant="body2" color="text.secondary">
                                                 <strong>Địa điểm:</strong> {event.location}

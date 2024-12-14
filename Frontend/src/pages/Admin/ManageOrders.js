@@ -14,6 +14,7 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
+    Pagination,
     Typography
 } from '@mui/material';
 import Swal from 'sweetalert2';
@@ -26,6 +27,8 @@ const ManageOrders = () => {
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [openModal, setOpenModal] = useState(false);
     const [sortDirection, setSortDirection] = useState('desc');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [ordersPerPage] = useState(5); // Số lượng đơn hàng trên mỗi trang
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -83,6 +86,15 @@ const ManageOrders = () => {
         });
     };
 
+    const indexOfLastOrder = currentPage * ordersPerPage;
+    const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+    const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
+
+
     return (
         <>
             <AdminNavbar />
@@ -111,7 +123,7 @@ const ManageOrders = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {orders.map((order) => (
+                                {currentOrders.map((order) => (
                                     <TableRow key={order._id}>
                                         <TableCell>{order._id}</TableCell>
                                         <TableCell>{order.userId}</TableCell>
@@ -139,6 +151,15 @@ const ManageOrders = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
+
+                    <Box display="flex" justifyContent="center" marginTop={2}>
+                        <Pagination
+                            count={Math.ceil(orders.length / ordersPerPage)}
+                            page={currentPage}
+                            onChange={handlePageChange}
+                            color="primary"
+                        />
+                    </Box>
 
                     {/* Order Details Modal */}
                     {selectedOrder && (
