@@ -12,16 +12,16 @@ import ProtectedRoute from "./components/ProtectedRoute";
 //import OrganizerEvents from "./pages/EventManager/OrganizerEvents";
 //import MyEvents from "./pages/User/OrganizerCenter/MyEvents";
 import OrganizerPage from "./pages/User/OrganizerCenter/OrganizerPage";
-import CreateEventForm from "./pages/EventManager/CreateEventForm"
+import CreateEventForm from "./pages/EventManager/CreateEventForm";
 import CreateTicketCategoryForm from "./pages/EventManager/CreateTicketCategoryForm";
 import ForgotPassword from "./pages/Auth/ChangePassword/ForgotPassword";
 import ResetPassword from "./pages/Auth/ChangePassword/ResetPassword";
 import VerifyOTP from "./pages/Auth/ChangePassword/VerifyOTP";
 import TicketBookingPage from "./pages/User/TicketBookingPage";
 import PaymentPage from "./pages/User/PaymentPage";
-import PaymentQRPage from "./pages/User/PaymentQRPage";
+import PaymentSuccess from "./pages/User/PaymentSuccess";
 import PurchasedTickets from "./components/events/PurchasedTickets";
-import './App.css';
+import "./App.css";
 
 function App() {
   return (
@@ -39,11 +39,11 @@ function App() {
           <Route path="/verify-otp" element={<VerifyOTP />} />
           <Route path="/profile" element={<ProfilePage />} />
 
-            {/* Trang event */}
-            <Route path="/events" element={<EventsPage />} />
-            <Route path="/events/:id" element={<EventDetail />} />
-            <Route path="/search" element={<SearchResults />} />
-            {/* <Route path="organizer/create-event" element={<CreateEventForm />} />
+          {/* Trang event */}
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/events/:id" element={<EventDetail />} />
+          <Route path="/search" element={<SearchResults />} />
+          {/* <Route path="organizer/create-event" element={<CreateEventForm />} />
             <Route
               path="organizer/create-event"
               element={<CreateEventForm />}
@@ -52,10 +52,9 @@ function App() {
               path="organizer/create-ticket"
               element={<CreateTicketCategoryForm />}
             /> */}
-            <Route path="/payment" element={<PaymentPage />} />
-            <Route path="/payment-qr" element={<PaymentQRPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
 
-            
           {/* Trang event */}
           <Route path="/organizer/*" element={<OrganizerPage />} />
           {/* <Route path="organizer/create-event" element={<CreateEventForm />} />
@@ -69,7 +68,6 @@ function App() {
           /> */}
           <Route path="/booking/:id" element={<TicketBookingPage />} />
           <Route path="/purchased-tickets" element={<PurchasedTickets />} />
-
 
           {/* Admin route */}
           <Route

@@ -293,10 +293,7 @@ function HomePage() {
         <section className="art-events">
           <div className="art-events-header">
             <h2 className="art-events-title">Sân khấu & Nghệ thuật</h2>
-            <Link
-              to={`/search/search?query=Sân%20khấu%20&%20Nghệ%20thuật`}
-              className="see-more"
-            >
+            <Link to={`/search?q=art`} className="see-more">
               Xem thêm ❯
             </Link>
           </div>
@@ -338,7 +335,7 @@ function HomePage() {
         <section className="others-events">
           <div className="others-events-header">
             <h2 className="others-events-title">Thể loại khác</h2>
-            <Link to={`/search?query=Khác`} className="see-more">
+            <Link to={`/search?q=Khác`} className="see-more">
               Xem thêm ❯
             </Link>
           </div>
