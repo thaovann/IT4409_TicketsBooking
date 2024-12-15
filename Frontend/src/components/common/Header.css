@@ -49,18 +49,18 @@ a {
   color: black;
 }
 
-.history-buttons .history-btn{
+.history-buttons .history-btn {
   color: white;
   transition: 0.8s;
 }
 
-.history-buttons .history-btn:hover{
+.history-buttons .history-btn:hover {
   color: black;
 }
 
 /*  */
 
-.user-greeting{
+.user-greeting {
   position: relative;
   cursor: pointer;
   display: flex;
@@ -69,28 +69,28 @@ a {
   transition: 0.8s;
 }
 
-.user-greeting:hover{
+.user-greeting:hover {
   background-color: #cfc189;
   border-radius: 5px;
 }
 
-.user-greeting img{
+.user-greeting img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   margin-right: 8px;
 }
 
-.user-greeting .username{
+.user-greeting .username {
   /* display: inline-block; */
   text-transform: capitalize;
   font-size: 1.3em;
   font-weight: 700;
   margin: 0;
-  color: white; 
+  color: white;
 }
 /* dropdown user-btn */
-.user-greeting .dropdown-menu{
+.user-greeting .dropdown-menu {
   display: none; /* Ẩn mặc định */
   position: absolute;
   top: 100%;
@@ -107,7 +107,7 @@ a {
   display: block; /* Hiển thị khi có lớp active */
 }
 
-.user-greeting .dropdown-menu .dropdown-item{
+.user-greeting .dropdown-menu .dropdown-item {
   display: block;
   padding: 10px;
   color: #333;
@@ -120,7 +120,7 @@ a {
   background-color: #d0cece;
 }
 
-.logout-btn{
+.logout-btn {
   border: none;
 }
 /* =============================== */
@@ -137,7 +137,7 @@ a {
   transition: 0.3s;
   border: none;
 }
-.login-btn:hover{
+.login-btn:hover {
   background-color: white;
   color: var(--primary-color);
 }
@@ -152,7 +152,7 @@ a {
 .fa-solid.fa-magnifying-glass {
   color: gray;
   background: white;
-  padding: 19.5px 16px;
+  padding: 19.1px 16px;
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
 }
@@ -214,7 +214,7 @@ a {
 }
 
 .navigation ul {
-  padding-left: 100px ;
+  padding-left: 100px;
   list-style: none;
   display: flex;
   align-items: center;

@@ -28,7 +28,7 @@ const SearchBar = () => {
 
   const handleSearch = () => {
     if (query.trim() !== "") {
-      navigate(`/search?query=${encodeURIComponent(query)}`); // Điều hướng đến trang kết quả tìm kiếm
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`); // Điều hướng đến trang kết quả tìm kiếm
     }
     setShowSuggestions(false); // Ẩn gợi ý sau khi tìm kiếm
   };

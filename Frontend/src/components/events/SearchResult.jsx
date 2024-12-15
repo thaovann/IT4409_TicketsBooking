@@ -3,67 +3,81 @@ import axios from "axios";
 import Header from "../common/Header";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
+import EventCard from "./EventCard";
 import "./SearchResult.css";
+import Footer from "../common/Footer";
 
 const SearchResult = () => {
-  const [events, setEvents] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [locationFilter, setLocationFilter] = useState("all");
-
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  // Hàm dùng để lấy giá trị của query param từ URL
-  const getQueryParam = (param) => {
-    const urlParams = new URLSearchParams(location.search);
-    return urlParams.get(param);
-  };
+  const [events, setEvents] = useState([]); // Dữ liệu sự kiện
+  const [filteredEvents, setFilteredEvents] = useState([]); // Sự kiện đã lọc
+  const [remainingEvents, setRemainingEvents] = useState([]); // sự kiện còn lại
+  const [loading, setLoading] = useState(false);
+  const [searchParams] = useSearchParams(); // Lấy query từ URL
+  const query = searchParams.get("q") || ""; // Nếu không có query thì mặc định là ""
 
   useEffect(() => {
-    // Gọi API khi component được mount hoặc khi query hoặc ngày thay đổi
     const fetchEvents = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(
-          `http://localhost:3001/api/event/allEvents`,
-          {
-            params: {
-              search: getQueryParam("query") || "",
-              date: selectedDate ? selectedDate.toISOString() : "",
-              location: locationFilter !== "all" ? locationFilter : "",
-            },
-          }
-        );
-        setEvents(response.data);
+          "http://localhost:3001/api/event/allEvents"
+        ); // Lấy tất cả sự kiện
+        setEvents(response.data); // Lưu tất cả sự kiện
       } catch (error) {
-        console.error("Error fetching events:", error);
+        console.error("Lỗi khi lấy sự kiện:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchEvents(); // Gọi hàm lấy dữ liệu khi có query hoặc ngày thay đổi
-  }, [location.search, selectedDate, locationFilter]);
+    fetchEvents();
+  }, []);
 
-  // Hàm để cập nhật URL khi người dùng thay đổi bộ lọc
-  const updateSearchParams = () => {
-    const params = new URLSearchParams();
+  useEffect(() => {
+    const removeVietnameseTones = (str) => {
+      return str
+        .normalize("NFD") // Chuẩn hóa thành dạng phân tách dấu
+        .replace(/[\u0300-\u036f]/g, ""); // Loại bỏ các dấu tiếng Việt
+    };
 
-    if (selectedDate) {
-      params.set("date", selectedDate.toISOString());
+    if (query) {
+      // Lọc sự kiện theo query
+      const filtered = events.filter(
+        (event) =>
+          removeVietnameseTones(event.name?.toLowerCase()).includes(
+            removeVietnameseTones(query.toLowerCase())
+          ) ||
+          (event.location &&
+            removeVietnameseTones(event.location.toLowerCase()).includes(
+              removeVietnameseTones(query.toLowerCase())
+            )) ||
+          (event.tags &&
+            event.tags.some((tag) =>
+              removeVietnameseTones(tag.toLowerCase()).includes(
+                removeVietnameseTones(query.toLowerCase())
+              )
+            ))
+      );
+      setFilteredEvents(filtered); // Cập nhật sự kiện khớp query
+      setRemainingEvents(events.filter((event) => !filtered.includes(event))); // Lấy các sự kiện còn lại
+    } else {
+      // Nếu không có query
+      setFilteredEvents(events);
+      setRemainingEvents([]); // Không còn sự kiện nào khác
     }
-    if (locationFilter !== "all") {
-      params.set("location", locationFilter);
-    }
-    navigate({ search: params.toString() });
-  };
+  }, [events, query]); // Chạy lại khi có sự kiện mới hoặc query thay đổi
+
+  // if (loading) return <div className="loading">Đang tải dữ liệu...</div>;
 
   return (
-    <div>
+    <div className="search-results-bao">
       <Header />
       <div className="search-results-container">
         <div className="search-header">
-          <h2>Kết quả tìm kiếm:</h2>
+          <h2 className="search-event-title">Kết quả tìm kiếm:</h2>
           {/* Bộ lọc ngày tháng và địa điểm */}
-          <div className="filters">
+          {/* <div className="filters">
             <div className="date-filter-container">
               <label htmlFor="date-filter">Ngày:</label>
               <DatePicker
@@ -90,36 +104,34 @@ const SearchResult = () => {
                 <option value="all">Toàn Quốc</option>
                 <option value="Hà Nội">Hà Nội</option>
                 <option value="TP HCM">TP HCM</option>
-                <option value="TP HCM">Khác</option>
+                <option value="Khác">Khác</option>
               </select>
             </div>
-          </div>
+          </div> */}
         </div>
-        {events.length > 0 ? (
-          <ul className="event-list">
-            {events.map((event) => (
-              <li key={event._id}>
-                <div
-                  className="event-thumbnail"
-                  style={{ backgroundImage: `url(${event.imageBackground})` }}
-                />
-                <div className="event-title">{event.name}</div>
-                <div className="event-price">Từ {event.price || "N/A"}đ</div>
-                <div className="event-date">
-                  <i className="fa-solid fa-calendar-days"></i>{" "}
-                  {new Date(event.startTime).toLocaleDateString()}
-                </div>
-                <div className="event-location">
-                  <i className="fa-solid fa-location-dot"></i>{" "}
-                  {event.location || "N/A"}
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Không tìm thấy sự kiện nào.</p>
-        )}
+        <div className="search-event-list">
+          {filteredEvents.length > 0 ? (
+            filteredEvents
+              .filter((event) => event.state === "approved")
+              .map((event) => <EventCard key={event.id} event={event} />)
+          ) : (
+            <p>Không có sự kiện nào.</p>
+          )}
+        </div>
+        <div className="search-extra-event">
+          <h2 className="search-event-title">Có thể bạn thích:</h2>
+        </div>
+        <div className="search-event-list extra-event-list">
+          {remainingEvents.length > 0 ? (
+            remainingEvents
+              .filter((event) => event.state === "approved")
+              .map((event) => <EventCard key={event.id} event={event} />)
+          ) : (
+            <p>Không có sự kiện nào khác.</p>
+          )}
+        </div>
       </div>
+      <Footer />
     </div>
   );
 };
