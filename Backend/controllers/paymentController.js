@@ -6,6 +6,7 @@ const configVnpay = require("../configs/configVnpay");
 const OrderModel = require("../models/Order");
 const moment = require('moment');
 const querystring = require("qs");
+const { update } = require('../services/orderServices');
 
 exports.createPayment = async (req, res) => {
     const { orderId } = req.body;
@@ -123,25 +124,27 @@ exports.checkStatusTransaction = async (req, res) => {
             return res.status(404).json({ message: "Order not found" });
         }
 
+        let newState;
         switch (result.resultCode) {
-            case 0: // Giao dịch thành công
-                order.state = "successed";
+            case 0:
+                newState = "successed";
                 break;
-            case 9000: // Giao dịch đang xử lý
-            case 8000: // Đang chờ khách thanh toán
-                order.state = "processing";
+            case 9000:
+            case 8000:
+                newState = "processing";
                 break;
-            default: // Giao dịch thất bại hoặc bị hủy
-                order.state = "cancelled";
+            default:
+                newState = "cancelled";
                 break;
         }
 
-        await order.save(); // Lưu thay đổi vào database
+        // Use the order service to update the state
+        const updatedOrder = await update({ state: newState }, orderId);
 
         res.status(200).json({
             message: "Transaction status checked successfully",
             transactionStatus: result,
-            orderState: order.state,
+            orderState: updatedOrder.body.state,
         });
     } catch (error) {
         console.error(error.message);
@@ -277,57 +280,40 @@ exports.vnpayIPN = async (req, res, next) => {
         const orderId = vnp_Params["vnp_TxnRef"];
         const rspCode = vnp_Params["vnp_ResponseCode"];
 
-        // Find the order in the database
         const order = await OrderModel.findById(orderId);
         if (!order) {
             return res.status(404).json({ message: "Order not found." });
         }
 
-        // Update order state based on response code
+        let newState;
         let message;
         switch (rspCode) {
             case "00":
-                order.state = "successed";
+                newState = "successed";
                 message = "Transaction successful.";
                 break;
             case "02":
-                order.state = "cancelled";
-                message = "Invalid TmnCode. Please verify connection identifier.";
-                break;
             case "03":
-                order.state = "cancelled";
-                message = "Invalid data format.";
-                break;
             case "91":
-                order.state = "cancelled";
-                message = "Transaction not found.";
-                break;
             case "94":
-                order.state = "cancelled";
-                message = "Duplicate request within API time limit.";
-                break;
             case "97":
-                order.state = "cancelled";
-                message = "Invalid checksum.";
-                break;
             case "99":
-                order.state = "cancelled";
-                message = "Other errors (not listed).";
+                newState = "cancelled";
+                message = "Transaction failed or cancelled.";
                 break;
             default:
-                order.state = "cancelled";
+                newState = "cancelled";
                 message = "Unknown error code.";
                 break;
         }
 
-        // Save the updated order
-        await order.save();
+        // Use the order service to update the state
+        const updatedOrder = await update({ state: newState }, orderId);
 
-        // Respond with transaction details
         res.status(200).json({
             message: message,
             transactionStatus: rspCode,
-            orderState: order.state,
+            orderState: updatedOrder.body.state,
         });
     } catch (error) {
         console.error("VNPay IPN Error:", error);
