@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import "./EventDetail.css";
 
 const EventDetail = () => {
+  const user = useSelector((state) => state.auth.login.currentUser);
   const { id } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
@@ -80,14 +82,19 @@ const EventDetail = () => {
   };
 
   const handleBookNow = () => {
-    navigate(`/booking/${id}`);
+    if (user) navigate(`/booking/${id}`);
+    else navigate(`/login`);
+  };
+
+  const handleLoginClick = () => {
+    navigate("/login");
   };
 
   if (!event) return <p>Loading...</p>;
 
   return (
     <div>
-      <Header />
+      <Header onLoginClick={handleLoginClick} />
       <div className="event-detail-container">
         <div className="event-detail-content">
           <div className="event-detail-ticket">

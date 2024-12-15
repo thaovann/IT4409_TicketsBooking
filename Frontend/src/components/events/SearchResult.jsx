@@ -9,6 +9,7 @@ import "./SearchResult.css";
 import Footer from "../common/Footer";
 
 const SearchResult = () => {
+  const navigate = useNavigate();
   const [events, setEvents] = useState([]); // Dữ liệu sự kiện
   const [filteredEvents, setFilteredEvents] = useState([]); // Sự kiện đã lọc
   const [remainingEvents, setRemainingEvents] = useState([]); // sự kiện còn lại
@@ -68,11 +69,15 @@ const SearchResult = () => {
     }
   }, [events, query]); // Chạy lại khi có sự kiện mới hoặc query thay đổi
 
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
+
   // if (loading) return <div className="loading">Đang tải dữ liệu...</div>;
 
   return (
     <div className="search-results-bao">
-      <Header />
+      <Header onLoginClick={handleLoginClick} />
       <div className="search-results-container">
         <div className="search-header">
           <h2 className="search-event-title">Kết quả tìm kiếm:</h2>
