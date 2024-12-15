@@ -79,3 +79,4 @@ const PaymentQRPage = () => {
 
 export default PaymentQRPage;
 
+

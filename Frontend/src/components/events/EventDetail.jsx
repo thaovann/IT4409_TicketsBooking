@@ -11,6 +11,7 @@ const EventDetail = () => {
   const [event, setEvent] = useState(null);
   const [tickets, setTickets] = useState([]);
   const [minPrice, setMinPrice] = useState(null);
+  const [availableQuantities, setAvailableQuantities] = useState({}); // Lưu số lượng vé "available"
 
   // Tạo một tham chiếu cho phần thông tin vé
   const ticketInfoRef = useRef(null);
@@ -34,6 +35,7 @@ const EventDetail = () => {
           // `http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${id}`
           `https://it4409-ticketsbooking-1.onrender.com/api/ticket/getTicketCategoriesByEvent/${id}`
         );
+        const ticketCategories = response.data.ticketCategories;
         setTickets(response.data.ticketCategories);
 
         if (response.data.ticketCategories.length > 0) {
@@ -42,6 +44,29 @@ const EventDetail = () => {
           );
           setMinPrice(minTicketPrice);
         }
+        // Gọi API lấy số lượng vé "available" cho từng loại vé
+        const quantities = {};
+        await Promise.all(
+          ticketCategories.map(async (ticket) => {
+            try {
+              const ticketResponse = await axios.get(
+                `http://localhost:3001/api/ticket/getAllTicketsByCategory/${ticket._id}`
+              );
+              // Đếm số vé có state: "available"
+              const availableTickets = ticketResponse.data.tickets.filter(
+                (ticket) => ticket.state === "available"
+              );
+              quantities[ticket._id] = availableTickets.length;
+            } catch (error) {
+              console.error(
+                `Error fetching available tickets for category ${ticket._id}:`,
+                error
+              );
+              quantities[ticket._id] = 0; // Gán giá trị mặc định nếu lỗi
+            }
+          })
+        );
+        setAvailableQuantities(quantities); // Lưu số lượng vé vào state
       } catch (error) {
         console.error("Lỗi khi lấy danh sách vé:", error);
       }
@@ -121,16 +146,20 @@ const EventDetail = () => {
                     <p>
                       Tình trạng:{" "}
                       <span className="state-ticket">
-                        {ticket.leftQuantity > 0 ? "Còn vé" : "Hết vé"}
+                        {availableQuantities[ticket._id] > 0 ? (
+                          "Còn vé"
+                        ) : (
+                          <span className="state-ticket-sold-out">Hết vé</span>
+                        )}
                       </span>
                     </p>
                   </div>
 
                   <button
-                    className={`buy-ticket-button ${ticket.leftQuantity > 0 ? "" : "disabled"
+                    className={`buy-ticket-button ${availableQuantities[ticket._id] > 0 ? "" : "disabled"
                       }`}
                     onClick={handleBookNow}
-                    disabled={ticket.leftQuantity === 0}
+                    disabled={availableQuantities[ticket._id] === 0}
                   >
                     Mua vé ngay
                   </button>

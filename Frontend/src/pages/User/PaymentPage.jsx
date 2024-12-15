@@ -172,7 +172,8 @@ const PaymentPage = () => {
       };
 
       console.log("Order Data:", JSON.stringify(orderData, null, 2)); // Debug: kiểm tra dữ liệu gửi lên
-
+      // Lưu dữ liệu vào Local Storage để kiểm tra
+      localStorage.setItem("orderData", JSON.stringify(orderData));
       // 1. Gửi yêu cầu tạo order
       const createOrderResponse = await axios.post(
         // "http://localhost:3001/order/", // API tạo order
@@ -194,25 +195,44 @@ const PaymentPage = () => {
 
       console.log("Order created successfully:", createOrderResponse.data);
 
-      // 2. Gửi yêu cầu tạo URL thanh toán
-      const createPaymentResponse = await axios.post(
-        // "http://localhost:3001/payment/create-payment", // API tạo URL thanh toán
-        "https://it4409-ticketsbooking-1.onrender.com/payment/create-payment", // API tạo URL thanh toán
-        { orderId: orderId }, // Truyền orderId trong body
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Đính kèm token xác thực
-          },
-        }
-      );
+      // 2. Chọn API thanh toán phù hợp dựa trên paymentMethod
+      let paymentUrl;
+      if (paymentMethod === "MOMO") {
+        // API tạo URL thanh toán MOMO
+        const createPaymentResponse = await axios.post(
+          "http://localhost:3001/payment/create-payment",
+          { orderId: orderId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Đính kèm token xác thực
+            },
+          }
+        );
+        paymentUrl = createPaymentResponse.data?.payUrl;
+      } else if (paymentMethod === "VNPAY") {
+        // API tạo URL thanh toán VnPay
+        const createPaymentResponse = await axios.post(
+          "http://localhost:3001/payment/create-payment-vnpay",
+          { orderId: orderId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Đính kèm token xác thực
+            },
+          }
+        );
+        paymentUrl = createPaymentResponse.data?.payUrl;
+      } else {
+        alert("Phương thức thanh toán không hợp lệ!");
+        setLoading(false);
+        return;
+      }
 
-      const paymentUrl = createPaymentResponse.data?.payUrl;
       console.log("Payment URL:", paymentUrl);
 
       if (paymentUrl) {
         // 3. Chuyển hướng người dùng đến trang thanh toán
         console.log("Redirecting to payment URL:", paymentUrl);
-        window.location.href = paymentUrl; // Chuyển hướng trực tiếp đến URL MOMO
+        window.location.href = paymentUrl;
       } else {
         alert("Không nhận được URL thanh toán. Vui lòng thử lại.");
       }
@@ -237,7 +257,7 @@ const PaymentPage = () => {
         "https://it4409-ticketsbooking-1.onrender.com/payment/check-status-transaction", // API kiểm tra trạng thái thanh toán
         {
           orderId: orderId, // ID đơn hàng
-          transactionId: transactionId, // ID giao dịch từ thanh toán
+          // transactionId: transactionId, // ID giao dịch từ thanh toán
         },
         {
           headers: {
@@ -247,7 +267,7 @@ const PaymentPage = () => {
       );
 
       // Kiểm tra kết quả trả về
-      const paymentStatus = response.data?.status;
+      const paymentStatus = response.data?.transactionStatus;
       if (paymentStatus === "success") {
         alert("Thanh toán thành công!");
         // Cập nhật trạng thái đơn hàng nếu cần thiết
@@ -308,7 +328,7 @@ const PaymentPage = () => {
                 <input
                   type="radio"
                   name="paymentMethod"
-                  value="ví MoMo"
+                  value="MOMO"
                   onChange={(e) => setPaymentMethod(e.target.value)}
                 />
                 <img src={logoMoMo} alt="Momo" className="logo-momo" />
@@ -318,7 +338,7 @@ const PaymentPage = () => {
                 <input
                   type="radio"
                   name="paymentMethod"
-                  value="VN-pay"
+                  value="VNPAY"
                   onChange={(e) => setPaymentMethod(e.target.value)}
                 />
                 <img
