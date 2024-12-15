@@ -130,7 +130,8 @@ const MyEvents = () => {
                                         <CardMedia
                                             component="img"
                                             height="180"
-                                            image={`http://localhost:3001/api/event/images/${event.imageBackground}`}
+                                            // image={`http://localhost:3001/api/event/images/${event.imageBackground}`}
+                                            image={`https://it4409-ticketsbooking-1.onrender.com/api/event/images/${event.imageBackground}`}
                                             alt={event.name}
                                         />
                                         <CardContent sx={{ flexGrow: 1 }}>

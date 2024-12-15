@@ -20,7 +20,7 @@ import VerifyOTP from "./pages/Auth/ChangePassword/VerifyOTP";
 import TicketBookingPage from "./pages/User/TicketBookingPage";
 import PaymentPage from "./pages/User/PaymentPage";
 import PaymentQRPage from "./pages/User/PaymentQRPage";
-import PurchasedTickets from "./components/events/PurchasedTickets";
+//import PurchasedTickets from "./components/events/PurchasedTickets";
 import './App.css';
 
 function App() {
@@ -58,15 +58,6 @@ function App() {
 
           {/* Trang event */}
           <Route path="/organizer/*" element={<OrganizerPage />} />
-          {/* <Route path="organizer/create-event" element={<CreateEventForm />} />
-          <Route
-            path="organizer/create-event"
-            element={<CreateEventForm />}
-          />
-          <Route
-            path="organizer/create-ticket"
-            element={<CreateTicketCategoryForm />}
-          /> */}
           <Route path="/booking/:id" element={<TicketBookingPage />} />
           <Route path="/purchased-tickets" element={<PurchasedTickets />} />
 

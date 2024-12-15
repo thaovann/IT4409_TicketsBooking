@@ -16,7 +16,8 @@ function Header({ hideCreateEvent, hideNav, onLoginClick }) {
   const handleSearch = async (query) => {
     try {
       const response = await fetch(
-        `https://localhost:3001/api/event/getEventByTypeId/?query=${query}`
+        // `https://localhost:3001/api/event/getEventByTypeId/?query=${query}`
+        `https://it4409-ticketsbooking-1.onrender.com/api/event/getEventByTypeId/?query=${query}`
       );
       const results = await response.json();
       console.log("Search results:", results);

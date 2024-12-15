@@ -37,7 +37,8 @@ const PaymentPage = () => {
   useEffect(() => {
     if (userId) {
       axios
-        .get(`http://localhost:3001/voucher/users/${userId}`, {
+        // .get(`http://localhost:3001/voucher/users/${userId}`, {
+        .get(`https://it4409-ticketsbooking-1.onrender.com/voucher/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -127,7 +128,8 @@ const PaymentPage = () => {
       const ticketsData = await Promise.all(
         selectedTicketDetails.map(async (ticketCategory) => {
           const response = await axios.get(
-            `http://localhost:3001/api/ticket/getAvailableTicket/${ticketCategory.ticketCategoryId}?number=${ticketCategory.quantity}`
+            // `http://localhost:3001/api/ticket/getAvailableTicket/${ticketCategory.ticketCategoryId}?number=${ticketCategory.quantity}`
+            `https://it4409-ticketsbooking-1.onrender.com/api/ticket/getAvailableTicket/${ticketCategory.ticketCategoryId}?number=${ticketCategory.quantity}`
           );
 
           // Xử lý nếu không đủ vé hoặc lỗi từ API
@@ -173,7 +175,8 @@ const PaymentPage = () => {
 
       // 1. Gửi yêu cầu tạo order
       const createOrderResponse = await axios.post(
-        "http://localhost:3001/order/", // API tạo order
+        // "http://localhost:3001/order/", // API tạo order
+        "https://it4409-ticketsbooking-1.onrender.com/order/", // API tạo order
         orderData,
         {
           headers: {
@@ -193,7 +196,8 @@ const PaymentPage = () => {
 
       // 2. Gửi yêu cầu tạo URL thanh toán
       const createPaymentResponse = await axios.post(
-        "http://localhost:3001/payment/create-payment", // API tạo URL thanh toán
+        // "http://localhost:3001/payment/create-payment", // API tạo URL thanh toán
+        "https://it4409-ticketsbooking-1.onrender.com/payment/create-payment", // API tạo URL thanh toán
         { orderId: orderId }, // Truyền orderId trong body
         {
           headers: {
@@ -229,7 +233,8 @@ const PaymentPage = () => {
   const checkPaymentStatus = async (orderId, transactionId) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/payment/check-status-transaction", // API kiểm tra trạng thái thanh toán
+        // "http://localhost:3001/payment/check-status-transaction", // API kiểm tra trạng thái thanh toán
+        "https://it4409-ticketsbooking-1.onrender.com/payment/check-status-transaction", // API kiểm tra trạng thái thanh toán
         {
           orderId: orderId, // ID đơn hàng
           transactionId: transactionId, // ID giao dịch từ thanh toán
@@ -320,7 +325,7 @@ const PaymentPage = () => {
                   src={logoVNpay}
                   alt="VNpay"
                   className="logo-vnpay"
-                  // style={{ width: "30px" }}
+                // style={{ width: "30px" }}
                 />
                 <span className="payment-method-title"> VN pay</span>
               </label>

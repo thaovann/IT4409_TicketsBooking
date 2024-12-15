@@ -43,7 +43,8 @@ const EventDetailPage = () => {
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/event/getEventById/${id}`);
+                // const response = await axios.get(`http://localhost:3001/api/event/getEventById/${id}`);
+                const response = await axios.get(`https://it4409-ticketsbooking-1.onrender.com/api/event/getEventById/${id}`);
                 setEvent(response.data);
             } catch (error) {
                 console.error("Lỗi khi lấy thông tin sự kiện:", error);
@@ -52,7 +53,8 @@ const EventDetailPage = () => {
 
         const fetchTickets = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${id}`);
+                // const response = await axios.get(`http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${id}`);
+                const response = await axios.get(`https://it4409-ticketsbooking-1.onrender.com/api/ticket/getTicketCategoriesByEvent/${id}`);
                 setTickets(response.data.ticketCategories);
 
                 if (response.data.ticketCategories.length > 0) {
@@ -99,7 +101,8 @@ const EventDetailPage = () => {
                                 </div>
                             </div>
                             <div className="event-banner">
-                                <img src={`http://localhost:3001/api/event/images/${event.imageBackground}`} alt={event.name} />
+                                {/* <img src={`http://localhost:3001/api/event/images/${event.imageBackground}`} alt={event.name} /> */}
+                                <img src={`https://it4409-ticketsbooking-1.onrender.com/api/event/images/${event.imageBackground}`} alt={event.name} />
                             </div>
                         </div>
                     </div>

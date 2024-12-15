@@ -16,7 +16,8 @@ const TicketBookingPage = () => {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/event/getEventById/${id}`
+          // `http://localhost:3001/api/event/getEventById/${id}`
+          `https://it4409-ticketsbooking-1.onrender.com/api/event/getEventById/${id}`
         );
         setEvent(response.data);
       } catch (error) {
@@ -27,7 +28,8 @@ const TicketBookingPage = () => {
     const fetchTickets = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${id}`
+          // `http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${id}`
+          `https://it4409-ticketsbooking-1.onrender.com/api/ticket/getTicketCategoriesByEvent/${id}`
         );
         setTickets(response.data.ticketCategories);
 

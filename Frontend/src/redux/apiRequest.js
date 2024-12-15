@@ -16,7 +16,8 @@ import {
 
 // Create an instance with default config
 const api = axios.create({
-    baseURL: "http://localhost:3001",
+    // baseURL: "http://localhost:3001",
+    baseURL: "https://it4409-ticketsbooking-1.onrender.com",
     headers: {
         "Content-Type": "application/json",
     },
@@ -40,7 +41,8 @@ export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginStart());
     try {
         //const res = await api.post("/auth/login", user);
-        const res = await axios.post("http://localhost:3001/auth/login", user)
+        // const res = await axios.post("http://localhost:3001/auth/login", user)
+        const res = await axios.post("https://it4409-ticketsbooking-1.onrender.com/auth/login", user)
         const token = res.data.body.token;
         const role = res.data.body._doc.Role;
         localStorage.setItem("token", token);
@@ -64,8 +66,8 @@ export const registerUser = async (user, dispatch, navigate) => {
     dispatch(registerStart());
     try {
         //const response = await api.post("/auth/register", user);
-        const response = await axios.post("http://localhost:3001/auth/register", user);
-        //console.log(response.data);
+        // const response = await axios.post("http://localhost:3001/auth/register", user);
+        const response = await axios.post("https://it4409-ticketsbooking-1.onrender.com/auth/register", user);
         dispatch(registerSuccess());
         navigate("/login");
         return response.data;
@@ -78,7 +80,8 @@ export const registerUser = async (user, dispatch, navigate) => {
 // hàm gửi request quên mật khẩu
 export const passwordForgot = async (Email) => {
     try {
-        const response = await axios.post("http://localhost:3001/auth/password/forgot", { Email });
+        // const response = await axios.post("http://localhost:3001/auth/password/forgot", { Email });
+        const response = await axios.post("https://it4409-ticketsbooking-1.onrender.com/auth/password/forgot", { Email });
         return response.data;
     } catch (error) {
         return { error: true, message: error.response?.data?.message || "forgot password failed" };
@@ -88,7 +91,8 @@ export const passwordForgot = async (Email) => {
 // hàm xác thực OTP
 export const verifyOTP = async (Email, OTP) => {
     try {
-        const response = await axios.post("http://localhost:3001/auth/password/otp", { Email, OTP });
+        // const response = await axios.post("http://localhost:3001/auth/password/otp", { Email, OTP });
+        const response = await axios.post("https://it4409-ticketsbooking-1.onrender.com/auth/password/otp", { Email, OTP });
         return response.data; // Trả về kết quả xác thực OTP
     } catch (error) {
         return { error: true, message: error.response?.data?.message || "verify otp failed" };
@@ -97,7 +101,8 @@ export const verifyOTP = async (Email, OTP) => {
 
 export const resetPassword = async (Email, Password) => {
     try {
-        const response = await axios.post("http://localhost:3001/auth/password/reset", { Email, Password });
+        // const response = await axios.post("http://localhost:3001/auth/password/reset", { Email, Password });
+        const response = await axios.post("https://it4409-ticketsbooking-1.onrender.com/auth/password/reset", { Email, Password });
         return response.data;
     } catch (error) {
         throw error.response ? error.response.data : error.message;

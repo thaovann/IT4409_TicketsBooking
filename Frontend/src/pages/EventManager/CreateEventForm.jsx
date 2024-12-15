@@ -68,7 +68,8 @@ const CreateEventForm = () => {
     const fetchEventTypes = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3001/api/event/allEventTypes"
+          // "http://localhost:3001/api/event/allEventTypes"
+          "https://it4409-ticketsbooking-1.onrender.com/api/event/allEventTypes"
         );
         setEventTypes(response.data);
       } catch (error) {
@@ -146,7 +147,8 @@ const CreateEventForm = () => {
       if (!eventId) {
         // Nếu không có sự kiện, tạo sự kiện mới
         const response = await axios.post(
-          "http://localhost:3001/api/event/create",
+          // "http://localhost:3001/api/event/create",
+          "https://it4409-ticketsbooking-1.onrender.com/api/event/create",
           data,
           {
             headers: {
@@ -161,7 +163,8 @@ const CreateEventForm = () => {
       } else {
         // Nếu sự kiện đã có, cập nhật sự kiện
         const response = await axios.put(
-          `http://localhost:3001/api/event/update/${eventId}`,
+          // `http://localhost:3001/api/event/update/${eventId}`,
+          `https://it4409-ticketsbooking-1.onrender.com/api/event/update/${eventId}`,
           data,
           {
             headers: {

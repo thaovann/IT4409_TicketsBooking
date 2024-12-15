@@ -21,7 +21,8 @@ const PaymentQRPage = () => {
     const checkTransactionStatus = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:3001/payment/check-status-transaction",
+          // "http://localhost:3001/payment/check-status-transaction",
+          "https://it4409-ticketsbooking-1.onrender.com/payment/check-status-transaction",
           { orderId },
           {
             headers: { Authorization: `Bearer ${token}` },

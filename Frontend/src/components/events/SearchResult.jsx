@@ -21,7 +21,8 @@ const SearchResult = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:3001/api/event/allEvents"
+          // "http://localhost:3001/api/event/allEvents"
+          "https://it4409-ticketsbooking-1.onrender.com/api/event/allEvents"
         ); // Lấy tất cả sự kiện
         setEvents(response.data); // Lưu tất cả sự kiện
       } catch (error) {

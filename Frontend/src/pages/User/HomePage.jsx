@@ -28,7 +28,8 @@ function HomePage() {
     const fetchEvents = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3001/api/event/allEvents"
+          // "http://localhost:3001/api/event/allEvents"
+          "https://it4409-ticketsbooking-1.onrender.com/api/event/allEvents"
         );
         const approvedEvents = response.data
           .filter((event) => event.state === "approved")
@@ -38,7 +39,8 @@ function HomePage() {
           approvedEvents.map(async (event) => {
             try {
               const ticketResponse = await axios.get(
-                `http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${event._id}`
+                // `http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${event._id}`
+                `https://it4409-ticketsbooking-1.onrender.com/api/ticket/getTicketCategoriesByEvent/${event._id}`
               );
               const tickets = ticketResponse.data.ticketCategories;
               const minPrice =
@@ -163,7 +165,8 @@ function HomePage() {
                     key={event._id}
                   >
                     <img
-                      src={`http://localhost:3001/api/event/images/${event.imageBackground}`}
+                      // src={`http://localhost:3001/api/event/images/${event.imageBackground}`}
+                      src={`https://it4409-ticketsbooking-1.onrender.com/api/event/images/${event.imageBackground}`}
                       alt={event.name}
                       className="banner-image"
                     />
@@ -203,9 +206,8 @@ function HomePage() {
                 {Array.from({ length: Math.ceil(3) }).map((_, index) => (
                   <div
                     key={index}
-                    className={`banner-dot ${
-                      index === currentBannerIndex ? "active" : ""
-                    }`}
+                    className={`banner-dot ${index === currentBannerIndex ? "active" : ""
+                      }`}
                     onClick={() => handleDotClick(index)}
                   ></div>
                 ))}

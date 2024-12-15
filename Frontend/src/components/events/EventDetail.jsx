@@ -19,7 +19,8 @@ const EventDetail = () => {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/event/getEventById/${id}`
+          // `http://localhost:3001/api/event/getEventById/${id}`
+          `https://it4409-ticketsbooking-1.onrender.com/api/event/getEventById/${id}`
         );
         setEvent(response.data);
       } catch (error) {
@@ -30,7 +31,8 @@ const EventDetail = () => {
     const fetchTickets = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${id}`
+          // `http://localhost:3001/api/ticket/getTicketCategoriesByEvent/${id}`
+          `https://it4409-ticketsbooking-1.onrender.com/api/ticket/getTicketCategoriesByEvent/${id}`
         );
         setTickets(response.data.ticketCategories);
 
@@ -89,7 +91,8 @@ const EventDetail = () => {
             </div>
             <div className="event-banner">
               <img
-                src={`http://localhost:3001/api/event/images/${event.imageBackground}`}
+                // src={`http://localhost:3001/api/event/images/${event.imageBackground}`}
+                src={`https://it4409-ticketsbooking-1.onrender.com/api/event/images/${event.imageBackground}`}
                 alt={event.name}
               />
             </div>
@@ -124,9 +127,8 @@ const EventDetail = () => {
                   </div>
 
                   <button
-                    className={`buy-ticket-button ${
-                      ticket.leftQuantity > 0 ? "" : "disabled"
-                    }`}
+                    className={`buy-ticket-button ${ticket.leftQuantity > 0 ? "" : "disabled"
+                      }`}
                     onClick={handleBookNow}
                     disabled={ticket.leftQuantity === 0}
                   >

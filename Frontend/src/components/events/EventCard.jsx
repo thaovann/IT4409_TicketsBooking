@@ -13,7 +13,8 @@ const EventCard = ({ event }) => {
       className="event-card"
     >
       <img
-        src={`http://localhost:3001/api/event/images/${event.imageBackground}`}
+        // src={`http://localhost:3001/api/event/images/${event.imageBackground}`}
+        src={`https://it4409-ticketsbooking-1.onrender.com/api/event/images/${event.imageBackground}`}
         alt={name}
         className="event-img"
       />

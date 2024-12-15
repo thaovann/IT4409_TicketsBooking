@@ -52,7 +52,8 @@ const CreateTicketCategoryForm = ({ eventId }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/ticket/createTicketCategory",
+        // "http://localhost:3001/api/ticket/createTicketCategory",
+        "https://it4409-ticketsbooking-1.onrender.com/api/ticket/createTicketCategory",
         categoryData
       );
       alert("Loại vé đã được tạo thành công!");
@@ -78,13 +79,13 @@ const CreateTicketCategoryForm = ({ eventId }) => {
       );
       alert(
         "Lỗi khi tạo loại vé: " +
-          (error.response?.data?.message || error.message)
+        (error.response?.data?.message || error.message)
       );
     }
   };
 
   return (
-    <div style={{color: "#2c2c2c"}}>
+    <div style={{ color: "#2c2c2c" }}>
       <h3
         style={{ color: "#2c2c2c", textAlign: "center", marginBottom: "20px" }}
       >
