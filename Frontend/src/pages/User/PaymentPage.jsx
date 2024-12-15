@@ -200,7 +200,7 @@ const PaymentPage = () => {
       if (paymentMethod === "MOMO") {
         // API tạo URL thanh toán MOMO
         const createPaymentResponse = await axios.post(
-          "http://localhost:3001/payment/create-payment",
+          "https://it4409-ticketsbooking-1.onrender.com/payment/create-payment",
           { orderId: orderId },
           {
             headers: {
@@ -212,7 +212,7 @@ const PaymentPage = () => {
       } else if (paymentMethod === "VNPAY") {
         // API tạo URL thanh toán VnPay
         const createPaymentResponse = await axios.post(
-          "http://localhost:3001/payment/create-payment-vnpay",
+          "https://it4409-ticketsbooking-1.onrender.com/payment/create-payment-vnpay",
           { orderId: orderId },
           {
             headers: {

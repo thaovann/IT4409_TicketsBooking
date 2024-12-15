@@ -20,7 +20,6 @@ import VerifyOTP from "./pages/Auth/ChangePassword/VerifyOTP";
 import TicketBookingPage from "./pages/User/TicketBookingPage";
 import PaymentPage from "./pages/User/PaymentPage";
 import PaymentSuccess from "./pages/User/PaymentSuccess";
-import PurchasedTickets from "./components/events/PurchasedTickets";
 import "./App.css";
 
 function App() {

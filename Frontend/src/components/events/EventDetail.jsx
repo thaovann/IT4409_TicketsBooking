@@ -50,7 +50,7 @@ const EventDetail = () => {
           ticketCategories.map(async (ticket) => {
             try {
               const ticketResponse = await axios.get(
-                `http://localhost:3001/api/ticket/getAllTicketsByCategory/${ticket._id}`
+                `https://it4409-ticketsbooking-1.onrender.com/api/ticket/getAllTicketsByCategory/${ticket._id}`
               );
               // Đếm số vé có state: "available"
               const availableTickets = ticketResponse.data.tickets.filter(
