@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # Explicitly use Ubuntu 24.04
 
     steps:
     # Step 1: Checkout code
@@ -23,16 +23,15 @@ jobs:
         fi
 
     - name: Run tests
-      run: |
-        if [ -f package.json ]; then
-          npm test
-        fi
+      if: exists('package.json')  # Run tests only if package.json exists
+      run: npm test
 
     # Step 3: Deploy to Render
     - name: Deploy to Render
       env:
         RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
       run: |
+        set +x  # Prevent command printing
         curl -X POST \
           -H "Authorization: Bearer $RENDER_API_KEY" \
           -H "Accept: application/json" \
