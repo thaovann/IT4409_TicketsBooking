@@ -153,7 +153,24 @@
 }
 .voucher-select {
   border-radius: 10px;
-  min-width: 160px;
+  width: 160px;
+}
+
+.voucher-option {
+  width: 100px;
+  height: 40px;
+  color: #393838;
+  white-space: pre-wrap; /* Cho phép nội dung xuống dòng */
+  transition: 0.5s;
+}
+.voucher-option:hover {
+  background: var(--primary-color);
+  color: white;
+}
+.voucher-error {
+  margin-top: 5px;
+  font-size: 0.8em;
+  color: red;
 }
 .voucher-input input {
   padding: 10px;
@@ -176,6 +193,7 @@
   /* color: var(--primary-color);
   border: 1px solid var(--primary-color); */
 }
+
 /* ========phần 2: hình thức thanh toán========= */
 .payment-method-section {
   margin-bottom: 30px;

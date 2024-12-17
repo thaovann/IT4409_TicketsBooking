@@ -28,22 +28,25 @@ const PaymentPage = () => {
   const [userVouchers, setUserVouchers] = useState([]); // Danh sách voucher của người dùng
   const [error, setError] = useState(""); //lưu lỗi nếu có
   const token = localStorage.getItem("token");
+  const [isOpen, setIsOpen] = useState(false);
 
   //  Lấy userId từ localStorage
   const userId = user?.body?._doc?.UserId;
+  const user_id = user?.body?._doc?._id;
   console.log("User ID:", userId);
 
   // Lấy voucher của người dùng từ API
   useEffect(() => {
-    if (userId) {
+    if (user_id) {
       axios
-        .get(`http://localhost:3001/voucher/users/${userId}`, {
+        .get(`http://localhost:3001/voucher/users/${user_id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
-          setUserVouchers(response.data.vouchers); // Lưu danh sách voucher vào state
+          setUserVouchers(response.data?.body); // Lưu danh sách voucher vào state
+          console.log("voucher:", userVouchers);
         })
         .catch((error) => {
           console.error("Lỗi khi lấy voucher:", error);
@@ -53,15 +56,13 @@ const PaymentPage = () => {
 
   const handleApplyVoucher = () => {
     const selectedVoucher = userVouchers.find((v) => v.code === voucher);
-
     if (!selectedVoucher) {
       setError("Voucher không hợp lệ!");
       setDiscount(0);
       return;
     }
-
     // Kiểm tra điều kiện áp dụng
-    if (!selectedVoucher.isActive) {
+    if (!!selectedVoucher.isActive) {
       setError("Voucher này hiện không còn hiệu lực.");
       setDiscount(0);
       return;
@@ -105,6 +106,10 @@ const PaymentPage = () => {
     alert(
       `Voucher áp dụng thành công! Giảm ${calculatedDiscount.toLocaleString()} VND`
     );
+  };
+  const handleSelectVoucher = (v) => {
+    setVoucher(v.code);
+    setIsOpen(false); // Đóng dropdown sau khi chọn voucher
   };
 
   const finalPrice = totalPrice - discount; // Tính giá trị cuối cùng
@@ -359,10 +364,17 @@ const PaymentPage = () => {
                   onChange={(e) => setVoucher(e.target.value)}
                   className="voucher-select"
                 >
-                  <option value=""> Chọn voucher </option>
+                  <option className="voucher-option" value="">
+                    {" "}
+                    Chọn voucher{" "}
+                  </option>
                   {userVouchers.map((v) => (
-                    <option key={v._id} value={v.code}>
-                      {v.code} -{" "}
+                    <option
+                      className="voucher-option"
+                      key={v._id}
+                      value={v.code}
+                    >
+                      {v.code} -
                       {v.discountType === "percentage"
                         ? `${v.discountValue}%`
                         : `${v.discountValue.toLocaleString()} VND`}
