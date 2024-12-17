@@ -306,13 +306,14 @@ exports.update = async (body, id) => {
             $inc: { totalSpend: totalPrice, orderCount: 1 }
         });
 
-        const voucher = await VoucherModel.findOne({ code: existingOrder.voucherCode });
-
-        if (!voucher) {
-            throw new CreateFailedException('Voucher is invalid');
+        if (existingOrder.voucherCode) {
+            const voucher = await VoucherModel.findOne({ code: existingOrder.voucherCode });
+            if (voucher) {
+                await UserModel.findOneAndUpdate({ UserId: userId }, {
+                    $pull: { Vouchers: voucher._id }
+                });
+            }
         }
-
-        await UserModel.findOneAndUpdate({ UserId: userId }, { $pull: { Vouchers: voucher._id } });
     } else if (body.state === 'cancelled' && existingOrder.state === 'successed') {
         await TicketModel.updateMany({ _id: { $in: ticketIds } }, { $set: { state: 'available' } });
 
