@@ -78,6 +78,8 @@ const orderFindAllByUser = async (userId, params = {}) => {
             .populate({
                 path: 'voucherCode',
                 select: 'name discount',
+                options: { strictPopulate: false },
+                match: { code: { $eq: 'voucherCode' } }
             });
 
         return orders.map(order => ({
