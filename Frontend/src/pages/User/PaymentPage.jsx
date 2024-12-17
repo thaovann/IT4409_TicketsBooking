@@ -107,10 +107,10 @@ const PaymentPage = () => {
       `Voucher áp dụng thành công! Giảm ${calculatedDiscount.toLocaleString()} VND`
     );
   };
-  const handleSelectVoucher = (v) => {
-    setVoucher(v.code);
-    setIsOpen(false); // Đóng dropdown sau khi chọn voucher
-  };
+  // const handleSelectVoucher = (v) => {
+  //   setVoucher(v.code);
+  //   setIsOpen(false); // Đóng dropdown sau khi chọn voucher
+  // };
 
   const finalPrice = totalPrice - discount; // Tính giá trị cuối cùng
 
@@ -170,7 +170,8 @@ const PaymentPage = () => {
         })),
         orderDate: new Date().toISOString().split("T")[0], // Ngày đặt
         totalPrice, // Tổng giá vé trước khi áp dụng voucher
-        finalPrice, // Giá cuối cùng sau khi áp dụng voucher
+        finalPrice: totalPrice - discount, // Giá cuối cùng sau khi áp dụng voucher
+        voucherCode: voucher,
         state: "processing", // Trạng thái mặc định ban đầu
       };
 
@@ -200,7 +201,7 @@ const PaymentPage = () => {
       // 2. Chọn API thanh toán phù hợp dựa trên paymentMethod
       let paymentUrl;
       if (paymentMethod === "MOMO") {
-        // API tạo URL thanh toán MOMO
+        // API tạo URL tohanh toán MOMO
         const createPaymentResponse = await axios.post(
           "http://localhost:3001/payment/create-payment",
           { orderId: orderId },
@@ -388,7 +389,9 @@ const PaymentPage = () => {
               {error && <div className="voucher-error">{error}</div>}
               {/* Hiển thị giá trị cuối cùng sau khi áp dụng voucher */}
               <div className="final-price">
-                {/* <h3>Tổng giá trị đơn hàng: {finalPrice.toLocaleString()} VND</h3> */}
+                {/* <h3>
+                  Tổng giá trị đơn hàng: {finalPrice.toLocaleString()} VND
+                </h3> */}
               </div>
             </div>
 
@@ -413,7 +416,7 @@ const PaymentPage = () => {
               <h2 className="ticket-summary-title payment-page-title">
                 Tổng tiền:{" "}
                 <strong className="ticket-summary-total">
-                  {(totalPrice - discount).toLocaleString()} đ
+                  {finalPrice.toLocaleString()} đ
                 </strong>
                 {discount > 0 && (
                   <span className="discount-note">
