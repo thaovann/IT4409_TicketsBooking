@@ -6,27 +6,27 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Typography } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 
-const CreateEventForm = () => {
+const CreateEventForm = ({ event }) => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.login.currentUser);
   // const user = {
   //   id: "1"
   // }
   const [formData, setFormData] = useState({
-    userId: "",
-    eventTypeId: "",
-    name: "",
-    description: "",
-    location: "",
-    startTime: "",
-    endTime: "",
-    eventTypeLocation: "",
-    tags: "",
-    organizerInfor: "",
-    organizerName: "",
-    bankName: "",
-    bankNumber: "",
-    accountHolderName: "",
+    userId: user?.body?._doc?._id || "",
+    eventTypeId: event?.eventTypeId || "",
+    name: event?.name || "",
+    description: event?.description || "",
+    location: event?.location || "",
+    startTime: event?.startTime || "",
+    endTime: event?.endTime || "",
+    eventTypeLocation: event?.eventTypeLocation || "",
+    tags: event?.tags || "",
+    organizerInfor: event?.organizerInfor || "",
+    organizerName: event?.organizerName || "",
+    bankName: event?.bankName || "",
+    bankNumber: event?.bankNumber || "",
+    accountHolderName: event?.accountHolderName || "",
   });
   useEffect(() => {
     if (!user) {
@@ -52,19 +52,37 @@ const CreateEventForm = () => {
   });
 
   const [filePreviews, setFilePreviews] = useState({
-    logo: null,
-    organizerLogo: null,
-    background: null,
-    video: null,
+    logo: event?.imageLogo || null,
+    organizerLogo: event?.organizerLogo || null,
+    background: event?.imageBackground || null,
+    video: event?.video || null,
   });
 
   // const [loading, setLoading] = useState(false);
   // const [message, setMessage] = useState("");
   const [eventTypes, setEventTypes] = useState([]);
-  const [eventCreated, setEventCreated] = useState(false); // New state for event creation
-  const [eventId, setEventId] = useState(null); // Store created event ID
+  //const [eventCreated, setEventCreated] = useState(true); // New state for event creation
+  //const [eventId, setEventId] = useState(null); // Store created event ID
+
 
   useEffect(() => {
+    // Thiết lập preview ảnh từ API nếu đã có sẵn event
+    if (event) {
+      setFilePreviews((prevPreviews) => ({
+        ...prevPreviews,
+        logo: event.imageLogo
+          ? `https://it4409-ticketsbooking-1.onrender.com/api/event/images/${event.imageLogo}`
+          : null,
+        organizerLogo: event.organizerLogo
+          ? `https://it4409-ticketsbooking-1.onrender.com/api/event/images/${event.organizerLogo}`
+          : null,
+        background: event.imageBackground
+          ? `https://it4409-ticketsbooking-1.onrender.com/api/event/images/${event.imageBackground}`
+          : null,
+        video: event.video || null, // Xử lý riêng nếu cần
+      }));
+    }
+
     const fetchEventTypes = async () => {
       try {
         const response = await axios.get(
@@ -77,7 +95,7 @@ const CreateEventForm = () => {
       }
     };
     fetchEventTypes();
-  }, []);
+  }, [event]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -102,6 +120,12 @@ const CreateEventForm = () => {
       setFilePreviews((prevPreviews) => ({
         ...prevPreviews,
         [name]: previewURL,
+      }));
+    } else if (event && event[name]) {
+      // Nếu không tải file mới, giữ nguyên preview từ API
+      setFilePreviews((prevPreviews) => ({
+        ...prevPreviews,
+        [name]: `https://it4409-ticketsbooking-1.onrender.com/api/event/images/${event[name]}`,
       }));
     }
   };
@@ -142,9 +166,11 @@ const CreateEventForm = () => {
         data.append(key, files[key]);
       }
     });
+    // Đặt trạng thái thành "under review"
+    data.append("state", "under review");
 
     try {
-      if (!eventId) {
+      if (!event) {
         // Nếu không có sự kiện, tạo sự kiện mới
         const response = await axios.post(
           // "http://localhost:3001/api/event/create",
@@ -156,15 +182,14 @@ const CreateEventForm = () => {
             },
           }
         );
-        setEventId(response.data.event._id);
-        setEventCreated(true);
+        //setEventId(response.data.event._id);
+        //setEventCreated(true);
         alert("Tạo sự kiện thành công!");
-        console.log(response.data);
       } else {
         // Nếu sự kiện đã có, cập nhật sự kiện
         const response = await axios.put(
           // `http://localhost:3001/api/event/update/${eventId}`,
-          `https://it4409-ticketsbooking-1.onrender.com/api/event/update/${eventId}`,
+          `https://it4409-ticketsbooking-1.onrender.com/api/event/update/${event._id}`,
           data,
           {
             headers: {
@@ -183,6 +208,16 @@ const CreateEventForm = () => {
   // const handleReturnHome = () => {
   //   navigate("/");
   // };
+  const formatDateTimeLocal = (isoString) => {
+    const date = new Date(isoString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
 
   return (
     <div
@@ -258,7 +293,7 @@ const CreateEventForm = () => {
                   type="datetime-local"
                   className="form-control"
                   name="startTime"
-                  value={formData.startTime}
+                  value={formatDateTimeLocal(formData.startTime)}
                   onChange={handleChange}
                   required
                 />
@@ -269,7 +304,7 @@ const CreateEventForm = () => {
                   type="datetime-local"
                   className="form-control"
                   name="endTime"
-                  value={formData.endTime}
+                  value={formatDateTimeLocal(formData.endTime)}
                   onChange={handleChange}
                   required
                 />
@@ -355,7 +390,7 @@ const CreateEventForm = () => {
                   name="logo"
                   accept="image/*"
                   onChange={handleFileChange}
-                  required
+                  required={!filePreviews.logo}
                 />
                 {filePreviews.logo && (
                   <img
@@ -392,7 +427,7 @@ const CreateEventForm = () => {
                   name="background"
                   accept="image/*"
                   onChange={handleFileChange}
-                  required
+                  required={!filePreviews.background}
                 />
                 {filePreviews.background && (
                   <img
@@ -470,11 +505,11 @@ const CreateEventForm = () => {
               className="btn btn-warning"
               style={{ backgroundColor: "#ffea99" }}
             >
-              {eventCreated ? "Cập nhật sự kiện" : "Tạo sự kiện"}
+              {event ? "Cập nhật sự kiện" : "Tạo sự kiện"}
             </button>
           </form>
         </div>
-        {eventCreated && (
+        {event && (
           <div
             className="ticket-category-form"
             style={{
@@ -485,7 +520,7 @@ const CreateEventForm = () => {
               marginLeft: "10px",
             }}
           >
-            <CreateTicketCategoryForm eventId={eventId} />
+            <CreateTicketCategoryForm eventId={event._id} />
           </div>
         )}
       </div>

@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { InputAdornment, Tooltip } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useState } from "react";
 import Stack from "@mui/material/Stack";
@@ -16,6 +17,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Alert, Snackbar } from "@mui/material";
+import InfoIcon from '@mui/icons-material/Info';
 
 const darkTheme = createTheme({
     palette: {
@@ -150,6 +152,15 @@ export default function Register() {
                                                         name="idcard"
                                                         value={IdCard}
                                                         onChange={(e) => setIdCard(e.target.value)}
+                                                        InputProps={{
+                                                            endAdornment: (
+                                                                <InputAdornment position="end">
+                                                                    <Tooltip title="CCCD/CMND gồm 12 chữ số">
+                                                                        <InfoIcon />
+                                                                    </Tooltip>
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12}>
@@ -164,7 +175,7 @@ export default function Register() {
                                                         onChange={(e) => setEmail(e.target.value)}
                                                     />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={12}>
                                                     <TextField
                                                         required
                                                         fullWidth
@@ -175,9 +186,18 @@ export default function Register() {
                                                         id="password"
                                                         value={Password}
                                                         onChange={(e) => setPassword(e.target.value)}
+                                                        InputProps={{
+                                                            endAdornment: (
+                                                                <InputAdornment position="end">
+                                                                    <Tooltip title="Mật khẩu phải chứa ít nhất một chữ số, một chữ cái viết thường, một chữ cái viết hoa và một ký tự đặc biệt">
+                                                                        <InfoIcon />
+                                                                    </Tooltip>
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
                                                     />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                {/* <Grid item xs={6}>
                                                     <TextField
                                                         required
                                                         fullWidth
@@ -187,7 +207,7 @@ export default function Register() {
                                                         size="small"
                                                         id="confirmpassword"
                                                     />
-                                                </Grid>
+                                                </Grid> */}
                                                 <Grid item xs={6}>
                                                     <TextField
                                                         required
@@ -198,6 +218,15 @@ export default function Register() {
                                                         size="small"
                                                         value={Phone}
                                                         onChange={(e) => setPhone(e.target.value)}
+                                                        InputProps={{
+                                                            endAdornment: (
+                                                                <InputAdornment position="end">
+                                                                    <Tooltip title="Phải là một số điện thoại hợp lệ với mã quốc gia">
+                                                                        <InfoIcon />
+                                                                    </Tooltip>
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={6}>

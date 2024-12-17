@@ -15,6 +15,7 @@ import {
     DialogContent,
     DialogActions,
     Pagination,
+    TextField,
     Typography
 } from '@mui/material';
 import Swal from 'sweetalert2';
@@ -29,6 +30,7 @@ const ManageOrders = () => {
     const [sortDirection, setSortDirection] = useState('desc');
     const [currentPage, setCurrentPage] = useState(1);
     const [ordersPerPage] = useState(5); // Số lượng đơn hàng trên mỗi trang
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -86,9 +88,19 @@ const ManageOrders = () => {
         });
     };
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1); // Reset pagination when filtering
+    };
+
+    // Filter orders based on searchQuery
+    const filteredOrders = orders.filter((order) =>
+        order._id.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     const indexOfLastOrder = currentPage * ordersPerPage;
     const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-    const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+    const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
 
     const handlePageChange = (event, value) => {
         setCurrentPage(value);
@@ -103,6 +115,17 @@ const ManageOrders = () => {
                 <SideNav />
                 <Box sx={{ padding: 3, width: "100%" }}>
                     <Typography variant="h4" gutterBottom>Quản lý Đơn đặt vé</Typography>
+                    {/* Search Bar */}
+                    <Box mb={2}>
+                        <TextField
+                            size='small'
+                            placeholder="Tìm kiếm theo Mã đơn hàng"
+                            variant="outlined"
+                            fullWidth
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                        />
+                    </Box>
                     <TableContainer component={Paper}>
                         <Table>
                             <TableHead>
@@ -154,7 +177,7 @@ const ManageOrders = () => {
 
                     <Box display="flex" justifyContent="center" marginTop={2}>
                         <Pagination
-                            count={Math.ceil(orders.length / ordersPerPage)}
+                            count={Math.ceil(filteredOrders.length / ordersPerPage)}
                             page={currentPage}
                             onChange={handlePageChange}
                             color="primary"

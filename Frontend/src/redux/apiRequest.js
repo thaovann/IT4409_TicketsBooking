@@ -178,6 +178,15 @@ export const updateEvent = async (eventId, updatedData) => {
     }
 }
 
+export const deleteEvent = async (eventId) => {
+    try {
+        const response = await api.delete(`/api/event/delete/${eventId}`);
+        return response.data;
+    } catch (error) {
+        throw error.response ? error.response.data : new Error('Failed to delete event');
+    }
+}
+
 // hàm tạo sự kiện
 export const createEvent = async (eventData, dispatch) => {
     dispatch(createEventStart());
