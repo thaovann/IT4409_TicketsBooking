@@ -62,6 +62,25 @@ exports.findAllByUser = async (id, query = {}) => {
 
 const orderFindAllByUser = async (userId, params = {}) => {
     try {
+        // const orders = await OrderModel.find({ userId, ...params })
+        //   .populate({
+        //     path: "eventId",
+        //     select: "imageBackground name _id eventTypeId startTime endTime",
+        //   })
+        //   .populate({
+        //     path: "tickets.ticketCategories.ticketCategoryId",
+        //     select: "name price",
+        //   })
+        //   .populate({
+        //     path: "tickets.ticketCategories.ticketDetails.ticketId",
+        //     select: "seat serialNumber",
+        //   })
+        //   .populate({
+        //     path: "voucherCode",
+        //     select: "name discount",
+        //     match: { code: { $exists: true, $ne: '' } }
+        //   });
+
         const orders = await OrderModel.find({ userId, ...params })
           .populate({
             path: "eventId",
@@ -74,13 +93,22 @@ const orderFindAllByUser = async (userId, params = {}) => {
           .populate({
             path: "tickets.ticketCategories.ticketDetails.ticketId",
             select: "seat serialNumber",
-          })
-          .populate({
-            path: "voucherCode",
-            select: "name discount",
-            match: { code: { $exists: true, $ne: '' } }
           });
 
+        for (let order of orders) {
+          if (order.voucherCode) {
+            const voucher = await VoucherModel.findOne({
+              code: order.voucherCode,
+            });
+            if (voucher) {
+              order = order.toObject();
+              order.voucher = {
+                name: voucher.code,
+                discount: voucher.discountValue,
+              };
+            }
+          }
+        }
         return orders.map(order => ({
             orderId: order._id,
             userId: order.userId,
