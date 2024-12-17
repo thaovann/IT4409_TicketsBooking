@@ -221,50 +221,91 @@ exports.createPaymentVnpay = async (req, res, next) => {
     }
 };
 
+// exports.vnpayReturn = async (req, res, next) => {
+//     let vnp_Params = req.query;
+//     let secureHash = vnp_Params['vnp_SecureHash'];
+
+//     delete vnp_Params['vnp_SecureHash'];
+//     delete vnp_Params['vnp_SecureHashType'];
+
+//     vnp_Params = sortObject(vnp_Params);
+
+//     const tmnCode = configVnpay.vnp_TmnCode;
+//     const secretKey = configVnpay.vnp_HashSecret;
+
+//     let signData = querystring.stringify(vnp_Params, { encode: false });
+//     let hmac = crypto.createHmac("sha512", secretKey);
+//     let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+
+//     if (secureHash === signed) {
+//         // Gọi IPN endpoint với form-urlencoded và tạo lại SecureHash
+//         try {
+//             const ipnResponse = await axios.post(
+//                 configVnpay.vnp_IpnUrl,
+//                 querystring.stringify(vnp_Params), {
+//                 headers: {
+//                     'Content-Type': 'application/x-www-form-urlencoded'
+//                 }
+//             }
+//             );
+//             console.log('IPN Response:', ipnResponse.data);
+
+//             // Trả về kết quả cho client
+//             res.json({
+//                 code: vnp_Params['vnp_ResponseCode'],
+//                 ipnResult: ipnResponse.data
+//             });
+//         } catch (error) {
+//             console.error('Error calling IPN:', error);
+//             res.json({
+//                 code: vnp_Params['vnp_ResponseCode'],
+//                 ipnError: 'Failed to process IPN notification'
+//             });
+//         }
+//     } else {
+//         res.json({ code: '97' });
+//     }
+// };
 exports.vnpayReturn = async (req, res, next) => {
-    let vnp_Params = req.query;
-    let secureHash = vnp_Params['vnp_SecureHash'];
+  let vnp_Params = req.query;
+  let secureHash = vnp_Params["vnp_SecureHash"];
 
-    delete vnp_Params['vnp_SecureHash'];
-    delete vnp_Params['vnp_SecureHashType'];
+  delete vnp_Params["vnp_SecureHash"];
+  delete vnp_Params["vnp_SecureHashType"];
 
-    vnp_Params = sortObject(vnp_Params);
+  vnp_Params = sortObject(vnp_Params);
 
-    const tmnCode = configVnpay.vnp_TmnCode;
-    const secretKey = configVnpay.vnp_HashSecret;
+  const tmnCode = configVnpay.vnp_TmnCode;
+  const secretKey = configVnpay.vnp_HashSecret;
 
-    let signData = querystring.stringify(vnp_Params, { encode: false });
-    let hmac = crypto.createHmac("sha512", secretKey);
-    let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+  let signData = querystring.stringify(vnp_Params, { encode: false });
+  let hmac = crypto.createHmac("sha512", secretKey);
+  let signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
 
-    if (secureHash === signed) {
-        // Gọi IPN endpoint với form-urlencoded và tạo lại SecureHash
-        try {
-            const ipnResponse = await axios.post(
-                configVnpay.vnp_IpnUrl,
-                querystring.stringify(vnp_Params), {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            }
-            );
-            console.log('IPN Response:', ipnResponse.data);
-
-            // Trả về kết quả cho client
-            res.json({
-                code: vnp_Params['vnp_ResponseCode'],
-                ipnResult: ipnResponse.data
-            });
-        } catch (error) {
-            console.error('Error calling IPN:', error);
-            res.json({
-                code: vnp_Params['vnp_ResponseCode'],
-                ipnError: 'Failed to process IPN notification'
-            });
+  if (secureHash === signed) {
+    try {
+      const ipnResponse = await axios.post(
+        configVnpay.vnp_IpnUrl,
+        querystring.stringify(vnp_Params),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
         }
-    } else {
-        res.json({ code: '97' });
+      );
+      console.log("IPN Response:", ipnResponse.data);
+
+      // Chuyển hướng đến trang payment success
+      res.redirect("https://phamanhtuan2908.id.vn/payment-success");
+    } catch (error) {
+      console.error("Error calling IPN:", error);
+      // Trong trường hợp lỗi, vẫn chuyển hướng nhưng có thể thêm query param để hiển thị thông báo
+      res.redirect("https://phamanhtuan2908.id.vn/payment-success?error=true");
     }
+  } else {
+    // Trong trường hợp xác thực thất bại
+    res.redirect("https://phamanhtuan2908.id.vn/payment-success?error=true");
+  }
 };
 
 // Cập nhật lại hàm vnpayIPN để xử lý cả form-urlencoded
